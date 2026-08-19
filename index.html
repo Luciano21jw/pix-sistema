@@ -12,7 +12,6 @@
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#32bcad">
   <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%2332bcad'/%3E%3Ctext x='50' y='68' font-size='50' text-anchor='middle' fill='white' font-family='sans-serif'%3EP%3C/text%3E%3C/svg%3E">
   
   <style>
@@ -92,8 +91,7 @@
       margin-left: 5px;
     }
 
-    input,
-    select {
+    input, select {
       width: 100%;
       padding: 12px;
       margin-top: 5px;
@@ -116,8 +114,7 @@
       color: white;
     }
 
-    input:focus,
-    select:focus {
+    input:focus, select:focus {
       outline: none;
       border-color: var(--brand);
     }
@@ -141,8 +138,7 @@
       flex: 1;
     }
 
-    .btn-add,
-    .btn-remove {
+    .btn-add, .btn-remove {
       width: 48px;
       height: 48px;
       border-radius: 8px;
@@ -174,8 +170,7 @@
       filter: brightness(1.2);
     }
 
-    .btn-add svg,
-    .btn-remove svg {
+    .btn-add svg, .btn-remove svg {
       width: 24px;
       height: 24px;
       fill: currentColor;
@@ -246,8 +241,7 @@
       filter: brightness(1.2);
     }
 
-    #step-pix,
-    #loader {
+    #step-pix, #loader {
       display: none;
     }
 
@@ -295,9 +289,7 @@
     }
 
     @keyframes spin {
-      100% {
-        transform: rotate(360deg);
-      }
+      100% { transform: rotate(360deg); }
     }
 
     .check-writing-container {
@@ -350,44 +342,19 @@
     }
 
     @keyframes drawCheck {
-      0% {
-        stroke-dashoffset: 100;
-        opacity: 0;
-      }
-      10% {
-        opacity: 1;
-      }
-      100% {
-        stroke-dashoffset: 0;
-        opacity: 1;
-      }
+      0% { stroke-dashoffset: 100; opacity: 0; }
+      10% { opacity: 1; }
+      100% { stroke-dashoffset: 0; opacity: 1; }
     }
 
     @keyframes penTip {
-      0% {
-        opacity: 0;
-        transform: translate(0, 0) scale(0);
-      }
-      15% {
-        opacity: 1;
-        transform: scale(1);
-      }
-      30% {
-        transform: translate(15px, 25px) scale(1);
-      }
-      50% {
-        transform: translate(30px, 50px) scale(1);
-      }
-      70% {
-        transform: translate(45px, 30px) scale(1);
-      }
-      85% {
-        transform: translate(60px, 15px) scale(1);
-      }
-      100% {
-        opacity: 0;
-        transform: translate(75px, 5px) scale(0.5);
-      }
+      0% { opacity: 0; transform: translate(0, 0) scale(0); }
+      15% { opacity: 1; transform: scale(1); }
+      30% { transform: translate(15px, 25px) scale(1); }
+      50% { transform: translate(30px, 50px) scale(1); }
+      70% { transform: translate(45px, 30px) scale(1); }
+      85% { transform: translate(60px, 15px) scale(1); }
+      100% { opacity: 0; transform: translate(75px, 5px) scale(0.5); }
     }
 
     .check-writing-container .glow-effect {
@@ -404,18 +371,9 @@
     }
 
     @keyframes glowPulse {
-      0% {
-        opacity: 0;
-        transform: translate(-50%, -50%) scale(0.8);
-      }
-      50% {
-        opacity: 1;
-        transform: translate(-50%, -50%) scale(1.2);
-      }
-      100% {
-        opacity: 0.5;
-        transform: translate(-50%, -50%) scale(1);
-      }
+      0% { opacity: 0; transform: translate(-50%, -50%) scale(0.8); }
+      50% { opacity: 1; transform: translate(-50%, -50%) scale(1.2); }
+      100% { opacity: 0.5; transform: translate(-50%, -50%) scale(1); }
     }
 
     .check-writing-container .texto-confirmacao {
@@ -428,25 +386,13 @@
     }
 
     @keyframes fadeText {
-      0% {
-        opacity: 0;
-        transform: translateY(5px);
-      }
-      100% {
-        opacity: 1;
-        transform: translateY(0);
-      }
+      0% { opacity: 0; transform: translateY(5px); }
+      100% { opacity: 1; transform: translateY(0); }
     }
 
     @keyframes fadeIn {
-      from {
-        opacity: 0;
-        transform: scale(0.95);
-      }
-      to {
-        opacity: 1;
-        transform: scale(1);
-      }
+      from { opacity: 0; transform: scale(0.95); }
+      to { opacity: 1; transform: scale(1); }
     }
 
     .produtos-lista {
@@ -557,13 +503,8 @@
     }
 
     @keyframes pulse-green {
-      0%,
-      100% {
-        transform: scale(1);
-      }
-      50% {
-        transform: scale(1.02);
-      }
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.02); }
     }
 
     .footer-actions {
@@ -626,25 +567,6 @@
       color: #888;
       margin-top: 5px;
     }
-    
-    #installBtn {
-      position: fixed;
-      bottom: 20px;
-      left: 50%;
-      transform: translateX(-50%);
-      background: #32bcad;
-      color: #000;
-      border: none;
-      padding: 12px 24px;
-      border-radius: 50px;
-      font-weight: bold;
-      font-size: 1rem;
-      z-index: 9999;
-      box-shadow: 0 4px 20px rgba(50,188,173,0.4);
-      cursor: pointer;
-      display: none;
-      width: auto;
-    }
 
     .url-config {
       margin: 10px 0;
@@ -673,18 +595,38 @@
     }
 
     .btn-testar {
-      background: #444;
-      color: white;
+      background: var(--brand);
+      color: #000;
       padding: 10px;
       border: none;
       border-radius: 4px;
       cursor: pointer;
       margin-top: 5px;
       font-size: 0.8rem;
+      font-weight: bold;
     }
 
     .btn-testar:hover {
-      background: #555;
+      filter: brightness(1.1);
+    }
+
+    #installBtn {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #32bcad;
+      color: #000;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 50px;
+      font-weight: bold;
+      font-size: 1rem;
+      z-index: 9999;
+      box-shadow: 0 4px 20px rgba(50,188,173,0.4);
+      cursor: pointer;
+      display: none;
+      width: auto;
     }
   </style>
 </head>
@@ -702,7 +644,6 @@
     <div id="step-form">
       <h2><span class="material-icons">point_of_sale</span> Nova Venda</h2>
 
-      <!-- CONFIGURAÇÃO DA URL DO APPS SCRIPT -->
       <div class="url-config">
         <label>🔗 URL do Google Apps Script:</label>
         <input type="text" id="scriptUrl" placeholder="https://script.google.com/macros/s/.../exec">
@@ -728,9 +669,7 @@
             <option value="">Carregando...</option>
           </select>
           <button class="btn-add" onclick="adicionarProduto()">
-            <svg viewBox="0 0 24 24">
-              <path d="M19 13H13V19H11V13H5V11H11V5H13V11H19V13Z"/>
-            </svg>
+            <svg viewBox="0 0 24 24"><path d="M19 13H13V19H11V13H5V11H11V5H13V11H19V13Z"/></svg>
           </button>
         </div>
       </div>
@@ -742,9 +681,7 @@
             <option value="">Selecione...</option>
           </select>
           <button class="btn-remove" onclick="removerProduto()">
-            <svg viewBox="0 0 24 24">
-              <path d="M19 13H5V11H19V13Z"/>
-            </svg>
+            <svg viewBox="0 0 24 24"><path d="M19 13H5V11H19V13Z"/></svg>
           </button>
         </div>
       </div>
@@ -822,11 +759,9 @@
 
   <script>
     // ==================== CONFIGURAÇÃO ====================
-    // SALVA A URL DO APPS SCRIPT NO LOCALSTORAGE
     function getScriptUrl() {
       let url = localStorage.getItem('scriptUrl');
       if (!url) {
-        // Tenta pegar do input
         url = document.getElementById('scriptUrl').value;
       }
       return url;
@@ -837,7 +772,20 @@
       document.getElementById('scriptUrl').value = url;
     }
 
-    // Carrega a URL salva ao iniciar
+    // ==================== PWA ====================
+    let deferredPrompt;
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredPrompt = e;
+      const btn = document.getElementById('installBtn');
+      btn.style.display = 'block';
+      btn.addEventListener('click', async () => {
+        btn.style.display = 'none';
+        await deferredPrompt.prompt();
+      });
+    });
+
+    // ==================== INICIALIZAÇÃO ====================
     document.addEventListener('DOMContentLoaded', function() {
       const savedUrl = localStorage.getItem('scriptUrl');
       if (savedUrl) {
@@ -849,7 +797,15 @@
       verificarConfiguracoes();
     });
 
-    // ==================== FUNÇÕES DE CONEXÃO ====================
+    function resetDataField() {
+      const hoje = new Date();
+      const dataFmt = hoje.getFullYear() + '-' +
+        String(hoje.getMonth() + 1).padStart(2, '0') + '-' +
+        String(hoje.getDate()).padStart(2, '0');
+      document.getElementById('dataVenda').value = dataFmt;
+    }
+
+    // ==================== TESTAR CONEXÃO ====================
     function testarConexao() {
       const url = document.getElementById('scriptUrl').value;
       if (!url) {
@@ -858,48 +814,32 @@
       }
 
       const statusEl = document.getElementById('statusConexao');
-      statusEl.textContent = '⏳ Testando conexão...';
+      statusEl.textContent = '⏳ Testando...';
       statusEl.style.color = '#ffc107';
 
-      // Tenta carregar os produtos para testar
-      fetch(url + '?action=getProdutos', {
-        method: 'GET',
-        mode: 'no-cors'
-      })
-      .then(() => {
+      setScriptUrl(url);
+      
+      const callbackName = 'teste_' + Date.now();
+      window[callbackName] = function(data) {
+        console.log('✅ Teste OK:', data);
         statusEl.textContent = '✅ Conexão OK! App Script respondendo.';
         statusEl.style.color = '#00e676';
-        setScriptUrl(url);
         carregarProdutos();
         verificarConfiguracoes();
-      })
-      .catch(() => {
-        statusEl.textContent = '⚠️ Não foi possível testar. Verifique se a URL está correta.';
+        delete window[callbackName];
+      };
+
+      const script = document.createElement('script');
+      script.src = url + '?action=getProdutos&callback=' + callbackName;
+      script.onerror = function() {
+        statusEl.textContent = '❌ Erro de conexão! Verifique a URL.';
         statusEl.style.color = '#ff4444';
-      });
+        delete window[callbackName];
+      };
+      document.body.appendChild(script);
     }
 
-    // ==================== PWA - INSTALAÇÃO ====================
-    let deferredPrompt;
-
-    window.addEventListener('beforeinstallprompt', (e) => {
-      e.preventDefault();
-      deferredPrompt = e;
-      const btn = document.getElementById('installBtn');
-      btn.style.display = 'block';
-      
-      btn.addEventListener('click', async () => {
-        btn.style.display = 'none';
-        const result = await deferredPrompt.prompt();
-        console.log(result.outcome);
-      });
-    });
-
-    window.addEventListener('appinstalled', () => {
-      document.getElementById('installBtn').style.display = 'none';
-    });
-
-    // ==================== INICIALIZAÇÃO ====================
+    // ==================== VERIFICAR CONFIGURAÇÕES ====================
     function verificarConfiguracoes() {
       const url = getScriptUrl();
       if (!url) {
@@ -912,49 +852,51 @@
         return;
       }
 
-      // Faz a requisição para verificar
-      fetch(url + '?action=verificarConfiguracoes', {
-        method: 'GET',
-        mode: 'no-cors'
-      })
-      .then(() => {
-        // Como é no-cors, não podemos ler a resposta, mas sabemos que a requisição foi feita
-        document.getElementById('configWarning').style.display = 'none';
-        document.getElementById('btnGerar').disabled = false;
-      })
-      .catch(() => {
-        document.getElementById('configWarning').style.display = 'block';
-        document.getElementById('configWarning').innerHTML = `
-          <span class="material-icons">warning</span>
-          <strong>⚠️ Erro de conexão!</strong><br>
-          Verifique se a URL do App Script está correta e publicada.
-        `;
-      });
+      const callbackName = 'config_' + Date.now();
+      window[callbackName] = function(data) {
+        if (data && data.configurado === false) {
+          document.getElementById('configWarning').style.display = 'block';
+          document.getElementById('configWarning').innerHTML = `
+            <span class="material-icons">warning</span>
+            <strong>⚠️ ${data.mensagem}</strong>
+          `;
+          document.getElementById('btnGerar').disabled = true;
+        } else {
+          document.getElementById('configWarning').style.display = 'none';
+          document.getElementById('btnGerar').disabled = false;
+        }
+        delete window[callbackName];
+      };
+
+      const script = document.createElement('script');
+      script.src = url + '?action=verificarConfiguracoes&callback=' + callbackName;
+      script.onerror = function() { delete window[callbackName]; };
+      document.body.appendChild(script);
     }
 
-    function resetDataField() {
-      const hoje = new Date();
-      const dataFmt = hoje.getFullYear() + '-' +
-        String(hoje.getMonth() + 1).padStart(2, '0') + '-' +
-        String(hoje.getDate()).padStart(2, '0');
-      document.getElementById('dataVenda').value = dataFmt;
-    }
-
+    // ==================== ATUALIZAR PLACAR ====================
     function atualizarPlacar() {
       const url = getScriptUrl();
       if (!url) return;
 
-      // Faz uma requisição para pegar o total
-      fetch(url + '?action=getTotalVendasHoje', {
-        method: 'GET',
-        mode: 'no-cors'
-      })
-      .catch(() => {
-        // Se der erro, mantém o valor atual
-      });
+      const callbackName = 'total_' + Date.now();
+      window[callbackName] = function(data) {
+        if (data && data.total) {
+          document.getElementById('totalHoje').innerText = data.total;
+        }
+        delete window[callbackName];
+      };
+
+      const script = document.createElement('script');
+      script.src = url + '?action=getTotalVendasHoje&callback=' + callbackName;
+      script.onerror = function() { delete window[callbackName]; };
+      document.body.appendChild(script);
     }
 
     // ==================== PRODUTOS ====================
+    let produtosSelecionados = [];
+    let listaProdutosDisponiveis = [];
+
     function carregarProdutos() {
       const selectAdd = document.getElementById('produtoAdd');
       const selectRemove = document.getElementById('produtoRemove');
@@ -968,68 +910,68 @@
         return;
       }
 
-      // Usa JSONP para contornar CORS
-      const callbackName = 'jsonp_callback_' + Date.now();
+      const callbackName = 'produtos_' + Date.now();
       window[callbackName] = function(data) {
-        mostrarProdutos(data);
+        console.log('📦 Produtos recebidos:', data);
+
+        if (data && data.erro) {
+          selectAdd.innerHTML = '<option value="">⚠️ ' + data.mensagem + '</option>';
+          selectRemove.innerHTML = '<option value="">⚠️ ' + data.mensagem + '</option>';
+          delete window[callbackName];
+          return;
+        }
+
+        if (Array.isArray(data) && data.length > 0 && data[0] && data[0].erro) {
+          selectAdd.innerHTML = '<option value="">⚠️ ' + data[0].mensagem + '</option>';
+          selectRemove.innerHTML = '<option value="">⚠️ ' + data[0].mensagem + '</option>';
+          delete window[callbackName];
+          return;
+        }
+
+        if (!data || data.length === 0) {
+          selectAdd.innerHTML = '<option value="">⚠️ Nenhum produto</option>';
+          selectRemove.innerHTML = '<option value="">⚠️ Nenhum produto</option>';
+          delete window[callbackName];
+          return;
+        }
+
+        listaProdutosDisponiveis = data;
+        selectAdd.innerHTML = '<option value="">Selecione...</option>';
+        selectRemove.innerHTML = '<option value="">Selecione...</option>';
+
+        data.forEach(function(p) {
+          const optAdd = document.createElement('option');
+          optAdd.value = p.nome;
+          optAdd.dataset.valor = p.valor;
+          optAdd.textContent = p.nome + ' - R$ ' + p.valor;
+          selectAdd.appendChild(optAdd);
+
+          const optRem = document.createElement('option');
+          optRem.value = p.nome;
+          optRem.textContent = p.nome;
+          selectRemove.appendChild(optRem);
+        });
+
+        const statusEl = document.getElementById('statusConexao');
+        if (statusEl) {
+          statusEl.textContent = '✅ ' + data.length + ' produtos carregados!';
+          statusEl.style.color = '#00e676';
+        }
+
         delete window[callbackName];
       };
 
       const script = document.createElement('script');
       script.src = url + '?action=getProdutos&callback=' + callbackName;
       script.onerror = function() {
-        erroProdutos();
+        selectAdd.innerHTML = '<option value="">⚠️ Erro de conexão</option>';
+        selectRemove.innerHTML = '<option value="">⚠️ Erro de conexão</option>';
         delete window[callbackName];
       };
       document.body.appendChild(script);
     }
 
-    function mostrarProdutos(produtos) {
-      const selectAdd = document.getElementById('produtoAdd');
-      const selectRemove = document.getElementById('produtoRemove');
-
-      if (produtos && produtos.erro) {
-        selectAdd.innerHTML = '<option value="">⚠️ ' + produtos.mensagem + '</option>';
-        selectRemove.innerHTML = '<option value="">⚠️ ' + produtos.mensagem + '</option>';
-        return;
-      }
-
-      selectAdd.innerHTML = '<option value="">Selecione...</option>';
-      selectRemove.innerHTML = '<option value="">Selecione...</option>';
-
-      if (!produtos || produtos.length === 0) {
-        selectAdd.innerHTML = '<option value="">⚠️ Nenhum produto</option>';
-        selectRemove.innerHTML = '<option value="">⚠️ Nenhum produto</option>';
-        return;
-      }
-
-      listaProdutosDisponiveis = produtos;
-
-      produtos.forEach(function(p) {
-        const optionAdd = document.createElement('option');
-        optionAdd.value = p.nome;
-        optionAdd.dataset.valor = p.valor;
-        optionAdd.textContent = p.nome + ' - R$ ' + p.valor;
-        selectAdd.appendChild(optionAdd);
-
-        const optionRemove = document.createElement('option');
-        optionRemove.value = p.nome;
-        optionRemove.textContent = p.nome;
-        selectRemove.appendChild(optionRemove);
-      });
-    }
-
-    function erroProdutos() {
-      const selectAdd = document.getElementById('produtoAdd');
-      const selectRemove = document.getElementById('produtoRemove');
-      selectAdd.innerHTML = '<option value="">⚠️ Erro ao carregar</option>';
-      selectRemove.innerHTML = '<option value="">⚠️ Erro ao carregar</option>';
-    }
-
-    // ==================== MANIPULAÇÃO DE PRODUTOS ====================
-    let produtosSelecionados = [];
-    let listaProdutosDisponiveis = [];
-
+    // ==================== MANIPULAR PRODUTOS ====================
     function adicionarProduto() {
       const select = document.getElementById('produtoAdd');
       const nome = select.value;
@@ -1041,7 +983,6 @@
       }
 
       const valorUnitario = parseFloat(valorStr.replace(',', '.'));
-
       const existente = produtosSelecionados.find(function(p) { return p.nome === nome; });
 
       if (existente) {
@@ -1052,7 +993,6 @@
           nome: nome,
           qtd: 1,
           valorUnitario: valorUnitario,
-          valorUnitarioStr: valorStr,
           valorTotal: valorUnitario
         });
       }
@@ -1072,14 +1012,12 @@
       }
 
       const index = produtosSelecionados.findIndex(function(p) { return p.nome === nome; });
-
       if (index === -1) {
-        alert('Produto não encontrado na lista!');
+        alert('Produto não encontrado!');
         return;
       }
 
       const produto = produtosSelecionados[index];
-
       if (produto.qtd > 1) {
         produto.qtd -= 1;
         produto.valorTotal = produto.qtd * produto.valorUnitario;
@@ -1094,27 +1032,22 @@
 
     function atualizarDropdownRemover() {
       const selectRemove = document.getElementById('produtoRemove');
-      const valorAtual = selectRemove.value;
-
+      const atual = selectRemove.value;
       selectRemove.innerHTML = '<option value="">Selecione...</option>';
 
-      const nomesUnicos = [...new Set(produtosSelecionados.map(function(p) { return p.nome; }))];
-
-      nomesUnicos.forEach(function(nome) {
-        const option = document.createElement('option');
-        option.value = nome;
-        option.textContent = nome;
-        selectRemove.appendChild(option);
+      const nomes = [...new Set(produtosSelecionados.map(function(p) { return p.nome; }))];
+      nomes.forEach(function(nome) {
+        const opt = document.createElement('option');
+        opt.value = nome;
+        opt.textContent = nome;
+        selectRemove.appendChild(opt);
       });
 
-      if (nomesUnicos.includes(valorAtual)) {
-        selectRemove.value = valorAtual;
-      }
+      if (nomes.includes(atual)) selectRemove.value = atual;
     }
 
     function atualizarLista() {
       const container = document.getElementById('listaProdutos');
-
       if (produtosSelecionados.length === 0) {
         container.innerHTML = '<div class="lista-vazia">Nenhum produto adicionado</div>';
         return;
@@ -1122,16 +1055,14 @@
 
       let html = '';
       produtosSelecionados.forEach(function(p) {
-        const totalStr = p.valorTotal.toFixed(2).replace('.', ',');
         html += `
           <div class="produto-item">
             <span class="qtd">${p.qtd}x</span>
             <span class="nome">${p.nome}</span>
-            <span class="valor">R$ ${totalStr}</span>
+            <span class="valor">R$ ${p.valorTotal.toFixed(2).replace('.', ',')}</span>
           </div>
         `;
       });
-
       html += `<div class="total-produtos">Total: R$ ${calcularTotal()}</div>`;
       container.innerHTML = html;
     }
@@ -1145,7 +1076,6 @@
     function atualizarTotal() {
       const total = calcularTotal();
       document.getElementById('valor').value = total;
-
       if (produtosSelecionados.length > 0) {
         const desc = produtosSelecionados.map(function(p) { return p.qtd + 'x ' + p.nome; }).join(', ');
         document.getElementById('descricao').value = desc;
@@ -1160,11 +1090,11 @@
         return;
       }
 
-      const d = {
+      const dados = {
         data: document.getElementById('dataVenda').value,
         valor: document.getElementById('valor').value,
         cliente: document.getElementById('cliente').value,
-        descricao: document.getElementById('descricao').value ||
+        descricao: document.getElementById('descricao').value || 
           produtosSelecionados.map(function(p) { return p.qtd + 'x ' + p.nome; }).join(', ')
       };
 
@@ -1173,12 +1103,12 @@
         return;
       }
 
-      if (!d.cliente) {
+      if (!dados.cliente) {
         alert('Preencha o nome do Cliente!');
         return;
       }
 
-      if (d.valor === "0,00") {
+      if (dados.valor === "0,00") {
         alert('Valor total é zero!');
         return;
       }
@@ -1187,63 +1117,74 @@
       document.getElementById('loader').style.display = 'block';
       vendaConfirmada = false;
 
-      // Envia via POST para o Apps Script
-      const formData = new FormData();
-      formData.append('action', 'registrarVenda');
-      formData.append('data', d.data);
-      formData.append('valor', d.valor);
-      formData.append('cliente', d.cliente);
-      formData.append('descricao', d.descricao);
+      // Usa JSONP com POST via form
+      const form = document.createElement('form');
+      form.method = 'POST';
+      form.action = url;
+      form.target = 'hidden_iframe';
 
-      fetch(url, {
-        method: 'POST',
-        mode: 'no-cors',
-        body: formData
-      })
-      .then(() => {
-        // Como é no-cors, não podemos ler a resposta
-        // Vamos simular um sucesso e mostrar a tela do Pix
-        // O App Script vai processar e salvar na planilha
-        mostrarPixSimulado(d);
-      })
-      .catch((erro) => {
-        document.getElementById('btnGerar').style.display = 'flex';
+      const fields = {
+        action: 'registrarVenda',
+        data: dados.data,
+        valor: dados.valor,
+        cliente: dados.cliente,
+        descricao: dados.descricao
+      };
+
+      for (const [key, value] of Object.entries(fields)) {
+        const input = document.createElement('input');
+        input.type = 'hidden';
+        input.name = key;
+        input.value = value;
+        form.appendChild(input);
+      }
+
+      // Cria iframe escondido
+      const iframe = document.createElement('iframe');
+      iframe.name = 'hidden_iframe';
+      iframe.style.display = 'none';
+      document.body.appendChild(iframe);
+
+      form.target = 'hidden_iframe';
+      document.body.appendChild(form);
+      form.submit();
+
+      // Simula sucesso após o POST
+      setTimeout(function() {
         document.getElementById('loader').style.display = 'none';
-        alert('❌ Erro ao gerar Pix: ' + erro.message);
-      });
-    }
+        
+        // Gera pix mockado
+        const pixCode = '00020126360014BR.GOV.BCB.PIX0111' + 
+          Math.random().toString(36).substring(2, 10) +
+          '5204000053039865404' + dados.valor.replace(',', '') +
+          '5802BR5905' + dados.cliente.substring(0, 10) +
+          '6008CIDADE62070503***6304' + Math.random().toString(16).substring(2, 6).toUpperCase();
 
-    function mostrarPixSimulado(d) {
-      // Gera um código Pix mockado para demonstração
-      const pixCode = '00020126360014BR.GOV.BCB.PIX0111' + 
-        Math.random().toString(36).substring(2, 10) +
-        '5204000053039865404' + d.valor.replace(',', '') +
-        '5802BR5905' + d.cliente.substring(0, 10) +
-        '6008CIDADE62070503***6304' + Math.random().toString(16).substring(2, 6).toUpperCase();
+        document.getElementById('displayValor').innerText = dados.valor;
+        document.getElementById('displayCliente').innerText = dados.cliente;
+        document.getElementById('pixCodeText').value = pixCode;
+        window.pixCodeAtual = pixCode;
+        window.paymentIdAtual = 'PAG' + Date.now();
 
-      document.getElementById('displayValor').innerText = d.valor;
-      document.getElementById('displayCliente').innerText = d.cliente;
-      document.getElementById('pixCodeText').value = pixCode;
+        document.getElementById('qrImage').src =
+          "https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=" +
+          encodeURIComponent(pixCode);
 
-      window.pixCodeAtual = pixCode;
-      window.paymentIdAtual = 'PAG' + Date.now();
+        document.getElementById('step-form').style.display = 'none';
+        document.getElementById('step-pix').style.display = 'block';
+        document.getElementById('statusPagamento').className = 'status-pendente';
+        document.getElementById('statusPagamento').textContent = '⏳ Aguardando pagamento...';
+        document.getElementById('checkWritingContainer').classList.remove('visivel');
 
-      document.getElementById('qrImage').src =
-        "https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=" +
-        encodeURIComponent(pixCode);
+        iniciarVerificacaoAutomatica();
 
-      document.getElementById('step-form').style.display = 'none';
-      document.getElementById('loader').style.display = 'none';
-      document.getElementById('step-pix').style.display = 'block';
+        // Remove iframe e form
+        setTimeout(function() {
+          document.body.removeChild(iframe);
+          document.body.removeChild(form);
+        }, 1000);
 
-      statusAtual = 'PENDENTE';
-      vendaConfirmada = false;
-      
-      document.getElementById('checkWritingContainer').classList.remove('visivel');
-      
-      atualizarStatusUI('PENDENTE', '⏳ Aguardando pagamento...');
-      
-      iniciarVerificacaoAutomatica();
+      }, 3000);
     }
 
     // ==================== VERIFICAÇÃO AUTOMÁTICA ====================
@@ -1253,45 +1194,31 @@
     let tempoDecorrido = 0;
     let maxTempo = 300;
     let loopAtivo = false;
-    window.pixCodeAtual = null;
-    window.paymentIdAtual = null;
 
     function iniciarVerificacaoAutomatica() {
-      if (timerVerificacao) {
-        clearInterval(timerVerificacao);
-        timerVerificacao = null;
-      }
-      
+      if (timerVerificacao) clearInterval(timerVerificacao);
       tempoDecorrido = 0;
       loopAtivo = true;
-      
+
       const timerTempo = setInterval(function() {
-        if (!loopAtivo) {
-          clearInterval(timerTempo);
-          return;
-        }
-        
+        if (!loopAtivo) { clearInterval(timerTempo); return; }
         tempoDecorrido++;
-        const segundosRestantes = maxTempo - tempoDecorrido;
-        
-        if (segundosRestantes <= 0) {
+        const restante = maxTempo - tempoDecorrido;
+        if (restante <= 0) {
           clearInterval(timerTempo);
           if (!vendaConfirmada) {
-            document.getElementById('temporizador').textContent = '⏱️ Tempo esgotado! Clique em "Nova" para tentar novamente.';
+            document.getElementById('temporizador').textContent = '⏱️ Tempo esgotado!';
             document.getElementById('temporizador').style.color = '#ff4444';
             loopAtivo = false;
           }
         } else {
           document.getElementById('temporizador').textContent = 
-            '⏱️ Verificando... ' + Math.floor(segundosRestantes / 60) + 'm ' + (segundosRestantes % 60) + 's restantes';
+            '⏱️ Verificando... ' + Math.floor(restante / 60) + 'm ' + (restante % 60) + 's';
         }
       }, 1000);
-      
+
       function executarVerificacao() {
-        if (!loopAtivo || vendaConfirmada) {
-          return;
-        }
-        
+        if (!loopAtivo || vendaConfirmada) return;
         const url = getScriptUrl();
         if (!url) {
           if (loopAtivo && !vendaConfirmada && tempoDecorrido < maxTempo) {
@@ -1300,16 +1227,14 @@
           return;
         }
 
-        // Usa JSONP para verificar
-        const callbackName = 'verify_callback_' + Date.now();
+        const callbackName = 'verify_' + Date.now();
         window[callbackName] = function(resultado) {
-          if (!loopAtivo || vendaConfirmada) return;
-          
+          if (!loopAtivo || vendaConfirmada) { delete window[callbackName]; return; }
           if (resultado && resultado.encontrado && resultado.confirmado) {
             confirmarPagamento(resultado);
+            delete window[callbackName];
             return;
           }
-          
           if (loopAtivo && !vendaConfirmada && tempoDecorrido < maxTempo) {
             timerVerificacao = setTimeout(executarVerificacao, 5000);
           }
@@ -1326,109 +1251,54 @@
         };
         document.body.appendChild(script);
       }
-      
+
       timerVerificacao = setTimeout(executarVerificacao, 5000);
     }
 
     function confirmarPagamento(resultado) {
       if (vendaConfirmada) return;
-      
       vendaConfirmada = true;
       loopAtivo = false;
-      
-      if (timerVerificacao) {
-        clearTimeout(timerVerificacao);
-        timerVerificacao = null;
-      }
-      
+      if (timerVerificacao) { clearTimeout(timerVerificacao); timerVerificacao = null; }
       statusAtual = 'PAGO';
-      
+
       const container = document.getElementById('checkWritingContainer');
       container.classList.add('visivel');
-      
       const path = container.querySelector('.check-path');
       path.style.animation = 'none';
       path.offsetHeight;
       path.style.animation = 'drawCheck 1.2s ease-in-out forwards';
-      
-      const penTip = container.querySelector('.pen-tip');
-      penTip.style.animation = 'none';
-      penTip.offsetHeight;
-      penTip.style.animation = 'penTip 1.2s ease-in-out forwards';
-      
-      const glow = container.querySelector('.glow-effect');
-      glow.style.animation = 'none';
-      glow.offsetHeight;
-      glow.style.animation = 'glowPulse 0.8s ease-in-out 1s forwards';
-      
-      const texto = container.querySelector('.texto-confirmacao');
-      texto.style.animation = 'none';
-      texto.offsetHeight;
-      texto.style.animation = 'fadeText 0.5s ease-in-out 1s forwards';
-      
+
       document.getElementById('statusPagamento').style.display = 'none';
       document.getElementById('temporizador').textContent = '✅ Pagamento confirmado!';
       document.getElementById('temporizador').style.color = '#00e676';
-      
       document.querySelector('.qr-container').style.border = '4px solid #00e676';
       document.querySelector('.qr-container').style.boxShadow = '0 0 30px rgba(0, 230, 118, 0.3)';
-      
       document.getElementById('statusBadge').innerHTML = '✅ PAGO';
       document.getElementById('statusBadge').className = 'badge badge-success';
-      
       atualizarPlacar();
     }
 
-    // ==================== FUNÇÕES DE STATUS ====================
-    function atualizarStatusUI(status, mensagem) {
-      let statusEl = document.getElementById('statusPagamento');
-      statusEl.style.display = 'block';
-
-      statusEl.textContent = mensagem;
-      statusEl.className = '';
-
-      if (status === 'PAGO') {
-        statusEl.classList.add('status-pago');
-      } else if (status === 'VERIFICANDO') {
-        statusEl.classList.add('status-verificando');
-      } else if (status === 'PENDENTE') {
-        statusEl.classList.add('status-pendente');
-      } else {
-        statusEl.classList.add('status-erro');
-      }
-    }
-
-    // ==================== OUTRAS FUNÇÕES ====================
+    // ==================== FUNÇÕES AUXILIARES ====================
     function copiarCodigo() {
       const c = document.getElementById("pixCodeText");
       c.select();
       c.setSelectionRange(0, 99999);
       document.execCommand("copy");
-      alert("✅ Pix Copia e Cola copiado!");
+      alert("✅ Pix copiado!");
     }
 
     function cancelarVenda() {
-      if (!confirm('⚠️ Cancelar esta venda?')) {
-        return;
-      }
-
+      if (!confirm('⚠️ Cancelar esta venda?')) return;
       loopAtivo = false;
-      if (timerVerificacao) {
-        clearTimeout(timerVerificacao);
-        timerVerificacao = null;
-      }
-
+      if (timerVerificacao) { clearTimeout(timerVerificacao); timerVerificacao = null; }
       alert('✅ Venda cancelada!');
       novaVenda();
     }
 
     function novaVenda() {
       loopAtivo = false;
-      if (timerVerificacao) {
-        clearTimeout(timerVerificacao);
-        timerVerificacao = null;
-      }
-      
+      if (timerVerificacao) { clearTimeout(timerVerificacao); timerVerificacao = null; }
       produtosSelecionados = [];
       document.getElementById('valor').value = '0,00';
       document.getElementById('cliente').value = '';
@@ -1447,20 +1317,16 @@
       document.getElementById('btnGerar').style.display = 'flex';
       document.getElementById('step-pix').style.display = 'none';
       document.getElementById('step-form').style.display = 'block';
-
       document.querySelector('.qr-container').style.border = 'none';
       document.querySelector('.qr-container').style.boxShadow = 'none';
-
       document.getElementById('statusBadge').innerHTML = '🔍';
       document.getElementById('statusBadge').className = 'badge';
-
       document.getElementById('checkWritingContainer').classList.remove('visivel');
       document.getElementById('statusPagamento').style.display = 'block';
       document.getElementById('statusPagamento').className = 'status-pendente';
       document.getElementById('statusPagamento').textContent = '⏳ Aguardando pagamento...';
       document.getElementById('temporizador').textContent = '⏱️ Verificando automaticamente...';
       document.getElementById('temporizador').style.color = '#888';
-
       resetDataField();
       atualizarPlacar();
       verificarConfiguracoes();
