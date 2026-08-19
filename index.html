@@ -586,6 +586,24 @@
       display: none;
       width: auto;
     }
+
+    .pix-code-copy {
+      margin-top: 10px;
+      padding: 8px;
+      background: #1a1a1a;
+      border-radius: 4px;
+      font-size: 0.7rem;
+      color: #888;
+      word-break: break-all;
+      cursor: pointer;
+      border: 1px solid #444;
+      transition: 0.2s;
+    }
+
+    .pix-code-copy:hover {
+      border-color: var(--brand);
+      color: #fff;
+    }
   </style>
 </head>
 
@@ -690,6 +708,10 @@
 
       <textarea id="pixCodeText" style="position:absolute; left:-9999px;"></textarea>
 
+      <div class="pix-code-copy" onclick="copiarCodigo()">
+        📋 Clique para copiar o código Pix
+      </div>
+
       <button class="btn-primary" onclick="copiarCodigo()">
         <span class="material-icons">content_copy</span> Copiar Pix
       </button>
@@ -710,8 +732,8 @@
 
   <script>
     // ==================== CONFIGURAÇÃO ====================
-    // 🔥 URL FIXA DO APPS SCRIPT
-    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyDAhdd0pBBqhXnZB7GpzHWA8u2CBC7ktDFybqYnVIcsT6lALSgkTyRscCxj3Besfjkvw/exec';
+    // 🔥 URL FIXA DO APPS SCRIPT - SUBSTITUA PELA SUA
+    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbws8brDqmnokNTNTjLVFB2HPuNl6WsRZEEbAT7at1YVUN2jecAJKz3GtpE4Aql8GDnXNQ/exec';
 
     function getScriptUrl() {
       return SCRIPT_URL;
@@ -1145,6 +1167,66 @@
       atualizarPlacar();
     }
 
+    // ==================== 🔥 CANCELAR VENDA (ATUALIZA PLANILHA) ====================
+    function cancelarVenda() {
+      const pixCode = document.getElementById('pixCodeText').value;
+
+      if (!pixCode) {
+        alert('Nenhum código Pix encontrado!');
+        return;
+      }
+
+      if (!confirm('⚠️ Cancelar esta venda?\n\nA planilha será atualizada com status CANCELADO.')) {
+        return;
+      }
+
+      loopAtivo = false;
+      if (timerVerificacao) {
+        clearTimeout(timerVerificacao);
+        timerVerificacao = null;
+      }
+
+      document.getElementById('btnGerar').style.display = 'none';
+      document.getElementById('loader').style.display = 'block';
+
+      const url = getScriptUrl();
+      const callbackName = 'cancel_' + Date.now();
+      
+      window[callbackName] = function(resultado) {
+        document.getElementById('loader').style.display = 'none';
+        
+        if (resultado && resultado.success) {
+          alert('✅ Venda cancelada com sucesso!\nA planilha foi atualizada.');
+          if (resultado.novoTotal) {
+            document.getElementById('totalHoje').innerText = resultado.novoTotal;
+          }
+          novaVenda();
+        } else {
+          alert('❌ Erro: ' + (resultado?.mensagem || 'Erro desconhecido'));
+          document.getElementById('btnGerar').style.display = 'flex';
+        }
+        
+        delete window[callbackName];
+      };
+
+      const params = new URLSearchParams({
+        action: 'cancelarVenda',
+        pixCode: pixCode,
+        callback: callbackName
+      });
+      
+      const script = document.createElement('script');
+      script.src = url + '?' + params.toString();
+      script.onerror = function() {
+        document.getElementById('loader').style.display = 'none';
+        document.getElementById('btnGerar').style.display = 'flex';
+        alert('❌ Erro de conexão com o Apps Script!');
+        delete window[callbackName];
+      };
+      
+      document.body.appendChild(script);
+    }
+
     // ==================== FUNÇÕES AUXILIARES ====================
     function copiarCodigo() {
       const c = document.getElementById("pixCodeText");
@@ -1152,14 +1234,6 @@
       c.setSelectionRange(0, 99999);
       document.execCommand("copy");
       alert("✅ Pix copiado!");
-    }
-
-    function cancelarVenda() {
-      if (!confirm('⚠️ Cancelar esta venda?')) return;
-      loopAtivo = false;
-      if (timerVerificacao) { clearTimeout(timerVerificacao); timerVerificacao = null; }
-      alert('✅ Venda cancelada!');
-      novaVenda();
     }
 
     function novaVenda() {
