@@ -1,7 +1,7 @@
 {
   "name": "Pix Sistema",
   "short_name": "Pix",
-  "description": "Sistema de vendas com Pix - Detecção automática de emails Nubank",
+  "description": "Sistema de vendas com Pix",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#1e1e1e",
