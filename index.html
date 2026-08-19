@@ -1083,62 +1083,107 @@
     }
 
     // ==================== GERAR PIX ====================
-    function gerarPix() {
-      const url = getScriptUrl();
-      if (!url) {
-        alert('⚠️ Configure a URL do Google Apps Script primeiro!');
-        return;
+    // ==================== GERAR PIX (CORRIGIDO) ====================
+function gerarPix() {
+  const url = getScriptUrl();
+  if (!url) {
+    alert('⚠️ Configure a URL do Google Apps Script primeiro!');
+    return;
+  }
+
+  const dados = {
+    data: document.getElementById('dataVenda').value,
+    valor: document.getElementById('valor').value,
+    cliente: document.getElementById('cliente').value,
+    descricao: document.getElementById('descricao').value || 
+      produtosSelecionados.map(function(p) { return p.qtd + 'x ' + p.nome; }).join(', ')
+  };
+
+  if (produtosSelecionados.length === 0) {
+    alert('Adicione pelo menos um produto!');
+    return;
+  }
+
+  if (!dados.cliente) {
+    alert('Preencha o nome do Cliente!');
+    return;
+  }
+
+  if (dados.valor === "0,00") {
+    alert('Valor total é zero!');
+    return;
+  }
+
+  document.getElementById('btnGerar').style.display = 'none';
+  document.getElementById('loader').style.display = 'block';
+  vendaConfirmada = false;
+
+  // 🔥 USA JSONP PARA CHAMAR O APPS SCRIPT E RECEBER O PIX REAL
+  const callbackName = 'pix_callback_' + Date.now();
+  
+  window[callbackName] = function(resultado) {
+    console.log('📦 Resposta do Apps Script:', resultado);
+    document.getElementById('loader').style.display = 'none';
+    
+    if (resultado && resultado.success) {
+      // 🔥 USA O PIX REAL GERADO PELO APPS SCRIPT
+      const pixCode = resultado.pixCode;
+      
+      document.getElementById('displayValor').innerText = resultado.valor;
+      document.getElementById('displayCliente').innerText = resultado.cliente;
+      document.getElementById('pixCodeText').value = pixCode;
+      window.pixCodeAtual = pixCode;
+      window.paymentIdAtual = resultado.paymentId;
+
+      // 🔥 GERA O QR CODE COM O PIX REAL
+      document.getElementById('qrImage').src =
+        "https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=" +
+        encodeURIComponent(pixCode);
+
+      document.getElementById('step-form').style.display = 'none';
+      document.getElementById('step-pix').style.display = 'block';
+      document.getElementById('statusPagamento').className = 'status-pendente';
+      document.getElementById('statusPagamento').textContent = '⏳ Aguardando pagamento...';
+      document.getElementById('checkWritingContainer').classList.remove('visivel');
+
+      // Atualiza o placar
+      if (resultado.novoTotal) {
+        document.getElementById('totalHoje').innerText = resultado.novoTotal;
       }
 
-      const dados = {
-        data: document.getElementById('dataVenda').value,
-        valor: document.getElementById('valor').value,
-        cliente: document.getElementById('cliente').value,
-        descricao: document.getElementById('descricao').value || 
-          produtosSelecionados.map(function(p) { return p.qtd + 'x ' + p.nome; }).join(', ')
-      };
+      iniciarVerificacaoAutomatica();
+      
+    } else {
+      alert('❌ Erro ao gerar Pix: ' + (resultado?.erro || 'Erro desconhecido'));
+      document.getElementById('btnGerar').style.display = 'flex';
+    }
+    
+    delete window[callbackName];
+  };
 
-      if (produtosSelecionados.length === 0) {
-        alert('Adicione pelo menos um produto!');
-        return;
-      }
-
-      if (!dados.cliente) {
-        alert('Preencha o nome do Cliente!');
-        return;
-      }
-
-      if (dados.valor === "0,00") {
-        alert('Valor total é zero!');
-        return;
-      }
-
-      document.getElementById('btnGerar').style.display = 'none';
-      document.getElementById('loader').style.display = 'block';
-      vendaConfirmada = false;
-
-      // Usa JSONP com POST via form
-      const form = document.createElement('form');
-      form.method = 'POST';
-      form.action = url;
-      form.target = 'hidden_iframe';
-
-      const fields = {
-        action: 'registrarVenda',
-        data: dados.data,
-        valor: dados.valor,
-        cliente: dados.cliente,
-        descricao: dados.descricao
-      };
-
-      for (const [key, value] of Object.entries(fields)) {
-        const input = document.createElement('input');
-        input.type = 'hidden';
-        input.name = key;
-        input.value = value;
-        form.appendChild(input);
-      }
-
+  // 🔥 FAZ A REQUISIÇÃO PARA O APPS SCRIPT COM OS DADOS
+  // Usamos JSONP para contornar CORS
+  const script = document.createElement('script');
+  // Passa os dados como parâmetros na URL
+  const params = new URLSearchParams({
+    action: 'registrarVenda',
+    data: dados.data,
+    valor: dados.valor,
+    cliente: dados.cliente,
+    descricao: dados.descricao,
+    callback: callbackName
+  });
+  
+  script.src = url + '?' + params.toString();
+  script.onerror = function() {
+    document.getElementById('loader').style.display = 'none';
+    document.getElementById('btnGerar').style.display = 'flex';
+    alert('❌ Erro de conexão com o Apps Script!');
+    delete window[callbackName];
+  };
+  
+  document.body.appendChild(script);
+}
       // Cria iframe escondido
       const iframe = document.createElement('iframe');
       iframe.name = 'hidden_iframe';
