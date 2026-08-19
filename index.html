@@ -568,48 +568,6 @@
       margin-top: 5px;
     }
 
-    .url-config {
-      margin: 10px 0;
-      padding: 12px;
-      background: #1a1a1a;
-      border-radius: 8px;
-      border: 1px solid #444;
-    }
-
-    .url-config label {
-      display: block;
-      text-align: left;
-      color: #aaa;
-      font-size: 0.8rem;
-      margin-bottom: 5px;
-    }
-
-    .url-config input {
-      background: #222;
-      border: 1px solid #555;
-      color: white;
-      padding: 10px;
-      border-radius: 4px;
-      width: 100%;
-      font-size: 0.8rem;
-    }
-
-    .btn-testar {
-      background: var(--brand);
-      color: #000;
-      padding: 10px;
-      border: none;
-      border-radius: 4px;
-      cursor: pointer;
-      margin-top: 5px;
-      font-size: 0.8rem;
-      font-weight: bold;
-    }
-
-    .btn-testar:hover {
-      filter: brightness(1.1);
-    }
-
     #installBtn {
       position: fixed;
       bottom: 20px;
@@ -643,13 +601,6 @@
     <!-- TELA 1: FORMULÁRIO -->
     <div id="step-form">
       <h2><span class="material-icons">point_of_sale</span> Nova Venda</h2>
-
-      <div class="url-config">
-        <label>🔗 URL do Google Apps Script:</label>
-        <input type="text" id="scriptUrl" placeholder="https://script.google.com/macros/s/.../exec">
-        <button class="btn-testar" onclick="testarConexao()">Testar Conexão</button>
-        <div id="statusConexao" style="margin-top: 5px; font-size: 0.8rem; color: #888;"></div>
-      </div>
 
       <div id="configWarning" class="config-error" style="display:none;">
         <span class="material-icons">warning</span>
@@ -759,17 +710,11 @@
 
   <script>
     // ==================== CONFIGURAÇÃO ====================
-    function getScriptUrl() {
-      let url = localStorage.getItem('scriptUrl');
-      if (!url) {
-        url = document.getElementById('scriptUrl').value;
-      }
-      return url;
-    }
+    // 🔥 URL FIXA DO APPS SCRIPT
+    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbws8brDqmnokNTNTjLVFB2HPuNl6WsRZEEbAT7at1YVUN2jecAJKz3GtpE4Aql8GDnXNQ/exec';
 
-    function setScriptUrl(url) {
-      localStorage.setItem('scriptUrl', url);
-      document.getElementById('scriptUrl').value = url;
+    function getScriptUrl() {
+      return SCRIPT_URL;
     }
 
     // ==================== PWA ====================
@@ -787,10 +732,6 @@
 
     // ==================== INICIALIZAÇÃO ====================
     document.addEventListener('DOMContentLoaded', function() {
-      const savedUrl = localStorage.getItem('scriptUrl');
-      if (savedUrl) {
-        document.getElementById('scriptUrl').value = savedUrl;
-      }
       resetDataField();
       atualizarPlacar();
       carregarProdutos();
@@ -805,52 +746,9 @@
       document.getElementById('dataVenda').value = dataFmt;
     }
 
-    // ==================== TESTAR CONEXÃO ====================
-    function testarConexao() {
-      const url = document.getElementById('scriptUrl').value;
-      if (!url) {
-        alert('⚠️ Cole a URL do Google Apps Script primeiro!');
-        return;
-      }
-
-      const statusEl = document.getElementById('statusConexao');
-      statusEl.textContent = '⏳ Testando...';
-      statusEl.style.color = '#ffc107';
-
-      setScriptUrl(url);
-      
-      const callbackName = 'teste_' + Date.now();
-      window[callbackName] = function(data) {
-        console.log('✅ Teste OK:', data);
-        statusEl.textContent = '✅ Conexão OK! App Script respondendo.';
-        statusEl.style.color = '#00e676';
-        carregarProdutos();
-        verificarConfiguracoes();
-        delete window[callbackName];
-      };
-
-      const script = document.createElement('script');
-      script.src = url + '?action=getProdutos&callback=' + callbackName;
-      script.onerror = function() {
-        statusEl.textContent = '❌ Erro de conexão! Verifique a URL.';
-        statusEl.style.color = '#ff4444';
-        delete window[callbackName];
-      };
-      document.body.appendChild(script);
-    }
-
     // ==================== VERIFICAR CONFIGURAÇÕES ====================
     function verificarConfiguracoes() {
       const url = getScriptUrl();
-      if (!url) {
-        document.getElementById('configWarning').style.display = 'block';
-        document.getElementById('configWarning').innerHTML = `
-          <span class="material-icons">warning</span>
-          <strong>⚠️ URL do App Script não configurada!</strong><br>
-          Cole a URL do seu Google Apps Script no campo acima.
-        `;
-        return;
-      }
 
       const callbackName = 'config_' + Date.now();
       window[callbackName] = function(data) {
@@ -877,7 +775,6 @@
     // ==================== ATUALIZAR PLACAR ====================
     function atualizarPlacar() {
       const url = getScriptUrl();
-      if (!url) return;
 
       const callbackName = 'total_' + Date.now();
       window[callbackName] = function(data) {
@@ -904,11 +801,6 @@
       selectRemove.innerHTML = '<option value="">Carregando...</option>';
 
       const url = getScriptUrl();
-      if (!url) {
-        selectAdd.innerHTML = '<option value="">⚠️ Configure a URL</option>';
-        selectRemove.innerHTML = '<option value="">⚠️ Configure a URL</option>';
-        return;
-      }
 
       const callbackName = 'produtos_' + Date.now();
       window[callbackName] = function(data) {
@@ -951,12 +843,6 @@
           optRem.textContent = p.nome;
           selectRemove.appendChild(optRem);
         });
-
-        const statusEl = document.getElementById('statusConexao');
-        if (statusEl) {
-          statusEl.textContent = '✅ ' + data.length + ' produtos carregados!';
-          statusEl.style.color = '#00e676';
-        }
 
         delete window[callbackName];
       };
@@ -1085,10 +971,6 @@
     // ==================== GERAR PIX (COM PIX REAL) ====================
     function gerarPix() {
       const url = getScriptUrl();
-      if (!url) {
-        alert('⚠️ Configure a URL do Google Apps Script primeiro!');
-        return;
-      }
 
       const dados = {
         data: document.getElementById('dataVenda').value,
@@ -1117,7 +999,6 @@
       document.getElementById('loader').style.display = 'block';
       vendaConfirmada = false;
 
-      // 🔥 CHAMA O APPS SCRIPT PARA GERAR O PIX REAL
       const callbackName = 'pix_' + Date.now();
       
       window[callbackName] = function(resultado) {
@@ -1125,7 +1006,6 @@
         document.getElementById('loader').style.display = 'none';
         
         if (resultado && resultado.success) {
-          // 🔥 USA O PIX REAL GERADO PELO APPS SCRIPT
           const pixCode = resultado.pixCode;
           
           document.getElementById('displayValor').innerText = resultado.valor;
@@ -1134,7 +1014,6 @@
           window.pixCodeAtual = pixCode;
           window.paymentIdAtual = resultado.paymentId;
 
-          // 🔥 GERA O QR CODE COM O PIX REAL
           document.getElementById('qrImage').src =
             "https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=" +
             encodeURIComponent(pixCode);
@@ -1159,7 +1038,6 @@
         delete window[callbackName];
       };
 
-      // 🔥 FAZ A REQUISIÇÃO JSONP COM OS DADOS
       const params = new URLSearchParams({
         action: 'registrarVenda',
         data: dados.data,
@@ -1214,12 +1092,6 @@
       function executarVerificacao() {
         if (!loopAtivo || vendaConfirmada) return;
         const url = getScriptUrl();
-        if (!url) {
-          if (loopAtivo && !vendaConfirmada && tempoDecorrido < maxTempo) {
-            timerVerificacao = setTimeout(executarVerificacao, 5000);
-          }
-          return;
-        }
 
         const callbackName = 'verify_' + Date.now();
         window[callbackName] = function(resultado) {
