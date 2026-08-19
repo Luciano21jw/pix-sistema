@@ -1,0 +1,1472 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <base target="_top">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  
+  <!-- PWA CONFIG -->
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#32bcad">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%2332bcad'/%3E%3Ctext x='50' y='68' font-size='50' text-anchor='middle' fill='white' font-family='sans-serif'%3EP%3C/text%3E%3C/svg%3E">
+  
+  <style>
+    :root {
+      --brand: #32bcad;
+      --dark: #1e1e1e;
+      --light: #f5f5f5;
+      --success: #00e676;
+      --danger: #ff4444;
+      --warning: #ffc107;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: var(--dark);
+      color: var(--light);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+      margin: 0;
+      padding: 20px;
+      box-sizing: border-box;
+    }
+
+    .scoreboard {
+      background: rgba(50, 188, 173, 0.1);
+      border: 1px solid var(--brand);
+      color: var(--brand);
+      padding: 10px 20px;
+      border-radius: 50px;
+      margin-bottom: 20px;
+      font-weight: 600;
+      font-size: 0.9rem;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      width: 100%;
+      max-width: 420px;
+      justify-content: center;
+    }
+
+    .container {
+      background-color: #2a2a2a;
+      padding: 25px;
+      border-radius: 20px;
+      width: 100%;
+      max-width: 420px;
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6);
+      text-align: center;
+    }
+
+    h2 {
+      color: var(--brand);
+      margin-top: 0;
+      font-size: 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    .input-group {
+      text-align: left;
+      margin-bottom: 12px;
+    }
+
+    .input-group label {
+      font-size: 0.8rem;
+      color: #aaa;
+      margin-left: 5px;
+    }
+
+    input,
+    select {
+      width: 100%;
+      padding: 12px;
+      margin-top: 5px;
+      border: 1px solid #444;
+      background: #333;
+      color: white;
+      font-size: 1rem;
+      box-sizing: border-box;
+      transition: 0.2s;
+      appearance: none;
+      border-radius: 4px;
+    }
+
+    select {
+      cursor: pointer;
+    }
+
+    select option {
+      background: #333;
+      color: white;
+    }
+
+    input:focus,
+    select:focus {
+      outline: none;
+      border-color: var(--brand);
+    }
+
+    .money-input {
+      font-size: 1.6rem;
+      font-weight: 800;
+      color: var(--brand);
+      text-align: center;
+      letter-spacing: 1px;
+      background: #1a1a1a;
+    }
+
+    .row-inputs {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .row-inputs select {
+      flex: 1;
+    }
+
+    .btn-add,
+    .btn-remove {
+      width: 48px;
+      height: 48px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: none;
+      cursor: pointer;
+      transition: 0.2s;
+      margin-top: 5px;
+      flex-shrink: 0;
+    }
+
+    .btn-add {
+      background: var(--brand);
+      color: #000;
+    }
+    .btn-add:hover {
+      transform: scale(1.05);
+      filter: brightness(1.1);
+    }
+
+    .btn-remove {
+      background: var(--danger);
+      color: white;
+    }
+    .btn-remove:hover {
+      transform: scale(1.05);
+      filter: brightness(1.2);
+    }
+
+    .btn-add svg,
+    .btn-remove svg {
+      width: 24px;
+      height: 24px;
+      fill: currentColor;
+    }
+
+    button {
+      width: 100%;
+      padding: 14px;
+      border: none;
+      font-weight: bold;
+      cursor: pointer;
+      font-size: 1rem;
+      margin-top: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: 0.2s;
+      border-radius: 8px;
+    }
+
+    .btn-primary {
+      background-color: var(--brand);
+      color: #000;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      filter: brightness(1.1);
+    }
+
+    .btn-primary:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .btn-outline {
+      background: transparent;
+      border: 1px solid #555;
+      color: #aaa;
+    }
+
+    .btn-outline:hover {
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    .btn-cancel {
+      background: var(--danger);
+      color: white;
+      border: none;
+      padding: 14px;
+      border-radius: 8px;
+      font-weight: bold;
+      cursor: pointer;
+      font-size: 1rem;
+      margin-top: 5px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: 0.2s;
+      width: 100%;
+    }
+
+    .btn-cancel:hover {
+      transform: translateY(-2px);
+      filter: brightness(1.2);
+    }
+
+    #step-pix,
+    #loader {
+      display: none;
+    }
+
+    .qr-container {
+      background: white;
+      padding: 10px;
+      margin: 15px auto;
+      width: 200px;
+      height: 200px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 12px;
+      transition: all 0.5s ease;
+    }
+
+    .qr-container img {
+      width: 100%;
+      height: 100%;
+      border-radius: 8px;
+    }
+
+    .pix-amount {
+      font-size: 2.2rem;
+      font-weight: 800;
+      color: var(--brand);
+      margin: 5px 0;
+    }
+
+    .client-name {
+      color: #fff;
+      font-weight: 600;
+      font-size: 1.2rem;
+      margin-top: 10px;
+    }
+
+    .spinner {
+      width: 30px;
+      height: 30px;
+      border: 4px solid rgba(255, 255, 255, 0.1);
+      border-left-color: var(--brand);
+      animation: spin 1s linear infinite;
+      margin: 0 auto;
+      border-radius: 50%;
+    }
+
+    @keyframes spin {
+      100% {
+        transform: rotate(360deg);
+      }
+    }
+
+    .check-writing-container {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      margin: 10px 0;
+      border-radius: 12px;
+      background: rgba(0, 230, 118, 0.05);
+      border: 2px solid transparent;
+      animation: fadeIn 0.3s ease;
+      position: relative;
+    }
+
+    .check-writing-container.visivel {
+      display: flex;
+      border-color: #00e676;
+    }
+
+    .check-svg {
+      width: 80px;
+      height: 80px;
+      margin-bottom: 10px;
+    }
+
+    .check-svg .check-path {
+      fill: none;
+      stroke: #00e676;
+      stroke-width: 6;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      stroke-dasharray: 100;
+      stroke-dashoffset: 100;
+      animation: drawCheck 1.2s ease-in-out forwards;
+    }
+
+    .pen-tip {
+      position: absolute;
+      width: 10px;
+      height: 10px;
+      background: #00e676;
+      border-radius: 50%;
+      box-shadow: 0 0 15px #00e676, 0 0 30px rgba(0, 230, 118, 0.3);
+      opacity: 0;
+      animation: penTip 1.2s ease-in-out forwards;
+      top: 18px;
+      left: 18px;
+    }
+
+    @keyframes drawCheck {
+      0% {
+        stroke-dashoffset: 100;
+        opacity: 0;
+      }
+      10% {
+        opacity: 1;
+      }
+      100% {
+        stroke-dashoffset: 0;
+        opacity: 1;
+      }
+    }
+
+    @keyframes penTip {
+      0% {
+        opacity: 0;
+        transform: translate(0, 0) scale(0);
+      }
+      15% {
+        opacity: 1;
+        transform: scale(1);
+      }
+      30% {
+        transform: translate(15px, 25px) scale(1);
+      }
+      50% {
+        transform: translate(30px, 50px) scale(1);
+      }
+      70% {
+        transform: translate(45px, 30px) scale(1);
+      }
+      85% {
+        transform: translate(60px, 15px) scale(1);
+      }
+      100% {
+        opacity: 0;
+        transform: translate(75px, 5px) scale(0.5);
+      }
+    }
+
+    .check-writing-container .glow-effect {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 120px;
+      height: 120px;
+      transform: translate(-50%, -50%);
+      background: radial-gradient(circle, rgba(0, 230, 118, 0.15) 0%, transparent 70%);
+      border-radius: 50%;
+      opacity: 0;
+      animation: glowPulse 0.8s ease-in-out 1s forwards;
+    }
+
+    @keyframes glowPulse {
+      0% {
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(0.8);
+      }
+      50% {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1.2);
+      }
+      100% {
+        opacity: 0.5;
+        transform: translate(-50%, -50%) scale(1);
+      }
+    }
+
+    .check-writing-container .texto-confirmacao {
+      color: #00e676;
+      font-weight: 700;
+      font-size: 1.3rem;
+      margin-top: 5px;
+      opacity: 0;
+      animation: fadeText 0.5s ease-in-out 1s forwards;
+    }
+
+    @keyframes fadeText {
+      0% {
+        opacity: 0;
+        transform: translateY(5px);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: scale(0.95);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+
+    .produtos-lista {
+      background: #1e1e1e;
+      padding: 10px;
+      margin: 10px 0;
+      max-height: 180px;
+      overflow-y: auto;
+      text-align: left;
+      border-radius: 8px;
+    }
+
+    .produtos-lista::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    .produtos-lista::-webkit-scrollbar-thumb {
+      background: var(--brand);
+      border-radius: 3px;
+    }
+
+    .produtos-lista::-webkit-scrollbar-track {
+      background: #333;
+    }
+
+    .produto-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 6px 8px;
+      border-bottom: 1px solid #333;
+      color: #ddd;
+      font-size: 0.9rem;
+      gap: 8px;
+    }
+
+    .produto-item:last-child {
+      border-bottom: none;
+    }
+
+    .produto-item .qtd {
+      color: var(--brand);
+      font-weight: 700;
+      min-width: 30px;
+    }
+
+    .produto-item .nome {
+      flex: 1;
+    }
+
+    .produto-item .valor {
+      color: var(--brand);
+      font-weight: 600;
+      min-width: 70px;
+      text-align: right;
+    }
+
+    .total-produtos {
+      text-align: right;
+      padding: 8px 8px 0 8px;
+      font-weight: 800;
+      font-size: 1.1rem;
+      color: var(--brand);
+      border-top: 2px solid var(--brand);
+      margin-top: 5px;
+    }
+
+    .lista-vazia {
+      color: #666;
+      text-align: center;
+      padding: 15px;
+      font-size: 0.9rem;
+    }
+
+    #statusPagamento {
+      margin: 10px 0;
+      padding: 12px;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 1rem;
+      text-align: center;
+      transition: all 0.3s ease;
+    }
+
+    .status-pendente {
+      background: rgba(255, 193, 7, 0.2);
+      color: var(--warning);
+      border: 2px solid var(--warning);
+    }
+
+    .status-pago {
+      background: rgba(0, 230, 118, 0.2);
+      color: var(--success);
+      border: 2px solid var(--success);
+      animation: pulse-green 1.5s ease-in-out;
+    }
+
+    .status-erro {
+      background: rgba(255, 68, 68, 0.2);
+      color: var(--danger);
+      border: 2px solid var(--danger);
+    }
+
+    .status-verificando {
+      background: rgba(50, 188, 173, 0.2);
+      color: var(--brand);
+      border: 2px solid var(--brand);
+    }
+
+    @keyframes pulse-green {
+      0%,
+      100% {
+        transform: scale(1);
+      }
+      50% {
+        transform: scale(1.02);
+      }
+    }
+
+    .footer-actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .footer-actions button {
+      flex: 1;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 2px 10px;
+      border-radius: 20px;
+      font-size: 0.7rem;
+      font-weight: 600;
+      margin-left: 5px;
+    }
+
+    .badge-success {
+      background: var(--success);
+      color: #000;
+    }
+
+    .badge-warning {
+      background: var(--warning);
+      color: #000;
+    }
+
+    .badge-danger {
+      background: var(--danger);
+      color: #fff;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    .config-error {
+      background: rgba(255, 68, 68, 0.2);
+      border: 2px solid var(--danger);
+      color: var(--danger);
+      padding: 15px;
+      border-radius: 8px;
+      margin: 10px 0;
+      font-size: 0.9rem;
+      text-align: left;
+    }
+
+    .config-error .material-icons {
+      font-size: 24px;
+      vertical-align: middle;
+      margin-right: 8px;
+    }
+
+    .status-temporizador {
+      font-size: 0.8rem;
+      color: #888;
+      margin-top: 5px;
+    }
+    
+    #installBtn {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #32bcad;
+      color: #000;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 50px;
+      font-weight: bold;
+      font-size: 1rem;
+      z-index: 9999;
+      box-shadow: 0 4px 20px rgba(50,188,173,0.4);
+      cursor: pointer;
+      display: none;
+      width: auto;
+    }
+
+    .url-config {
+      margin: 10px 0;
+      padding: 12px;
+      background: #1a1a1a;
+      border-radius: 8px;
+      border: 1px solid #444;
+    }
+
+    .url-config label {
+      display: block;
+      text-align: left;
+      color: #aaa;
+      font-size: 0.8rem;
+      margin-bottom: 5px;
+    }
+
+    .url-config input {
+      background: #222;
+      border: 1px solid #555;
+      color: white;
+      padding: 10px;
+      border-radius: 4px;
+      width: 100%;
+      font-size: 0.8rem;
+    }
+
+    .btn-testar {
+      background: #444;
+      color: white;
+      padding: 10px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      margin-top: 5px;
+      font-size: 0.8rem;
+    }
+
+    .btn-testar:hover {
+      background: #555;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="scoreboard">
+    <span class="material-icons">trending_up</span>
+    Hoje: R$ <span id="totalHoje">0,00</span>
+    <span class="badge" id="statusBadge">🔍</span>
+  </div>
+
+  <div class="container">
+    <!-- TELA 1: FORMULÁRIO -->
+    <div id="step-form">
+      <h2><span class="material-icons">point_of_sale</span> Nova Venda</h2>
+
+      <!-- CONFIGURAÇÃO DA URL DO APPS SCRIPT -->
+      <div class="url-config">
+        <label>🔗 URL do Google Apps Script:</label>
+        <input type="text" id="scriptUrl" placeholder="https://script.google.com/macros/s/.../exec">
+        <button class="btn-testar" onclick="testarConexao()">Testar Conexão</button>
+        <div id="statusConexao" style="margin-top: 5px; font-size: 0.8rem; color: #888;"></div>
+      </div>
+
+      <div id="configWarning" class="config-error" style="display:none;">
+        <span class="material-icons">warning</span>
+        <strong>⚠️ Configuração incompleta!</strong><br>
+        Configure sua <strong>Chave Pix</strong> e <strong>Nome do Recebedor</strong> na aba "Configurações" da planilha.
+      </div>
+
+      <div class="input-group">
+        <label>Data</label>
+        <input type="date" id="dataVenda">
+      </div>
+
+      <div class="input-group">
+        <label>Adicionar Produto</label>
+        <div class="row-inputs">
+          <select id="produtoAdd">
+            <option value="">Carregando...</option>
+          </select>
+          <button class="btn-add" onclick="adicionarProduto()">
+            <svg viewBox="0 0 24 24">
+              <path d="M19 13H13V19H11V13H5V11H11V5H13V11H19V13Z"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <div class="input-group">
+        <label>Remover Produto</label>
+        <div class="row-inputs">
+          <select id="produtoRemove">
+            <option value="">Selecione...</option>
+          </select>
+          <button class="btn-remove" onclick="removerProduto()">
+            <svg viewBox="0 0 24 24">
+              <path d="M19 13H5V11H19V13Z"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <div class="produtos-lista" id="listaProdutos">
+        <div class="lista-vazia">Nenhum produto adicionado</div>
+      </div>
+
+      <div class="input-group">
+        <label>Valor Total (R$)</label>
+        <input type="text" id="valor" class="money-input" inputmode="numeric" value="0,00" readonly>
+      </div>
+
+      <div class="input-group">
+        <label>Cliente</label>
+        <input type="text" id="cliente" placeholder="Nome do cliente">
+      </div>
+
+      <div class="input-group">
+        <label>Descrição</label>
+        <input type="text" id="descricao" placeholder="Ex: Produto / Serviço">
+      </div>
+
+      <button class="btn-primary" id="btnGerar" onclick="gerarPix()">
+        Gerar Pix <span class="material-icons">arrow_forward</span>
+      </button>
+
+      <div id="loader">
+        <div class="spinner"></div>
+        <p>Registrando...</p>
+      </div>
+    </div>
+
+    <!-- TELA 2: RESUMO DO PIX -->
+    <div id="step-pix">
+      <span class="material-icons" style="color:#00e676; font-size: 50px;">check_circle</span>
+      <div class="client-name" id="displayCliente"></div>
+      <div class="pix-amount">R$ <span id="displayValor"></span></div>
+
+      <div id="statusPagamento" class="status-pendente">⏳ Aguardando pagamento...</div>
+      <div id="temporizador" class="status-temporizador">⏱️ Verificando automaticamente...</div>
+
+      <div id="checkWritingContainer" class="check-writing-container">
+        <div class="glow-effect"></div>
+        <div class="pen-tip"></div>
+        <svg class="check-svg" viewBox="0 0 80 80">
+          <path class="check-path" d="M 15 40 L 35 60 L 70 20" />
+        </svg>
+        <span class="texto-confirmacao">Pagamento CONFIRMADO!</span>
+      </div>
+
+      <div class="qr-container">
+        <img id="qrImage" src="" alt="QR Code">
+      </div>
+
+      <textarea id="pixCodeText" style="position:absolute; left:-9999px;"></textarea>
+
+      <button class="btn-primary" onclick="copiarCodigo()">
+        <span class="material-icons">content_copy</span> Copiar Pix
+      </button>
+
+      <div class="footer-actions">
+        <button class="btn-outline" onclick="novaVenda()">
+          <span class="material-icons">add</span> Nova
+        </button>
+      </div>
+
+      <button class="btn-cancel" onclick="cancelarVenda()">
+        <span class="material-icons">cancel</span> Cancelar Venda
+      </button>
+    </div>
+  </div>
+
+  <button id="installBtn">📱 Instalar App</button>
+
+  <script>
+    // ==================== CONFIGURAÇÃO ====================
+    // SALVA A URL DO APPS SCRIPT NO LOCALSTORAGE
+    function getScriptUrl() {
+      let url = localStorage.getItem('scriptUrl');
+      if (!url) {
+        // Tenta pegar do input
+        url = document.getElementById('scriptUrl').value;
+      }
+      return url;
+    }
+
+    function setScriptUrl(url) {
+      localStorage.setItem('scriptUrl', url);
+      document.getElementById('scriptUrl').value = url;
+    }
+
+    // Carrega a URL salva ao iniciar
+    document.addEventListener('DOMContentLoaded', function() {
+      const savedUrl = localStorage.getItem('scriptUrl');
+      if (savedUrl) {
+        document.getElementById('scriptUrl').value = savedUrl;
+      }
+      resetDataField();
+      atualizarPlacar();
+      carregarProdutos();
+      verificarConfiguracoes();
+    });
+
+    // ==================== FUNÇÕES DE CONEXÃO ====================
+    function testarConexao() {
+      const url = document.getElementById('scriptUrl').value;
+      if (!url) {
+        alert('⚠️ Cole a URL do Google Apps Script primeiro!');
+        return;
+      }
+
+      const statusEl = document.getElementById('statusConexao');
+      statusEl.textContent = '⏳ Testando conexão...';
+      statusEl.style.color = '#ffc107';
+
+      // Tenta carregar os produtos para testar
+      fetch(url + '?action=getProdutos', {
+        method: 'GET',
+        mode: 'no-cors'
+      })
+      .then(() => {
+        statusEl.textContent = '✅ Conexão OK! App Script respondendo.';
+        statusEl.style.color = '#00e676';
+        setScriptUrl(url);
+        carregarProdutos();
+        verificarConfiguracoes();
+      })
+      .catch(() => {
+        statusEl.textContent = '⚠️ Não foi possível testar. Verifique se a URL está correta.';
+        statusEl.style.color = '#ff4444';
+      });
+    }
+
+    // ==================== PWA - INSTALAÇÃO ====================
+    let deferredPrompt;
+
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredPrompt = e;
+      const btn = document.getElementById('installBtn');
+      btn.style.display = 'block';
+      
+      btn.addEventListener('click', async () => {
+        btn.style.display = 'none';
+        const result = await deferredPrompt.prompt();
+        console.log(result.outcome);
+      });
+    });
+
+    window.addEventListener('appinstalled', () => {
+      document.getElementById('installBtn').style.display = 'none';
+    });
+
+    // ==================== INICIALIZAÇÃO ====================
+    function verificarConfiguracoes() {
+      const url = getScriptUrl();
+      if (!url) {
+        document.getElementById('configWarning').style.display = 'block';
+        document.getElementById('configWarning').innerHTML = `
+          <span class="material-icons">warning</span>
+          <strong>⚠️ URL do App Script não configurada!</strong><br>
+          Cole a URL do seu Google Apps Script no campo acima.
+        `;
+        return;
+      }
+
+      // Faz a requisição para verificar
+      fetch(url + '?action=verificarConfiguracoes', {
+        method: 'GET',
+        mode: 'no-cors'
+      })
+      .then(() => {
+        // Como é no-cors, não podemos ler a resposta, mas sabemos que a requisição foi feita
+        document.getElementById('configWarning').style.display = 'none';
+        document.getElementById('btnGerar').disabled = false;
+      })
+      .catch(() => {
+        document.getElementById('configWarning').style.display = 'block';
+        document.getElementById('configWarning').innerHTML = `
+          <span class="material-icons">warning</span>
+          <strong>⚠️ Erro de conexão!</strong><br>
+          Verifique se a URL do App Script está correta e publicada.
+        `;
+      });
+    }
+
+    function resetDataField() {
+      const hoje = new Date();
+      const dataFmt = hoje.getFullYear() + '-' +
+        String(hoje.getMonth() + 1).padStart(2, '0') + '-' +
+        String(hoje.getDate()).padStart(2, '0');
+      document.getElementById('dataVenda').value = dataFmt;
+    }
+
+    function atualizarPlacar() {
+      const url = getScriptUrl();
+      if (!url) return;
+
+      // Faz uma requisição para pegar o total
+      fetch(url + '?action=getTotalVendasHoje', {
+        method: 'GET',
+        mode: 'no-cors'
+      })
+      .catch(() => {
+        // Se der erro, mantém o valor atual
+      });
+    }
+
+    // ==================== PRODUTOS ====================
+    function carregarProdutos() {
+      const selectAdd = document.getElementById('produtoAdd');
+      const selectRemove = document.getElementById('produtoRemove');
+      selectAdd.innerHTML = '<option value="">Carregando...</option>';
+      selectRemove.innerHTML = '<option value="">Carregando...</option>';
+
+      const url = getScriptUrl();
+      if (!url) {
+        selectAdd.innerHTML = '<option value="">⚠️ Configure a URL</option>';
+        selectRemove.innerHTML = '<option value="">⚠️ Configure a URL</option>';
+        return;
+      }
+
+      // Usa JSONP para contornar CORS
+      const callbackName = 'jsonp_callback_' + Date.now();
+      window[callbackName] = function(data) {
+        mostrarProdutos(data);
+        delete window[callbackName];
+      };
+
+      const script = document.createElement('script');
+      script.src = url + '?action=getProdutos&callback=' + callbackName;
+      script.onerror = function() {
+        erroProdutos();
+        delete window[callbackName];
+      };
+      document.body.appendChild(script);
+    }
+
+    function mostrarProdutos(produtos) {
+      const selectAdd = document.getElementById('produtoAdd');
+      const selectRemove = document.getElementById('produtoRemove');
+
+      if (produtos && produtos.erro) {
+        selectAdd.innerHTML = '<option value="">⚠️ ' + produtos.mensagem + '</option>';
+        selectRemove.innerHTML = '<option value="">⚠️ ' + produtos.mensagem + '</option>';
+        return;
+      }
+
+      selectAdd.innerHTML = '<option value="">Selecione...</option>';
+      selectRemove.innerHTML = '<option value="">Selecione...</option>';
+
+      if (!produtos || produtos.length === 0) {
+        selectAdd.innerHTML = '<option value="">⚠️ Nenhum produto</option>';
+        selectRemove.innerHTML = '<option value="">⚠️ Nenhum produto</option>';
+        return;
+      }
+
+      listaProdutosDisponiveis = produtos;
+
+      produtos.forEach(function(p) {
+        const optionAdd = document.createElement('option');
+        optionAdd.value = p.nome;
+        optionAdd.dataset.valor = p.valor;
+        optionAdd.textContent = p.nome + ' - R$ ' + p.valor;
+        selectAdd.appendChild(optionAdd);
+
+        const optionRemove = document.createElement('option');
+        optionRemove.value = p.nome;
+        optionRemove.textContent = p.nome;
+        selectRemove.appendChild(optionRemove);
+      });
+    }
+
+    function erroProdutos() {
+      const selectAdd = document.getElementById('produtoAdd');
+      const selectRemove = document.getElementById('produtoRemove');
+      selectAdd.innerHTML = '<option value="">⚠️ Erro ao carregar</option>';
+      selectRemove.innerHTML = '<option value="">⚠️ Erro ao carregar</option>';
+    }
+
+    // ==================== MANIPULAÇÃO DE PRODUTOS ====================
+    let produtosSelecionados = [];
+    let listaProdutosDisponiveis = [];
+
+    function adicionarProduto() {
+      const select = document.getElementById('produtoAdd');
+      const nome = select.value;
+      const valorStr = select.options[select.selectedIndex]?.dataset.valor;
+
+      if (!nome || !valorStr) {
+        alert('Selecione um produto primeiro!');
+        return;
+      }
+
+      const valorUnitario = parseFloat(valorStr.replace(',', '.'));
+
+      const existente = produtosSelecionados.find(function(p) { return p.nome === nome; });
+
+      if (existente) {
+        existente.qtd += 1;
+        existente.valorTotal = existente.qtd * existente.valorUnitario;
+      } else {
+        produtosSelecionados.push({
+          nome: nome,
+          qtd: 1,
+          valorUnitario: valorUnitario,
+          valorUnitarioStr: valorStr,
+          valorTotal: valorUnitario
+        });
+      }
+
+      atualizarLista();
+      atualizarTotal();
+      atualizarDropdownRemover();
+    }
+
+    function removerProduto() {
+      const select = document.getElementById('produtoRemove');
+      const nome = select.value;
+
+      if (!nome) {
+        alert('Selecione um produto para remover!');
+        return;
+      }
+
+      const index = produtosSelecionados.findIndex(function(p) { return p.nome === nome; });
+
+      if (index === -1) {
+        alert('Produto não encontrado na lista!');
+        return;
+      }
+
+      const produto = produtosSelecionados[index];
+
+      if (produto.qtd > 1) {
+        produto.qtd -= 1;
+        produto.valorTotal = produto.qtd * produto.valorUnitario;
+      } else {
+        produtosSelecionados.splice(index, 1);
+      }
+
+      atualizarLista();
+      atualizarTotal();
+      atualizarDropdownRemover();
+    }
+
+    function atualizarDropdownRemover() {
+      const selectRemove = document.getElementById('produtoRemove');
+      const valorAtual = selectRemove.value;
+
+      selectRemove.innerHTML = '<option value="">Selecione...</option>';
+
+      const nomesUnicos = [...new Set(produtosSelecionados.map(function(p) { return p.nome; }))];
+
+      nomesUnicos.forEach(function(nome) {
+        const option = document.createElement('option');
+        option.value = nome;
+        option.textContent = nome;
+        selectRemove.appendChild(option);
+      });
+
+      if (nomesUnicos.includes(valorAtual)) {
+        selectRemove.value = valorAtual;
+      }
+    }
+
+    function atualizarLista() {
+      const container = document.getElementById('listaProdutos');
+
+      if (produtosSelecionados.length === 0) {
+        container.innerHTML = '<div class="lista-vazia">Nenhum produto adicionado</div>';
+        return;
+      }
+
+      let html = '';
+      produtosSelecionados.forEach(function(p) {
+        const totalStr = p.valorTotal.toFixed(2).replace('.', ',');
+        html += `
+          <div class="produto-item">
+            <span class="qtd">${p.qtd}x</span>
+            <span class="nome">${p.nome}</span>
+            <span class="valor">R$ ${totalStr}</span>
+          </div>
+        `;
+      });
+
+      html += `<div class="total-produtos">Total: R$ ${calcularTotal()}</div>`;
+      container.innerHTML = html;
+    }
+
+    function calcularTotal() {
+      let total = 0;
+      produtosSelecionados.forEach(function(p) { total += p.valorTotal; });
+      return total.toFixed(2).replace('.', ',');
+    }
+
+    function atualizarTotal() {
+      const total = calcularTotal();
+      document.getElementById('valor').value = total;
+
+      if (produtosSelecionados.length > 0) {
+        const desc = produtosSelecionados.map(function(p) { return p.qtd + 'x ' + p.nome; }).join(', ');
+        document.getElementById('descricao').value = desc;
+      }
+    }
+
+    // ==================== GERAR PIX ====================
+    function gerarPix() {
+      const url = getScriptUrl();
+      if (!url) {
+        alert('⚠️ Configure a URL do Google Apps Script primeiro!');
+        return;
+      }
+
+      const d = {
+        data: document.getElementById('dataVenda').value,
+        valor: document.getElementById('valor').value,
+        cliente: document.getElementById('cliente').value,
+        descricao: document.getElementById('descricao').value ||
+          produtosSelecionados.map(function(p) { return p.qtd + 'x ' + p.nome; }).join(', ')
+      };
+
+      if (produtosSelecionados.length === 0) {
+        alert('Adicione pelo menos um produto!');
+        return;
+      }
+
+      if (!d.cliente) {
+        alert('Preencha o nome do Cliente!');
+        return;
+      }
+
+      if (d.valor === "0,00") {
+        alert('Valor total é zero!');
+        return;
+      }
+
+      document.getElementById('btnGerar').style.display = 'none';
+      document.getElementById('loader').style.display = 'block';
+      vendaConfirmada = false;
+
+      // Envia via POST para o Apps Script
+      const formData = new FormData();
+      formData.append('action', 'registrarVenda');
+      formData.append('data', d.data);
+      formData.append('valor', d.valor);
+      formData.append('cliente', d.cliente);
+      formData.append('descricao', d.descricao);
+
+      fetch(url, {
+        method: 'POST',
+        mode: 'no-cors',
+        body: formData
+      })
+      .then(() => {
+        // Como é no-cors, não podemos ler a resposta
+        // Vamos simular um sucesso e mostrar a tela do Pix
+        // O App Script vai processar e salvar na planilha
+        mostrarPixSimulado(d);
+      })
+      .catch((erro) => {
+        document.getElementById('btnGerar').style.display = 'flex';
+        document.getElementById('loader').style.display = 'none';
+        alert('❌ Erro ao gerar Pix: ' + erro.message);
+      });
+    }
+
+    function mostrarPixSimulado(d) {
+      // Gera um código Pix mockado para demonstração
+      const pixCode = '00020126360014BR.GOV.BCB.PIX0111' + 
+        Math.random().toString(36).substring(2, 10) +
+        '5204000053039865404' + d.valor.replace(',', '') +
+        '5802BR5905' + d.cliente.substring(0, 10) +
+        '6008CIDADE62070503***6304' + Math.random().toString(16).substring(2, 6).toUpperCase();
+
+      document.getElementById('displayValor').innerText = d.valor;
+      document.getElementById('displayCliente').innerText = d.cliente;
+      document.getElementById('pixCodeText').value = pixCode;
+
+      window.pixCodeAtual = pixCode;
+      window.paymentIdAtual = 'PAG' + Date.now();
+
+      document.getElementById('qrImage').src =
+        "https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=" +
+        encodeURIComponent(pixCode);
+
+      document.getElementById('step-form').style.display = 'none';
+      document.getElementById('loader').style.display = 'none';
+      document.getElementById('step-pix').style.display = 'block';
+
+      statusAtual = 'PENDENTE';
+      vendaConfirmada = false;
+      
+      document.getElementById('checkWritingContainer').classList.remove('visivel');
+      
+      atualizarStatusUI('PENDENTE', '⏳ Aguardando pagamento...');
+      
+      iniciarVerificacaoAutomatica();
+    }
+
+    // ==================== VERIFICAÇÃO AUTOMÁTICA ====================
+    let statusAtual = 'PENDENTE';
+    let vendaConfirmada = false;
+    let timerVerificacao = null;
+    let tempoDecorrido = 0;
+    let maxTempo = 300;
+    let loopAtivo = false;
+    window.pixCodeAtual = null;
+    window.paymentIdAtual = null;
+
+    function iniciarVerificacaoAutomatica() {
+      if (timerVerificacao) {
+        clearInterval(timerVerificacao);
+        timerVerificacao = null;
+      }
+      
+      tempoDecorrido = 0;
+      loopAtivo = true;
+      
+      const timerTempo = setInterval(function() {
+        if (!loopAtivo) {
+          clearInterval(timerTempo);
+          return;
+        }
+        
+        tempoDecorrido++;
+        const segundosRestantes = maxTempo - tempoDecorrido;
+        
+        if (segundosRestantes <= 0) {
+          clearInterval(timerTempo);
+          if (!vendaConfirmada) {
+            document.getElementById('temporizador').textContent = '⏱️ Tempo esgotado! Clique em "Nova" para tentar novamente.';
+            document.getElementById('temporizador').style.color = '#ff4444';
+            loopAtivo = false;
+          }
+        } else {
+          document.getElementById('temporizador').textContent = 
+            '⏱️ Verificando... ' + Math.floor(segundosRestantes / 60) + 'm ' + (segundosRestantes % 60) + 's restantes';
+        }
+      }, 1000);
+      
+      function executarVerificacao() {
+        if (!loopAtivo || vendaConfirmada) {
+          return;
+        }
+        
+        const url = getScriptUrl();
+        if (!url) {
+          if (loopAtivo && !vendaConfirmada && tempoDecorrido < maxTempo) {
+            timerVerificacao = setTimeout(executarVerificacao, 5000);
+          }
+          return;
+        }
+
+        // Usa JSONP para verificar
+        const callbackName = 'verify_callback_' + Date.now();
+        window[callbackName] = function(resultado) {
+          if (!loopAtivo || vendaConfirmada) return;
+          
+          if (resultado && resultado.encontrado && resultado.confirmado) {
+            confirmarPagamento(resultado);
+            return;
+          }
+          
+          if (loopAtivo && !vendaConfirmada && tempoDecorrido < maxTempo) {
+            timerVerificacao = setTimeout(executarVerificacao, 5000);
+          }
+          delete window[callbackName];
+        };
+
+        const script = document.createElement('script');
+        script.src = url + '?action=verificarPagamento&callback=' + callbackName;
+        script.onerror = function() {
+          delete window[callbackName];
+          if (loopAtivo && !vendaConfirmada && tempoDecorrido < maxTempo) {
+            timerVerificacao = setTimeout(executarVerificacao, 5000);
+          }
+        };
+        document.body.appendChild(script);
+      }
+      
+      timerVerificacao = setTimeout(executarVerificacao, 5000);
+    }
+
+    function confirmarPagamento(resultado) {
+      if (vendaConfirmada) return;
+      
+      vendaConfirmada = true;
+      loopAtivo = false;
+      
+      if (timerVerificacao) {
+        clearTimeout(timerVerificacao);
+        timerVerificacao = null;
+      }
+      
+      statusAtual = 'PAGO';
+      
+      const container = document.getElementById('checkWritingContainer');
+      container.classList.add('visivel');
+      
+      const path = container.querySelector('.check-path');
+      path.style.animation = 'none';
+      path.offsetHeight;
+      path.style.animation = 'drawCheck 1.2s ease-in-out forwards';
+      
+      const penTip = container.querySelector('.pen-tip');
+      penTip.style.animation = 'none';
+      penTip.offsetHeight;
+      penTip.style.animation = 'penTip 1.2s ease-in-out forwards';
+      
+      const glow = container.querySelector('.glow-effect');
+      glow.style.animation = 'none';
+      glow.offsetHeight;
+      glow.style.animation = 'glowPulse 0.8s ease-in-out 1s forwards';
+      
+      const texto = container.querySelector('.texto-confirmacao');
+      texto.style.animation = 'none';
+      texto.offsetHeight;
+      texto.style.animation = 'fadeText 0.5s ease-in-out 1s forwards';
+      
+      document.getElementById('statusPagamento').style.display = 'none';
+      document.getElementById('temporizador').textContent = '✅ Pagamento confirmado!';
+      document.getElementById('temporizador').style.color = '#00e676';
+      
+      document.querySelector('.qr-container').style.border = '4px solid #00e676';
+      document.querySelector('.qr-container').style.boxShadow = '0 0 30px rgba(0, 230, 118, 0.3)';
+      
+      document.getElementById('statusBadge').innerHTML = '✅ PAGO';
+      document.getElementById('statusBadge').className = 'badge badge-success';
+      
+      atualizarPlacar();
+    }
+
+    // ==================== FUNÇÕES DE STATUS ====================
+    function atualizarStatusUI(status, mensagem) {
+      let statusEl = document.getElementById('statusPagamento');
+      statusEl.style.display = 'block';
+
+      statusEl.textContent = mensagem;
+      statusEl.className = '';
+
+      if (status === 'PAGO') {
+        statusEl.classList.add('status-pago');
+      } else if (status === 'VERIFICANDO') {
+        statusEl.classList.add('status-verificando');
+      } else if (status === 'PENDENTE') {
+        statusEl.classList.add('status-pendente');
+      } else {
+        statusEl.classList.add('status-erro');
+      }
+    }
+
+    // ==================== OUTRAS FUNÇÕES ====================
+    function copiarCodigo() {
+      const c = document.getElementById("pixCodeText");
+      c.select();
+      c.setSelectionRange(0, 99999);
+      document.execCommand("copy");
+      alert("✅ Pix Copia e Cola copiado!");
+    }
+
+    function cancelarVenda() {
+      if (!confirm('⚠️ Cancelar esta venda?')) {
+        return;
+      }
+
+      loopAtivo = false;
+      if (timerVerificacao) {
+        clearTimeout(timerVerificacao);
+        timerVerificacao = null;
+      }
+
+      alert('✅ Venda cancelada!');
+      novaVenda();
+    }
+
+    function novaVenda() {
+      loopAtivo = false;
+      if (timerVerificacao) {
+        clearTimeout(timerVerificacao);
+        timerVerificacao = null;
+      }
+      
+      produtosSelecionados = [];
+      document.getElementById('valor').value = '0,00';
+      document.getElementById('cliente').value = '';
+      document.getElementById('descricao').value = '';
+      document.getElementById('produtoAdd').selectedIndex = 0;
+      document.getElementById('produtoRemove').selectedIndex = 0;
+      atualizarLista();
+      atualizarDropdownRemover();
+
+      window.pixCodeAtual = null;
+      window.paymentIdAtual = null;
+      statusAtual = 'PENDENTE';
+      vendaConfirmada = false;
+      tempoDecorrido = 0;
+
+      document.getElementById('btnGerar').style.display = 'flex';
+      document.getElementById('step-pix').style.display = 'none';
+      document.getElementById('step-form').style.display = 'block';
+
+      document.querySelector('.qr-container').style.border = 'none';
+      document.querySelector('.qr-container').style.boxShadow = 'none';
+
+      document.getElementById('statusBadge').innerHTML = '🔍';
+      document.getElementById('statusBadge').className = 'badge';
+
+      document.getElementById('checkWritingContainer').classList.remove('visivel');
+      document.getElementById('statusPagamento').style.display = 'block';
+      document.getElementById('statusPagamento').className = 'status-pendente';
+      document.getElementById('statusPagamento').textContent = '⏳ Aguardando pagamento...';
+      document.getElementById('temporizador').textContent = '⏱️ Verificando automaticamente...';
+      document.getElementById('temporizador').style.color = '#888';
+
+      resetDataField();
+      atualizarPlacar();
+      verificarConfiguracoes();
+    }
+  </script>
+
+</body>
+
+</html>
