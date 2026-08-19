@@ -1082,154 +1082,103 @@
       }
     }
 
-    // ==================== GERAR PIX ====================
-    // ==================== GERAR PIX (CORRIGIDO) ====================
-function gerarPix() {
-  const url = getScriptUrl();
-  if (!url) {
-    alert('⚠️ Configure a URL do Google Apps Script primeiro!');
-    return;
-  }
-
-  const dados = {
-    data: document.getElementById('dataVenda').value,
-    valor: document.getElementById('valor').value,
-    cliente: document.getElementById('cliente').value,
-    descricao: document.getElementById('descricao').value || 
-      produtosSelecionados.map(function(p) { return p.qtd + 'x ' + p.nome; }).join(', ')
-  };
-
-  if (produtosSelecionados.length === 0) {
-    alert('Adicione pelo menos um produto!');
-    return;
-  }
-
-  if (!dados.cliente) {
-    alert('Preencha o nome do Cliente!');
-    return;
-  }
-
-  if (dados.valor === "0,00") {
-    alert('Valor total é zero!');
-    return;
-  }
-
-  document.getElementById('btnGerar').style.display = 'none';
-  document.getElementById('loader').style.display = 'block';
-  vendaConfirmada = false;
-
-  // 🔥 USA JSONP PARA CHAMAR O APPS SCRIPT E RECEBER O PIX REAL
-  const callbackName = 'pix_callback_' + Date.now();
-  
-  window[callbackName] = function(resultado) {
-    console.log('📦 Resposta do Apps Script:', resultado);
-    document.getElementById('loader').style.display = 'none';
-    
-    if (resultado && resultado.success) {
-      // 🔥 USA O PIX REAL GERADO PELO APPS SCRIPT
-      const pixCode = resultado.pixCode;
-      
-      document.getElementById('displayValor').innerText = resultado.valor;
-      document.getElementById('displayCliente').innerText = resultado.cliente;
-      document.getElementById('pixCodeText').value = pixCode;
-      window.pixCodeAtual = pixCode;
-      window.paymentIdAtual = resultado.paymentId;
-
-      // 🔥 GERA O QR CODE COM O PIX REAL
-      document.getElementById('qrImage').src =
-        "https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=" +
-        encodeURIComponent(pixCode);
-
-      document.getElementById('step-form').style.display = 'none';
-      document.getElementById('step-pix').style.display = 'block';
-      document.getElementById('statusPagamento').className = 'status-pendente';
-      document.getElementById('statusPagamento').textContent = '⏳ Aguardando pagamento...';
-      document.getElementById('checkWritingContainer').classList.remove('visivel');
-
-      // Atualiza o placar
-      if (resultado.novoTotal) {
-        document.getElementById('totalHoje').innerText = resultado.novoTotal;
+    // ==================== GERAR PIX (COM PIX REAL) ====================
+    function gerarPix() {
+      const url = getScriptUrl();
+      if (!url) {
+        alert('⚠️ Configure a URL do Google Apps Script primeiro!');
+        return;
       }
 
-      iniciarVerificacaoAutomatica();
+      const dados = {
+        data: document.getElementById('dataVenda').value,
+        valor: document.getElementById('valor').value,
+        cliente: document.getElementById('cliente').value,
+        descricao: document.getElementById('descricao').value || 
+          produtosSelecionados.map(function(p) { return p.qtd + 'x ' + p.nome; }).join(', ')
+      };
+
+      if (produtosSelecionados.length === 0) {
+        alert('Adicione pelo menos um produto!');
+        return;
+      }
+
+      if (!dados.cliente) {
+        alert('Preencha o nome do Cliente!');
+        return;
+      }
+
+      if (dados.valor === "0,00") {
+        alert('Valor total é zero!');
+        return;
+      }
+
+      document.getElementById('btnGerar').style.display = 'none';
+      document.getElementById('loader').style.display = 'block';
+      vendaConfirmada = false;
+
+      // 🔥 CHAMA O APPS SCRIPT PARA GERAR O PIX REAL
+      const callbackName = 'pix_' + Date.now();
       
-    } else {
-      alert('❌ Erro ao gerar Pix: ' + (resultado?.erro || 'Erro desconhecido'));
-      document.getElementById('btnGerar').style.display = 'flex';
-    }
-    
-    delete window[callbackName];
-  };
-
-  // 🔥 FAZ A REQUISIÇÃO PARA O APPS SCRIPT COM OS DADOS
-  // Usamos JSONP para contornar CORS
-  const script = document.createElement('script');
-  // Passa os dados como parâmetros na URL
-  const params = new URLSearchParams({
-    action: 'registrarVenda',
-    data: dados.data,
-    valor: dados.valor,
-    cliente: dados.cliente,
-    descricao: dados.descricao,
-    callback: callbackName
-  });
-  
-  script.src = url + '?' + params.toString();
-  script.onerror = function() {
-    document.getElementById('loader').style.display = 'none';
-    document.getElementById('btnGerar').style.display = 'flex';
-    alert('❌ Erro de conexão com o Apps Script!');
-    delete window[callbackName];
-  };
-  
-  document.body.appendChild(script);
-}
-      // Cria iframe escondido
-      const iframe = document.createElement('iframe');
-      iframe.name = 'hidden_iframe';
-      iframe.style.display = 'none';
-      document.body.appendChild(iframe);
-
-      form.target = 'hidden_iframe';
-      document.body.appendChild(form);
-      form.submit();
-
-      // Simula sucesso após o POST
-      setTimeout(function() {
+      window[callbackName] = function(resultado) {
+        console.log('📦 Resposta do Apps Script:', resultado);
         document.getElementById('loader').style.display = 'none';
         
-        // Gera pix mockado
-        const pixCode = '00020126360014BR.GOV.BCB.PIX0111' + 
-          Math.random().toString(36).substring(2, 10) +
-          '5204000053039865404' + dados.valor.replace(',', '') +
-          '5802BR5905' + dados.cliente.substring(0, 10) +
-          '6008CIDADE62070503***6304' + Math.random().toString(16).substring(2, 6).toUpperCase();
+        if (resultado && resultado.success) {
+          // 🔥 USA O PIX REAL GERADO PELO APPS SCRIPT
+          const pixCode = resultado.pixCode;
+          
+          document.getElementById('displayValor').innerText = resultado.valor;
+          document.getElementById('displayCliente').innerText = resultado.cliente;
+          document.getElementById('pixCodeText').value = pixCode;
+          window.pixCodeAtual = pixCode;
+          window.paymentIdAtual = resultado.paymentId;
 
-        document.getElementById('displayValor').innerText = dados.valor;
-        document.getElementById('displayCliente').innerText = dados.cliente;
-        document.getElementById('pixCodeText').value = pixCode;
-        window.pixCodeAtual = pixCode;
-        window.paymentIdAtual = 'PAG' + Date.now();
+          // 🔥 GERA O QR CODE COM O PIX REAL
+          document.getElementById('qrImage').src =
+            "https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=" +
+            encodeURIComponent(pixCode);
 
-        document.getElementById('qrImage').src =
-          "https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=" +
-          encodeURIComponent(pixCode);
+          document.getElementById('step-form').style.display = 'none';
+          document.getElementById('step-pix').style.display = 'block';
+          document.getElementById('statusPagamento').className = 'status-pendente';
+          document.getElementById('statusPagamento').textContent = '⏳ Aguardando pagamento...';
+          document.getElementById('checkWritingContainer').classList.remove('visivel');
 
-        document.getElementById('step-form').style.display = 'none';
-        document.getElementById('step-pix').style.display = 'block';
-        document.getElementById('statusPagamento').className = 'status-pendente';
-        document.getElementById('statusPagamento').textContent = '⏳ Aguardando pagamento...';
-        document.getElementById('checkWritingContainer').classList.remove('visivel');
+          if (resultado.novoTotal) {
+            document.getElementById('totalHoje').innerText = resultado.novoTotal;
+          }
 
-        iniciarVerificacaoAutomatica();
+          iniciarVerificacaoAutomatica();
+          
+        } else {
+          alert('❌ Erro ao gerar Pix: ' + (resultado?.erro || 'Erro desconhecido'));
+          document.getElementById('btnGerar').style.display = 'flex';
+        }
+        
+        delete window[callbackName];
+      };
 
-        // Remove iframe e form
-        setTimeout(function() {
-          document.body.removeChild(iframe);
-          document.body.removeChild(form);
-        }, 1000);
-
-      }, 3000);
+      // 🔥 FAZ A REQUISIÇÃO JSONP COM OS DADOS
+      const params = new URLSearchParams({
+        action: 'registrarVenda',
+        data: dados.data,
+        valor: dados.valor,
+        cliente: dados.cliente,
+        descricao: dados.descricao,
+        callback: callbackName
+      });
+      
+      const script = document.createElement('script');
+      script.src = url + '?' + params.toString();
+      script.onerror = function() {
+        document.getElementById('loader').style.display = 'none';
+        document.getElementById('btnGerar').style.display = 'flex';
+        alert('❌ Erro de conexão com o Apps Script!');
+        delete window[callbackName];
+      };
+      
+      document.body.appendChild(script);
     }
 
     // ==================== VERIFICAÇÃO AUTOMÁTICA ====================
