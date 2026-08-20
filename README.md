@@ -1,6 +1,6 @@
 # Pix Sistema
 
-Sistema de vendas com Pix que detecta automaticamente emails do Nubank e confirma pagamentos.
+Sistema de vendas com Pix que detecta automaticamente emails do Nubank e confirma pagamentos .
 
 ## Como usar
 
