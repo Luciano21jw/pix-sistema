@@ -18,7 +18,7 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js" integrity="sha512-GsLlZN/3F2ErC5ifS5QtgpiJtWd43JWSuIgh7mbzZ8zBps+dvLusV+eNQATqgA/HdeKFVgA5v3S/cIrLF7QnIg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
   <style>
-    /* ===== RESET & VARIÁVEIS (mesmo código anterior) ===== */
+    /* ===== RESET & VARIÁVEIS ===== */
     * { margin: 0; padding: 0; box-sizing: border-box; }
     :root {
       --brand: #32bcad;
@@ -401,7 +401,7 @@
     }
     .pix-code-copy:hover { border-color: var(--brand); color: var(--text-primary); background: rgba(50,188,173,0.04); }
 
-    /* ===== NOVA LISTA DE PRODUTOS (estilo nota fiscal) ===== */
+    /* ===== PRODUTOS ESTILO NOTA FISCAL ===== */
     .produtos-nota {
       background: rgba(0,0,0,0.25);
       border-radius: var(--radius-sm);
@@ -457,11 +457,6 @@
       padding-top: 8px;
       border-top: 2px solid rgba(50,188,173,0.2);
       margin-top: 4px;
-    }
-
-    /* Esconde os botões no PDF (usaremos classe .no-print) */
-    .no-print {
-      /* essa classe será usada apenas para elementos que não devem aparecer no PDF */
     }
 
     .check-writing-container {
@@ -602,83 +597,6 @@
       flex-shrink: 0;
     }
     .whatsapp-field .btn-whatsapp-icon:hover { transform: scale(1.05); }
-
-    /* Área que será capturada para o PDF */
-    #pdf-content {
-      /* Será preenchida dinamicamente e escondida, mas mantida no DOM */
-      position: absolute;
-      left: -9999px;
-      top: 0;
-      width: 100%;
-      max-width: 600px;
-      background: #ffffff;
-      color: #1e1e1e;
-      padding: 30px;
-      border-radius: 12px;
-      font-family: 'Inter', Arial, sans-serif;
-      z-index: -1;
-    }
-    #pdf-content .pdf-header {
-      text-align: center;
-      border-bottom: 3px solid #32bcad;
-      padding-bottom: 16px;
-      margin-bottom: 16px;
-    }
-    #pdf-content .pdf-header h1 {
-      font-size: 26px;
-      font-weight: 800;
-      color: #32bcad;
-      margin: 0;
-    }
-    #pdf-content .pdf-header p {
-      font-size: 13px;
-      color: #666;
-      margin: 4px 0 0;
-    }
-    #pdf-content .pdf-info {
-      display: flex;
-      justify-content: space-between;
-      margin-bottom: 16px;
-    }
-    #pdf-content .pdf-info div p { margin: 4px 0; }
-    #pdf-content .pdf-info .valor-destaque {
-      font-size: 22px;
-      font-weight: 800;
-      color: #32bcad;
-    }
-    #pdf-content .pdf-produtos table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 14px;
-      margin: 12px 0;
-    }
-    #pdf-content .pdf-produtos th {
-      background: #e0e0e0;
-      padding: 8px;
-      text-align: left;
-    }
-    #pdf-content .pdf-produtos td {
-      padding: 6px 8px;
-      border-bottom: 1px solid #eee;
-    }
-    #pdf-content .pdf-produtos td:last-child { text-align: right; }
-    #pdf-content .pdf-total {
-      text-align: right;
-      font-weight: 800;
-      font-size: 18px;
-      color: #32bcad;
-      border-top: 2px solid #32bcad;
-      padding-top: 8px;
-      margin-top: 8px;
-    }
-    #pdf-content .pdf-footer {
-      text-align: center;
-      font-size: 12px;
-      color: #888;
-      border-top: 2px solid #32bcad;
-      padding-top: 16px;
-      margin-top: 16px;
-    }
   </style>
 </head>
 <body>
@@ -762,7 +680,7 @@
       </div>
     </div>
 
-    <!-- TELA 2: RESUMO PIX + PRODUTOS (estilo nota) + AÇÕES -->
+    <!-- TELA 2: RESUMO PIX + PRODUTOS + AÇÕES -->
     <div id="step-pix">
       <span class="material-icons-round" style="color:var(--success); font-size:52px;">check_circle</span>
       <div class="client-name" id="displayCliente"></div>
@@ -789,7 +707,7 @@
         📋 Clique para copiar o código Pix
       </div>
 
-      <!-- ===== NOVA SEÇÃO: PRODUTOS ESTILO NOTA FISCAL ===== -->
+      <!-- ===== PRODUTOS ESTILO NOTA FISCAL ===== -->
       <div id="produtosNota" class="produtos-nota">
         <div class="titulo"><span class="material-icons-round">receipt_long</span> Produtos</div>
         <div id="listaProdutosNota">
@@ -797,8 +715,8 @@
         </div>
       </div>
 
-      <!-- ===== AÇÕES: WHATSAPP E PDF (excluídas do PDF) ===== -->
-      <div class="no-print" style="margin-top:8px;">
+      <!-- ===== AÇÕES (excluídas do PDF) ===== -->
+      <div style="margin-top:8px;">
         <div class="input-group">
           <label><span class="material-icons-round">whatsapp</span> Número WhatsApp (com DDD)</label>
           <div class="whatsapp-field">
@@ -831,9 +749,6 @@
     </div>
   </div>
 
-  <!-- Elemento oculto para gerar o PDF (apenas o conteúdo do recibo) -->
-  <div id="pdf-content"></div>
-
   <!-- BOTÃO INSTALAR PWA -->
   <button id="installBtn">
     <span class="material-icons-round">install_mobile</span> Instalar App
@@ -844,7 +759,7 @@
     //  CONFIGURAÇÃO - APONTE PARA SEU APPS SCRIPT
     // ============================================================
     const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzgSMN74JrxceIXNx_JrTyRK7GaUAXHWPfov5M1PJcrJvztxFOz3dYh7k2iJdFKYNG92w/exec';
-    const DDI = '55'; // Fixo
+    const DDI = '55';
 
     function getScriptUrl() { return SCRIPT_URL; }
 
@@ -882,7 +797,6 @@
           document.getElementById('splash-screen').style.display = 'none';
         }, 600);
       }, 600);
-      // Pré-preenche o campo WhatsApp apenas com o número (DDI fixo no código)
       document.getElementById('whatsappNumber').value = '11999999999';
     });
 
@@ -1153,7 +1067,7 @@
           window.pixCodeAtual = pixCode;
           window.paymentIdAtual = resultado.paymentId;
 
-          // Guarda dados da venda para PDF/WhatsApp
+          // Guarda dados da venda
           window.dadosVenda = {
             valor: resultado.valor,
             cliente: nomeCliente,
@@ -1162,7 +1076,7 @@
             produtos: produtosSelecionados.map(p => ({ ...p }))
           };
 
-          // Atualiza a lista de produtos na nota fiscal
+          // Atualiza a lista de produtos na nota
           atualizarProdutosNota();
 
           document.getElementById('qrImage').src =
@@ -1378,7 +1292,7 @@
     }
 
     // ============================================================
-    //  ENVIAR COMPROVANTE VIA WHATSAPP (com DDI fixo 55)
+    //  ENVIAR COMPROVANTE VIA WHATSAPP (com DDI 55 fixo)
     // ============================================================
     function enviarWhatsApp() {
       const numero = document.getElementById('whatsappNumber').value.trim();
@@ -1386,7 +1300,6 @@
         alert('Por favor, informe o número do WhatsApp (apenas o número, sem o 55).');
         return;
       }
-      // Remove espaços, traços, parênteses
       const numLimpo = numero.replace(/\D/g, '');
       if (numLimpo.length < 10) {
         alert('Número inválido. Digite o DDD + número (ex: 11999999999).');
@@ -1423,7 +1336,7 @@
     }
 
     // ============================================================
-    //  GERAR PDF APENAS DO CONTEÚDO DO RECIBO (sem botões)
+    //  GERAR PDF (CORRIGIDO - CRIA ELEMENTO TEMPORÁRIO VISÍVEL)
     // ============================================================
     function gerarPDF() {
       const btn = document.getElementById('btnPDF');
@@ -1438,53 +1351,79 @@
         produtos: []
       };
 
-      // Constrói o conteúdo do PDF
-      const pdfDiv = document.getElementById('pdf-content');
-      pdfDiv.innerHTML = `
-        <div class="pdf-header">
-          <h1>🧾 RECIBO</h1>
-          <p>Comprovante de pagamento via Pix</p>
+      // Cria um elemento temporário para o PDF
+      const tempDiv = document.createElement('div');
+      tempDiv.style.cssText = `
+        position: fixed;
+        left: 0;
+        top: 0;
+        width: 100%;
+        max-width: 600px;
+        background: #ffffff;
+        color: #1e1e1e;
+        padding: 30px;
+        border-radius: 12px;
+        font-family: 'Inter', Arial, sans-serif;
+        z-index: -1;
+        opacity: 0;
+        pointer-events: none;
+      `;
+      tempDiv.innerHTML = `
+        <div style="text-align: center; border-bottom: 3px solid #32bcad; padding-bottom: 16px; margin-bottom: 16px;">
+          <h1 style="font-size: 26px; font-weight: 800; color: #32bcad; margin: 0;">🧾 RECIBO</h1>
+          <p style="font-size: 13px; color: #666; margin: 4px 0 0;">Comprovante de pagamento via Pix</p>
         </div>
-        <div class="pdf-info">
+        <div style="display: flex; justify-content: space-between; margin-bottom: 16px;">
           <div>
-            <p><strong>Data:</strong> ${dados.data || new Date().toLocaleDateString('pt-BR')}</p>
-            <p><strong>Cliente:</strong> ${dados.cliente || 'Não informado'}</p>
+            <p style="margin: 4px 0;"><strong>Data:</strong> ${dados.data || new Date().toLocaleDateString('pt-BR')}</p>
+            <p style="margin: 4px 0;"><strong>Cliente:</strong> ${dados.cliente || 'Não informado'}</p>
           </div>
           <div>
-            <p><strong>Valor:</strong> <span class="valor-destaque">R$ ${dados.valor || '0,00'}</span></p>
+            <p style="margin: 4px 0;"><strong>Valor:</strong> <span style="font-size: 22px; font-weight: 800; color: #32bcad;">R$ ${dados.valor || '0,00'}</span></p>
           </div>
         </div>
-        <div style="background:#f5f5f5; border-radius:8px; padding:12px; margin-bottom:16px;">
-          <p style="margin:0; font-weight:600;">📝 Descrição</p>
-          <p style="margin:4px 0 0; color:#333;">${dados.descricao || 'Venda via Pix'}</p>
+        <div style="background: #f5f5f5; border-radius: 8px; padding: 12px; margin-bottom: 16px;">
+          <p style="margin: 0; font-weight: 600;">📝 Descrição</p>
+          <p style="margin: 4px 0 0; color: #333;">${dados.descricao || 'Venda via Pix'}</p>
         </div>
-        <div class="pdf-produtos">
-          <p style="font-weight:600; margin-bottom:8px;">🛒 Produtos</p>
-          <table>
-            <thead><tr><th>Qtd</th><th>Produto</th><th>Valor</th></tr></thead>
+        <div style="margin-bottom: 16px;">
+          <p style="font-weight: 600; margin-bottom: 8px;">🛒 Produtos</p>
+          <table style="width: 100%; border-collapse: collapse; font-size: 14px;">
+            <thead>
+              <tr style="background: #e0e0e0;">
+                <th style="padding: 8px; text-align: left;">Qtd</th>
+                <th style="padding: 8px; text-align: left;">Produto</th>
+                <th style="padding: 8px; text-align: right;">Valor</th>
+              </tr>
+            </thead>
             <tbody>
               ${dados.produtos && dados.produtos.length > 0 ? dados.produtos.map(p => `
-                <tr>
-                  <td>${p.qtd}x</td>
-                  <td>${p.nome}</td>
-                  <td>R$ ${p.valorTotal.toFixed(2).replace('.', ',')}</td>
+                <tr style="border-bottom: 1px solid #eee;">
+                  <td style="padding: 6px 8px;">${p.qtd}x</td>
+                  <td style="padding: 6px 8px;">${p.nome}</td>
+                  <td style="padding: 6px 8px; text-align: right;">R$ ${p.valorTotal.toFixed(2).replace('.', ',')}</td>
                 </tr>
-              `).join('') : '<tr><td colspan="3" style="text-align:center; color:#999;">Nenhum produto</td></tr>'}
+              `).join('') : '<tr><td colspan="3" style="text-align:center; color:#999; padding:8px;">Nenhum produto</td></tr>'}
             </tbody>
           </table>
           ${dados.produtos && dados.produtos.length > 0 ? `
-            <div class="pdf-total">Total: R$ ${dados.produtos.reduce((acc, p) => acc + p.valorTotal, 0).toFixed(2).replace('.', ',')}</div>
+            <div style="text-align: right; font-weight: 800; font-size: 18px; color: #32bcad; border-top: 2px solid #32bcad; padding-top: 8px; margin-top: 8px;">
+              Total: R$ ${dados.produtos.reduce((acc, p) => acc + p.valorTotal, 0).toFixed(2).replace('.', ',')}
+            </div>
           ` : ''}
         </div>
-        <div class="pdf-footer">
+        <div style="text-align: center; font-size: 12px; color: #888; border-top: 2px solid #32bcad; padding-top: 16px; margin-top: 16px;">
           <p>✅ Pagamento confirmado via Pix - ${new Date().toLocaleString('pt-BR')}</p>
-          <p style="margin:4px 0 0;">Este documento é um comprovante de venda válido.</p>
+          <p style="margin: 4px 0 0;">Este documento é um comprovante de venda válido.</p>
         </div>
       `;
+
+      document.body.appendChild(tempDiv);
 
       // Verifica se html2pdf está disponível
       if (typeof html2pdf === 'undefined') {
         alert('A biblioteca de PDF não carregou. Tente novamente ou recarregue a página.');
+        document.body.removeChild(tempDiv);
         btn.disabled = false;
         btn.innerHTML = '<span class="material-icons-round">picture_as_pdf</span> Gerar Recibo PDF';
         return;
@@ -1498,16 +1437,16 @@
         jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
       };
 
-      html2pdf().set(opt).from(pdfDiv).save().then(() => {
+      html2pdf().set(opt).from(tempDiv).save().then(() => {
+        document.body.removeChild(tempDiv);
         btn.disabled = false;
         btn.innerHTML = '<span class="material-icons-round">picture_as_pdf</span> Gerar Recibo PDF';
-        pdfDiv.innerHTML = ''; // Limpa
       }).catch((err) => {
         console.error('Erro ao gerar PDF:', err);
         alert('Erro ao gerar o PDF. Verifique o console.');
+        document.body.removeChild(tempDiv);
         btn.disabled = false;
         btn.innerHTML = '<span class="material-icons-round">picture_as_pdf</span> Gerar Recibo PDF';
-        pdfDiv.innerHTML = '';
       });
     }
 
