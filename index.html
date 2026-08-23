@@ -12,16 +12,14 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%2332bcad'/%3E%3Ctext x='50' y='68' font-size='50' text-anchor='middle' fill='white' font-family='sans-serif'%3EP%3C/text%3E%3C/svg%3E">
 
-  <!-- Google Fonts + Material Icons -->
+  <!-- Google Fonts + Material Icons + html2canvas -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
-
-  <!-- jsPDF e autoTable -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
 
   <style>
-    /* ===== RESET & VARIÁVEIS (mantido) ===== */
+    /* ===== RESET & VARIÁVEIS ===== */
     * { margin: 0; padding: 0; box-sizing: border-box; }
     :root {
       --brand: #32bcad;
@@ -345,14 +343,33 @@
     }
     @keyframes spin { 100% { transform: rotate(360deg); } }
 
+    /* ===== TELA DE RESUMO CENTRALIZADA ===== */
     #step-pix {
       display: none;
       animation: fadeSlide 0.4s ease;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
     }
+
     @keyframes fadeSlide { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
-    .client-name { color: var(--text-primary); font-weight: 700; font-size: 1.2rem; margin-top: 4px; }
-    .pix-amount { font-size: 2.8rem; font-weight: 900; color: var(--brand-light); margin: 6px 0 12px; letter-spacing: -1px; }
+    #step-pix .client-name {
+      color: var(--text-primary);
+      font-weight: 700;
+      font-size: 1.2rem;
+      margin-top: 4px;
+    }
+    #step-pix .pix-amount {
+      font-size: 2.8rem;
+      font-weight: 900;
+      color: var(--brand-light);
+      margin: 6px 0 12px;
+      letter-spacing: -1px;
+    }
 
     #statusPagamento {
       padding: 14px;
@@ -362,6 +379,8 @@
       margin: 12px 0 6px;
       transition: var(--transition);
       text-align: center;
+      width: 100%;
+      max-width: 320px;
     }
     .status-pendente { background: rgba(255,193,7,0.08); color: var(--warning); border: 1px solid rgba(255,193,7,0.15); }
     .status-pago { background: rgba(0,230,118,0.08); color: var(--success); border: 1px solid rgba(0,230,118,0.2); animation: pulse-green 1.2s ease; }
@@ -369,7 +388,12 @@
     .status-verificando { background: rgba(50,188,173,0.06); color: var(--brand-light); border: 1px solid rgba(50,188,173,0.1); }
     @keyframes pulse-green { 0%,100% { transform: scale(1); } 50% { transform: scale(1.02); } }
 
-    .status-temporizador { font-size: 0.8rem; color: var(--text-muted); margin: 4px 0 12px; text-align: center; }
+    .status-temporizador {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      margin: 4px 0 12px;
+      text-align: center;
+    }
 
     .qr-container {
       background: #fff;
@@ -401,16 +425,20 @@
       transition: var(--transition);
       text-align: center;
       font-family: monospace;
+      max-width: 320px;
     }
     .pix-code-copy:hover { border-color: var(--brand); color: var(--text-primary); background: rgba(50,188,173,0.04); }
 
-    /* ===== PRODUTOS ESTILO NOTA FISCAL ===== */
+    /* Produtos nota fiscal */
     .produtos-nota {
       background: rgba(0,0,0,0.25);
       border-radius: var(--radius-sm);
       padding: 12px 14px;
       margin: 12px 0 16px;
       border: 1px solid rgba(255,255,255,0.06);
+      width: 100%;
+      max-width: 340px;
+      text-align: left;
     }
     .produtos-nota .titulo {
       font-weight: 700;
@@ -419,6 +447,7 @@
       margin-bottom: 8px;
       display: flex;
       align-items: center;
+      justify-content: center;
       gap: 6px;
     }
     .produtos-nota .titulo .material-icons-round { font-size: 18px; }
@@ -474,6 +503,7 @@
       border: 2px solid transparent;
       animation: fadeIn 0.4s ease;
       position: relative;
+      width: 100%;
     }
     .check-writing-container.visivel { display: flex; border-color: var(--success); }
     .check-svg { width: 72px; height: 72px; margin-bottom: 6px; }
@@ -519,30 +549,47 @@
     @keyframes fadeIn { from { opacity: 0; transform: scale(0.96); } to { opacity: 1; transform: scale(1); } }
     @keyframes fadeInItem { from { opacity: 0; transform: translateX(-8px); } to { opacity: 1; transform: translateX(0); } }
 
-    #installBtn {
-      position: fixed;
-      bottom: 24px;
-      left: 50%;
-      transform: translateX(-50%);
-      background: linear-gradient(135deg, var(--brand), var(--brand-dark));
+    /* ===== AÇÕES (centralizadas) ===== */
+    #acoesRecibo {
+      width: 100%;
+      max-width: 340px;
+      margin: 8px auto 0;
+    }
+
+    .whatsapp-field {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+    .whatsapp-field input { flex: 1; }
+    .whatsapp-field .btn-whatsapp-icon {
+      width: 52px;
+      height: 52px;
+      border-radius: var(--radius-sm);
+      background: #25D366;
       color: #fff;
       border: none;
-      padding: 14px 28px;
-      border-radius: 50px;
-      font-weight: 700;
-      font-size: 1rem;
-      z-index: 9999;
-      box-shadow: 0 8px 32px rgba(50,188,173,0.4);
+      display: flex;
+      align-items: center;
+      justify-content: center;
       cursor: pointer;
-      display: none;
-      width: auto;
       transition: var(--transition);
-      font-family: inherit;
-      letter-spacing: 0.3px;
+      margin-top: 6px;
+      flex-shrink: 0;
     }
-    #installBtn:hover { transform: translateX(-50%) translateY(-3px) scale(1.02); box-shadow: 0 12px 40px rgba(50,188,173,0.5); }
-    #installBtn .material-icons-round { font-size: 22px; }
+    .whatsapp-field .btn-whatsapp-icon:hover { transform: scale(1.05); }
 
+    /* Esconde elementos durante o print */
+    .hide-for-print {
+      display: none !important;
+    }
+
+    .footer-actions, .btn-cancel {
+      width: 100%;
+      max-width: 340px;
+    }
+
+    /* Responsivo */
     @media (max-width: 480px) {
       body { padding: 12px; }
       .container { padding: 18px; }
@@ -578,28 +625,29 @@
     @keyframes pulseLogo { 0%,100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.04); opacity: 0.7; } }
     #splash-screen .sub { color: var(--text-secondary); margin-top: 8px; font-size: 0.9rem; }
 
-    .whatsapp-field {
-      display: flex;
-      gap: 10px;
-      align-items: center;
-    }
-    .whatsapp-field input { flex: 1; }
-    .whatsapp-field .btn-whatsapp-icon {
-      width: 52px;
-      height: 52px;
-      border-radius: var(--radius-sm);
-      background: #25D366;
+    #installBtn {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: linear-gradient(135deg, var(--brand), var(--brand-dark));
       color: #fff;
       border: none;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      padding: 14px 28px;
+      border-radius: 50px;
+      font-weight: 700;
+      font-size: 1rem;
+      z-index: 9999;
+      box-shadow: 0 8px 32px rgba(50,188,173,0.4);
       cursor: pointer;
+      display: none;
+      width: auto;
       transition: var(--transition);
-      margin-top: 6px;
-      flex-shrink: 0;
+      font-family: inherit;
+      letter-spacing: 0.3px;
     }
-    .whatsapp-field .btn-whatsapp-icon:hover { transform: scale(1.05); }
+    #installBtn:hover { transform: translateX(-50%) translateY(-3px) scale(1.02); box-shadow: 0 12px 40px rgba(50,188,173,0.5); }
+    #installBtn .material-icons-round { font-size: 22px; }
   </style>
 </head>
 <body>
@@ -683,8 +731,8 @@
       </div>
     </div>
 
-    <!-- TELA 2: RESUMO PIX + PRODUTOS + AÇÕES -->
-    <div id="step-pix">
+    <!-- TELA 2: RESUMO PIX (CENTRALIZADO) -->
+    <div id="step-pix" style="display:none; text-align:center;">
       <span class="material-icons-round" style="color:var(--success); font-size:52px;">check_circle</span>
       <div class="client-name" id="displayCliente"></div>
       <div class="pix-amount">R$ <span id="displayValor"></span></div>
@@ -710,16 +758,16 @@
         📋 Clique para copiar o código Pix
       </div>
 
-      <!-- ===== PRODUTOS ESTILO NOTA FISCAL ===== -->
+      <!-- Produtos -->
       <div id="produtosNota" class="produtos-nota">
         <div class="titulo"><span class="material-icons-round">receipt_long</span> Produtos</div>
         <div id="listaProdutosNota">
-          <p style="color:var(--text-muted); font-size:0.8rem; padding:4px 0;">Nenhum produto registrado.</p>
+          <p style="color:var(--text-muted); font-size:0.8rem; padding:4px 0; text-align:center;">Nenhum produto registrado.</p>
         </div>
       </div>
 
-      <!-- ===== AÇÕES ===== -->
-      <div id="acoesRecibo" style="margin-top:8px;">
+      <!-- Ações (centralizadas) -->
+      <div id="acoesRecibo">
         <div class="input-group">
           <label><span class="material-icons-round">whatsapp</span> Número WhatsApp (com DDD)</label>
           <div class="whatsapp-field">
@@ -732,10 +780,10 @@
 
         <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-top: 4px;">
           <button class="btn-whatsapp" onclick="enviarWhatsApp()" style="flex:1;">
-            <span class="material-icons-round">whatsapp</span> Enviar Comprovante
+            <span class="material-icons-round">whatsapp</span> Enviar
           </button>
-          <button class="btn-pdf" onclick="gerarReciboNota()" style="flex:1;" id="btnPDF">
-            <span class="material-icons-round">picture_as_pdf</span> Gerar Recibo PDF
+          <button class="btn-pdf" onclick="gerarPDF()" style="flex:1;" id="btnPDF">
+            <span class="material-icons-round">picture_as_pdf</span> Recibo PDF
           </button>
         </div>
       </div>
@@ -1087,7 +1135,7 @@
             encodeURIComponent(pixCode);
 
           document.getElementById('step-form').style.display = 'none';
-          document.getElementById('step-pix').style.display = 'block';
+          document.getElementById('step-pix').style.display = 'flex';
           document.getElementById('statusPagamento').className = 'status-pendente';
           document.getElementById('statusPagamento').textContent = '⏳ Aguardando pagamento...';
           document.getElementById('checkWritingContainer').classList.remove('visivel');
@@ -1131,7 +1179,7 @@
       const container = document.getElementById('listaProdutosNota');
       const produtos = window.dadosVenda?.produtos || [];
       if (produtos.length === 0) {
-        container.innerHTML = '<p style="color:var(--text-muted); font-size:0.8rem; padding:4px 0;">Nenhum produto registrado.</p>';
+        container.innerHTML = '<p style="color:var(--text-muted); font-size:0.8rem; padding:4px 0; text-align:center;">Nenhum produto registrado.</p>';
         return;
       }
       let html = `<table>
@@ -1214,6 +1262,9 @@
       timerVerificacao = setTimeout(executarVerificacao, 5000);
     }
 
+    // ============================================================
+    //  CONFIRMAR PAGAMENTO + ÁUDIO
+    // ============================================================
     function confirmarPagamento(resultado) {
       if (vendaConfirmada) return;
       vendaConfirmada = true;
@@ -1221,6 +1272,7 @@
       if (timerVerificacao) { clearTimeout(timerVerificacao); timerVerificacao = null; }
       statusAtual = 'PAGO';
 
+      // Exibe animação do check
       const container = document.getElementById('checkWritingContainer');
       container.classList.add('visivel');
       const path = container.querySelector('.check-path');
@@ -1237,6 +1289,21 @@
       badge.innerHTML = '✅ PAGO';
       badge.className = 'badge success';
       atualizarPlacar();
+
+      // ===== ÁUDIO: "Pagamento confirmado!" via Speech Synthesis =====
+      try {
+        if ('speechSynthesis' in window) {
+          const utterance = new SpeechSynthesisUtterance('Pagamento confirmado!');
+          utterance.lang = 'pt-BR';
+          utterance.rate = 0.9;
+          utterance.pitch = 1.1;
+          window.speechSynthesis.speak(utterance);
+        } else {
+          console.warn('Speech Synthesis não suportado neste navegador.');
+        }
+      } catch (e) {
+        console.warn('Erro ao reproduzir áudio:', e);
+      }
     }
 
     // ============================================================
@@ -1339,120 +1406,68 @@
     }
 
     // ============================================================
-    //  GERAR RECIBO ESTILO NOTA FISCAL (PRETO E BRANCO)
+    //  GERAR PDF POR PRINT DA TELA (sem html2pdf)
     // ============================================================
-    function gerarReciboNota() {
+    function gerarPDF() {
       const btn = document.getElementById('btnPDF');
       btn.disabled = true;
-      btn.innerHTML = '<span class="material-icons-round">hourglass_top</span> Gerando...';
+      btn.innerHTML = '<span class="material-icons-round">hourglass_top</span> Capturando...';
 
-      // Pega os dados da venda
-      const dados = window.dadosVenda || {
-        valor: document.getElementById('displayValor').innerText,
-        cliente: document.getElementById('displayCliente').innerText,
-        descricao: 'Venda Pix',
-        data: new Date().toLocaleDateString('pt-BR'),
-        produtos: []
-      };
+      const areaRecibo = document.getElementById('step-pix');
 
-      try {
-        const { jsPDF } = window.jspdf;
-        const doc = new jsPDF('p', 'mm', 'a4');
-        const pageWidth = doc.internal.pageSize.getWidth();
-        const margin = 15;
-        let y = 20;
+      // Ocultar elementos que não devem aparecer no recibo
+      const acoes = document.getElementById('acoesRecibo');
+      const footer = document.querySelector('.footer-actions');
+      const btnCancel = document.querySelector('.btn-cancel');
+      const qrContainer = document.getElementById('qrContainer');
+      const pixCopy = document.querySelector('.pix-code-copy');
 
-        // Título
-        doc.setFontSize(20);
-        doc.setFont('helvetica', 'bold');
-        doc.text('RECIBO', pageWidth / 2, y, { align: 'center' });
-        y += 8;
+      acoes.classList.add('hide-for-print');
+      if (footer) footer.classList.add('hide-for-print');
+      if (btnCancel) btnCancel.classList.add('hide-for-print');
+      if (qrContainer) qrContainer.classList.add('hide-for-print');
+      if (pixCopy) pixCopy.classList.add('hide-for-print');
 
-        doc.setFontSize(10);
-        doc.setFont('helvetica', 'normal');
-        doc.text('Comprovante de pagamento via Pix', pageWidth / 2, y, { align: 'center' });
-        y += 10;
+      setTimeout(() => {
+        html2canvas(areaRecibo, {
+          scale: 2,
+          useCORS: true,
+          backgroundColor: '#1e1e1e',
+          logging: false,
+          width: areaRecibo.scrollWidth,
+          height: areaRecibo.scrollHeight,
+          windowWidth: areaRecibo.scrollWidth,
+          windowHeight: areaRecibo.scrollHeight
+        }).then((canvas) => {
+          // Restaura visibilidade
+          acoes.classList.remove('hide-for-print');
+          if (footer) footer.classList.remove('hide-for-print');
+          if (btnCancel) btnCancel.classList.remove('hide-for-print');
+          if (qrContainer) qrContainer.classList.remove('hide-for-print');
+          if (pixCopy) pixCopy.classList.remove('hide-for-print');
 
-        // Linha separadora
-        doc.line(margin, y, pageWidth - margin, y);
-        y += 8;
+          const imgData = canvas.toDataURL('image/png');
+          const { jsPDF } = window.jspdf;
+          const pdf = new jsPDF('p', 'mm', 'a4');
+          const imgWidth = 190;
+          const imgHeight = (canvas.height * imgWidth) / canvas.width;
+          pdf.addImage(imgData, 'PNG', 10, 10, imgWidth, imgHeight);
+          pdf.save(`recibo_${window.dadosVenda?.cliente || 'venda'}_${new Date().toISOString().slice(0,10)}.pdf`);
 
-        // Dados do cliente e valor
-        doc.setFontSize(11);
-        doc.setFont('helvetica', 'bold');
-        doc.text('Data:', margin, y);
-        doc.setFont('helvetica', 'normal');
-        doc.text(dados.data || new Date().toLocaleDateString('pt-BR'), margin + 30, y);
-        y += 7;
-
-        doc.setFont('helvetica', 'bold');
-        doc.text('Cliente:', margin, y);
-        doc.setFont('helvetica', 'normal');
-        doc.text(dados.cliente || 'Não informado', margin + 30, y);
-        y += 7;
-
-        doc.setFont('helvetica', 'bold');
-        doc.text('Descrição:', margin, y);
-        doc.setFont('helvetica', 'normal');
-        doc.text(dados.descricao || 'Venda via Pix', margin + 30, y);
-        y += 10;
-
-        // Tabela de produtos
-        if (dados.produtos && dados.produtos.length > 0) {
-          const tableData = dados.produtos.map(p => [
-            p.qtd + 'x',
-            p.nome,
-            'R$ ' + p.valorTotal.toFixed(2).replace('.', ',')
-          ]);
-
-          doc.autoTable({
-            startY: y,
-            head: [['Qtd', 'Produto', 'Valor']],
-            body: tableData,
-            theme: 'plain',
-            styles: { fontSize: 10, cellPadding: 3 },
-            headStyles: { fillColor: false, textColor: [0, 0, 0], lineWidth: 0.5, lineColor: [0, 0, 0] },
-            bodyStyles: { lineWidth: 0.2, lineColor: [200, 200, 200] },
-            margin: { left: margin, right: margin },
-            tableWidth: pageWidth - 2 * margin,
-          });
-
-          y = doc.lastAutoTable.finalY + 5;
-
-          // Total
-          const total = dados.produtos.reduce((acc, p) => acc + p.valorTotal, 0);
-          doc.setFont('helvetica', 'bold');
-          doc.setFontSize(12);
-          doc.text('Total: R$ ' + total.toFixed(2).replace('.', ','), pageWidth - margin, y, { align: 'right' });
-          y += 10;
-        } else {
-          doc.setFontSize(10);
-          doc.setFont('helvetica', 'italic');
-          doc.text('Nenhum produto registrado.', margin, y);
-          y += 8;
-        }
-
-        // Rodapé
-        doc.line(margin, y, pageWidth - margin, y);
-        y += 8;
-        doc.setFontSize(9);
-        doc.setFont('helvetica', 'normal');
-        doc.text('✅ Pagamento confirmado via Pix - ' + new Date().toLocaleString('pt-BR'), pageWidth / 2, y, { align: 'center' });
-        y += 5;
-        doc.setFontSize(8);
-        doc.text('Este documento é um comprovante de venda válido.', pageWidth / 2, y, { align: 'center' });
-
-        // Salva o PDF
-        doc.save(`recibo_${dados.cliente || 'venda'}_${new Date().toISOString().slice(0,10)}.pdf`);
-
-        btn.disabled = false;
-        btn.innerHTML = '<span class="material-icons-round">picture_as_pdf</span> Gerar Recibo PDF';
-      } catch (err) {
-        console.error('Erro ao gerar PDF:', err);
-        alert('Erro ao gerar o recibo. Verifique o console.');
-        btn.disabled = false;
-        btn.innerHTML = '<span class="material-icons-round">picture_as_pdf</span> Gerar Recibo PDF';
-      }
+          btn.disabled = false;
+          btn.innerHTML = '<span class="material-icons-round">picture_as_pdf</span> Recibo PDF';
+        }).catch((err) => {
+          console.error('Erro ao capturar tela:', err);
+          alert('Erro ao gerar o recibo. Verifique o console.');
+          acoes.classList.remove('hide-for-print');
+          if (footer) footer.classList.remove('hide-for-print');
+          if (btnCancel) btnCancel.classList.remove('hide-for-print');
+          if (qrContainer) qrContainer.classList.remove('hide-for-print');
+          if (pixCopy) pixCopy.classList.remove('hide-for-print');
+          btn.disabled = false;
+          btn.innerHTML = '<span class="material-icons-round">picture_as_pdf</span> Recibo PDF';
+        });
+      }, 100);
     }
 
     // ============================================================
@@ -1501,6 +1516,11 @@
       resetDataField();
       atualizarPlacar();
       verificarConfiguracoes();
+
+      // Cancela qualquer áudio pendente
+      if ('speechSynthesis' in window) {
+        window.speechSynthesis.cancel();
+      }
     }
   </script>
 </body>
