@@ -597,9 +597,13 @@
       max-width: 340px;
     }
 
-    /* Botão de áudio extra */
-    .audio-extra {
-      margin-top: 6px;
+    /* Indicação de áudio tocando */
+    .audio-playing .material-icons-round {
+      animation: pulse-audio 0.3s ease 2;
+    }
+    @keyframes pulse-audio {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.3); color: #ffeb3b; }
     }
 
     /* Responsivo */
@@ -802,7 +806,7 @@
 
         <!-- Botão para ouvir o áudio novamente (aparece após confirmação) -->
         <button class="btn-speech" id="btnOuvirAudio" style="display:none; margin-top:8px;" onclick="reproduzirAudioConfirmacao()">
-          <span class="material-icons-round">volume_up</span> Ouvir confirmação
+          <span class="material-icons-round" id="audioIcon">volume_up</span> Ouvir confirmação
         </button>
       </div>
 
@@ -1098,9 +1102,97 @@
     }
 
     // ============================================================
-    //  GERAR PIX
+    //  ÁUDIO - GLOBAL
+    // ============================================================
+    let audioContext = null;
+
+    function iniciarAudioContext() {
+      if (!audioContext) {
+        try {
+          audioContext = new (window.AudioContext || window.webkitAudioContext)();
+          // Tenta retomar se estiver suspenso
+          if (audioContext.state === 'suspended') {
+            audioContext.resume();
+          }
+        } catch (e) {
+          console.warn('Web Audio API não disponível');
+        }
+      }
+      return audioContext;
+    }
+
+    // Toca o beep de confirmação
+    function tocarBeep() {
+      const ctx = iniciarAudioContext();
+      if (!ctx) return;
+
+      try {
+        // Primeiro tom (A5 = 880Hz)
+        const osc1 = ctx.createOscillator();
+        const gain1 = ctx.createGain();
+        osc1.connect(gain1);
+        gain1.connect(ctx.destination);
+        osc1.frequency.value = 880;
+        osc1.type = 'sine';
+        gain1.gain.setValueAtTime(0.3, ctx.currentTime);
+        gain1.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.4);
+        osc1.start(ctx.currentTime);
+        osc1.stop(ctx.currentTime + 0.4);
+
+        // Segundo tom (E5 = 660Hz) com delay
+        setTimeout(() => {
+          try {
+            const osc2 = ctx.createOscillator();
+            const gain2 = ctx.createGain();
+            osc2.connect(gain2);
+            gain2.connect(ctx.destination);
+            osc2.frequency.value = 660;
+            osc2.type = 'sine';
+            gain2.gain.setValueAtTime(0.2, ctx.currentTime);
+            gain2.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.3);
+            osc2.start(ctx.currentTime);
+            osc2.stop(ctx.currentTime + 0.3);
+          } catch (e) { /* ignora */ }
+        }, 200);
+
+        // Animação do ícone
+        const icon = document.getElementById('audioIcon');
+        if (icon) {
+          icon.parentElement.classList.add('audio-playing');
+          setTimeout(() => {
+            icon.parentElement.classList.remove('audio-playing');
+          }, 600);
+        }
+      } catch (e) {
+        console.warn('Erro ao tocar beep:', e);
+      }
+    }
+
+    // Síntese de voz (para o botão "Ouvir confirmação")
+    function reproduzirAudioConfirmacao() {
+      try {
+        if ('speechSynthesis' in window) {
+          window.speechSynthesis.cancel();
+          const utterance = new SpeechSynthesisUtterance('Pagamento confirmado!');
+          utterance.lang = 'pt-BR';
+          utterance.rate = 0.9;
+          utterance.pitch = 1.1;
+          window.speechSynthesis.speak(utterance);
+        } else {
+          alert('Seu navegador não suporta síntese de voz.');
+        }
+      } catch (e) {
+        alert('Erro ao reproduzir áudio.');
+      }
+    }
+
+    // ============================================================
+    //  GERAR PIX (cria AudioContext no clique)
     // ============================================================
     function gerarPix() {
+      // Inicia o contexto de áudio (agora com interação do usuário)
+      iniciarAudioContext();
+
       const url = getScriptUrl();
       const cliente = document.getElementById('cliente').value.trim();
       const dados = {
@@ -1311,39 +1403,8 @@
       // Mostra o botão "Ouvir confirmação"
       document.getElementById('btnOuvirAudio').style.display = 'flex';
 
-      // ===== ÁUDIO: BEEP (Web Audio API) =====
-      try {
-        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-        const oscillator = audioCtx.createOscillator();
-        const gainNode = audioCtx.createGain();
-        oscillator.connect(gainNode);
-        gainNode.connect(audioCtx.destination);
-
-        oscillator.frequency.value = 880; // nota A5
-        oscillator.type = 'sine';
-        gainNode.gain.setValueAtTime(0.3, audioCtx.currentTime);
-        gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.4);
-        oscillator.start(audioCtx.currentTime);
-        oscillator.stop(audioCtx.currentTime + 0.4);
-
-        // Segundo beep mais grave
-        setTimeout(() => {
-          try {
-            const osc2 = audioCtx.createOscillator();
-            const gain2 = audioCtx.createGain();
-            osc2.connect(gain2);
-            gain2.connect(audioCtx.destination);
-            osc2.frequency.value = 660;
-            osc2.type = 'sine';
-            gain2.gain.setValueAtTime(0.2, audioCtx.currentTime);
-            gain2.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.3);
-            osc2.start(audioCtx.currentTime);
-            osc2.stop(audioCtx.currentTime + 0.3);
-          } catch (e) { /* ignora */ }
-        }, 200);
-      } catch (e) {
-        console.warn('Web Audio API não suportada:', e);
-      }
+      // ===== Toca o beep (usando o AudioContext já iniciado) =====
+      tocarBeep();
 
       // ===== Tenta síntese de voz como extra (pode ser bloqueada) =====
       try {
@@ -1356,28 +1417,6 @@
         }
       } catch (e) {
         // ignora
-      }
-    }
-
-    // ============================================================
-    //  FUNÇÃO PARA REPRODUZIR ÁUDIO MANUALMENTE (botão)
-    // ============================================================
-    function reproduzirAudioConfirmacao() {
-      // Toca a síntese de voz (agora com interação do usuário, funciona)
-      try {
-        if ('speechSynthesis' in window) {
-          // Cancela qualquer fala pendente
-          window.speechSynthesis.cancel();
-          const utterance = new SpeechSynthesisUtterance('Pagamento confirmado!');
-          utterance.lang = 'pt-BR';
-          utterance.rate = 0.9;
-          utterance.pitch = 1.1;
-          window.speechSynthesis.speak(utterance);
-        } else {
-          alert('Seu navegador não suporta síntese de voz.');
-        }
-      } catch (e) {
-        alert('Erro ao reproduzir áudio.');
       }
     }
 
@@ -1597,6 +1636,7 @@
       if ('speechSynthesis' in window) {
         window.speechSynthesis.cancel();
       }
+      // Não fecha o AudioContext para reutilização
     }
   </script>
 </body>
