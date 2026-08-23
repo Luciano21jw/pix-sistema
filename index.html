@@ -12,13 +12,16 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%2332bcad'/%3E%3Ctext x='50' y='68' font-size='50' text-anchor='middle' fill='white' font-family='sans-serif'%3EP%3C/text%3E%3C/svg%3E">
 
-  <!-- Google Fonts + Material Icons + html2pdf e html2canvas -->
+  <!-- Google Fonts + Material Icons -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js" integrity="sha512-GsLlZN/3F2ErC5ifS5QtgpiJtWd43JWSuIgh7mbzZ8zBps+dvLusV+eNQATqgA/HdeKFVgA5v3S/cIrLF7QnIg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+  <!-- jsPDF e autoTable -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
 
   <style>
-    /* ===== RESET & VARIÁVEIS ===== */
+    /* ===== RESET & VARIÁVEIS (mantido) ===== */
     * { margin: 0; padding: 0; box-sizing: border-box; }
     :root {
       --brand: #32bcad;
@@ -597,11 +600,6 @@
       flex-shrink: 0;
     }
     .whatsapp-field .btn-whatsapp-icon:hover { transform: scale(1.05); }
-
-    /* Classe para ocultar elementos durante a captura */
-    .hide-for-print {
-      display: none !important;
-    }
   </style>
 </head>
 <body>
@@ -720,7 +718,7 @@
         </div>
       </div>
 
-      <!-- ===== AÇÕES (serão ocultadas na captura) ===== -->
+      <!-- ===== AÇÕES ===== -->
       <div id="acoesRecibo" style="margin-top:8px;">
         <div class="input-group">
           <label><span class="material-icons-round">whatsapp</span> Número WhatsApp (com DDD)</label>
@@ -736,7 +734,7 @@
           <button class="btn-whatsapp" onclick="enviarWhatsApp()" style="flex:1;">
             <span class="material-icons-round">whatsapp</span> Enviar Comprovante
           </button>
-          <button class="btn-pdf" onclick="gerarPDF()" style="flex:1;" id="btnPDF">
+          <button class="btn-pdf" onclick="gerarReciboNota()" style="flex:1;" id="btnPDF">
             <span class="material-icons-round">picture_as_pdf</span> Gerar Recibo PDF
           </button>
         </div>
@@ -1341,66 +1339,120 @@
     }
 
     // ============================================================
-    //  GERAR PDF POR PRINT DA TELA (html2canvas)
+    //  GERAR RECIBO ESTILO NOTA FISCAL (PRETO E BRANCO)
     // ============================================================
-    function gerarPDF() {
+    function gerarReciboNota() {
       const btn = document.getElementById('btnPDF');
       btn.disabled = true;
-      btn.innerHTML = '<span class="material-icons-round">hourglass_top</span> Capturando tela...';
+      btn.innerHTML = '<span class="material-icons-round">hourglass_top</span> Gerando...';
 
-      // Seleciona a área que queremos capturar: #step-pix, mas excluindo os botões e campos de ação
-      const areaRecibo = document.getElementById('step-pix');
+      // Pega os dados da venda
+      const dados = window.dadosVenda || {
+        valor: document.getElementById('displayValor').innerText,
+        cliente: document.getElementById('displayCliente').innerText,
+        descricao: 'Venda Pix',
+        data: new Date().toLocaleDateString('pt-BR'),
+        produtos: []
+      };
 
-      // Elementos que devem ser ocultados durante a captura
-      const acoes = document.getElementById('acoesRecibo');
-      const footer = document.querySelector('.footer-actions');
-      const btnCancel = document.querySelector('.btn-cancel');
+      try {
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF('p', 'mm', 'a4');
+        const pageWidth = doc.internal.pageSize.getWidth();
+        const margin = 15;
+        let y = 20;
 
-      // Oculta os elementos que não devem aparecer no recibo
-      acoes.classList.add('hide-for-print');
-      if (footer) footer.classList.add('hide-for-print');
-      if (btnCancel) btnCancel.classList.add('hide-for-print');
+        // Título
+        doc.setFontSize(20);
+        doc.setFont('helvetica', 'bold');
+        doc.text('RECIBO', pageWidth / 2, y, { align: 'center' });
+        y += 8;
 
-      // Aguarda um frame para a renderização
-      setTimeout(() => {
-        // Usa html2canvas para capturar a área
-        html2canvas(areaRecibo, {
-          scale: 2,
-          useCORS: true,
-          backgroundColor: '#1e1e1e',
-          logging: false,
-          width: areaRecibo.scrollWidth,
-          height: areaRecibo.scrollHeight,
-          windowWidth: areaRecibo.scrollWidth,
-          windowHeight: areaRecibo.scrollHeight,
-        }).then((canvas) => {
-          // Restaura a visibilidade
-          acoes.classList.remove('hide-for-print');
-          if (footer) footer.classList.remove('hide-for-print');
-          if (btnCancel) btnCancel.classList.remove('hide-for-print');
+        doc.setFontSize(10);
+        doc.setFont('helvetica', 'normal');
+        doc.text('Comprovante de pagamento via Pix', pageWidth / 2, y, { align: 'center' });
+        y += 10;
 
-          // Cria um PDF usando a imagem capturada
-          const imgData = canvas.toDataURL('image/png');
-          const { jsPDF } = window.jspdf;
-          const pdf = new jsPDF('p', 'mm', 'a4');
-          const imgWidth = 190;
-          const imgHeight = (canvas.height * imgWidth) / canvas.width;
-          pdf.addImage(imgData, 'PNG', 10, 10, imgWidth, imgHeight);
-          pdf.save(`recibo_${window.dadosVenda?.cliente || 'venda'}_${new Date().toISOString().slice(0,10)}.pdf`);
+        // Linha separadora
+        doc.line(margin, y, pageWidth - margin, y);
+        y += 8;
 
-          btn.disabled = false;
-          btn.innerHTML = '<span class="material-icons-round">picture_as_pdf</span> Gerar Recibo PDF';
-        }).catch((err) => {
-          console.error('Erro ao capturar tela:', err);
-          alert('Erro ao gerar o recibo. Verifique o console.');
-          // Restaura visibilidade mesmo em caso de erro
-          acoes.classList.remove('hide-for-print');
-          if (footer) footer.classList.remove('hide-for-print');
-          if (btnCancel) btnCancel.classList.remove('hide-for-print');
-          btn.disabled = false;
-          btn.innerHTML = '<span class="material-icons-round">picture_as_pdf</span> Gerar Recibo PDF';
-        });
-      }, 100);
+        // Dados do cliente e valor
+        doc.setFontSize(11);
+        doc.setFont('helvetica', 'bold');
+        doc.text('Data:', margin, y);
+        doc.setFont('helvetica', 'normal');
+        doc.text(dados.data || new Date().toLocaleDateString('pt-BR'), margin + 30, y);
+        y += 7;
+
+        doc.setFont('helvetica', 'bold');
+        doc.text('Cliente:', margin, y);
+        doc.setFont('helvetica', 'normal');
+        doc.text(dados.cliente || 'Não informado', margin + 30, y);
+        y += 7;
+
+        doc.setFont('helvetica', 'bold');
+        doc.text('Descrição:', margin, y);
+        doc.setFont('helvetica', 'normal');
+        doc.text(dados.descricao || 'Venda via Pix', margin + 30, y);
+        y += 10;
+
+        // Tabela de produtos
+        if (dados.produtos && dados.produtos.length > 0) {
+          const tableData = dados.produtos.map(p => [
+            p.qtd + 'x',
+            p.nome,
+            'R$ ' + p.valorTotal.toFixed(2).replace('.', ',')
+          ]);
+
+          doc.autoTable({
+            startY: y,
+            head: [['Qtd', 'Produto', 'Valor']],
+            body: tableData,
+            theme: 'plain',
+            styles: { fontSize: 10, cellPadding: 3 },
+            headStyles: { fillColor: false, textColor: [0, 0, 0], lineWidth: 0.5, lineColor: [0, 0, 0] },
+            bodyStyles: { lineWidth: 0.2, lineColor: [200, 200, 200] },
+            margin: { left: margin, right: margin },
+            tableWidth: pageWidth - 2 * margin,
+          });
+
+          y = doc.lastAutoTable.finalY + 5;
+
+          // Total
+          const total = dados.produtos.reduce((acc, p) => acc + p.valorTotal, 0);
+          doc.setFont('helvetica', 'bold');
+          doc.setFontSize(12);
+          doc.text('Total: R$ ' + total.toFixed(2).replace('.', ','), pageWidth - margin, y, { align: 'right' });
+          y += 10;
+        } else {
+          doc.setFontSize(10);
+          doc.setFont('helvetica', 'italic');
+          doc.text('Nenhum produto registrado.', margin, y);
+          y += 8;
+        }
+
+        // Rodapé
+        doc.line(margin, y, pageWidth - margin, y);
+        y += 8;
+        doc.setFontSize(9);
+        doc.setFont('helvetica', 'normal');
+        doc.text('✅ Pagamento confirmado via Pix - ' + new Date().toLocaleString('pt-BR'), pageWidth / 2, y, { align: 'center' });
+        y += 5;
+        doc.setFontSize(8);
+        doc.text('Este documento é um comprovante de venda válido.', pageWidth / 2, y, { align: 'center' });
+
+        // Salva o PDF
+        doc.save(`recibo_${dados.cliente || 'venda'}_${new Date().toISOString().slice(0,10)}.pdf`);
+
+        btn.disabled = false;
+        btn.innerHTML = '<span class="material-icons-round">picture_as_pdf</span> Gerar Recibo PDF';
+      } catch (err) {
+        console.error('Erro ao gerar PDF:', err);
+        alert('Erro ao gerar o recibo. Verifique o console.');
+        btn.disabled = false;
+        btn.innerHTML = '<span class="material-icons-round">picture_as_pdf</span> Gerar Recibo PDF';
+      }
     }
 
     // ============================================================
