@@ -306,9 +306,12 @@
       padding: 10px;
     }
     .btn-audio-activate:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(255,167,38,0.4); }
-    .btn-audio-activate.ativo {
-      background: #4caf50;
-      color: #fff;
+    /* Ícone do WhatsApp dentro do botão de áudio */
+    .btn-audio-activate svg {
+      width: 24px;
+      height: 24px;
+      fill: currentColor;
+      flex-shrink: 0;
     }
 
     .footer-actions {
@@ -606,7 +609,7 @@
       50% { transform: scale(1.3); color: #ffeb3b; }
     }
 
-    /* Botão de ativação de áudio */
+    /* Botão de ativação de áudio (sempre laranja) */
     .audio-activate-container {
       margin-top: 8px;
     }
@@ -628,10 +631,7 @@
       width: 100%;
     }
     .btn-audio-activate:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(255,167,38,0.4); }
-    .btn-audio-activate.ativo {
-      background: #4caf50;
-      color: #fff;
-    }
+    /* Não há mais classe .ativo para este botão, mantemos sempre laranja */
 
     /* Responsivo */
     @media (max-width: 480px) {
@@ -1130,7 +1130,7 @@
     }
 
     // ============================================================
-    //  ÁUDIO - GLOBAL
+    //  ÁUDIO - GLOBAL (com ícone do WhatsApp ao ativar)
     // ============================================================
     let audioContext = null;
     let audioAtivado = false;
@@ -1145,11 +1145,14 @@
         }
         audioAtivado = true;
         const btn = document.getElementById('btnAudioActivate');
-        btn.classList.add('ativo');
-        btn.innerHTML = '<span class="material-icons-round">check_circle</span> Som ativado!';
-        setTimeout(() => {
-          btn.innerHTML = '<span class="material-icons-round">volume_up</span> Som ativado ✅';
-        }, 1500);
+        // Substitui o ícone e o texto pelo símbolo do WhatsApp
+        btn.innerHTML = `
+          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" style="width:24px;height:24px;fill:currentColor;">
+            <path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.582 2.128 2.182-.573c.978.596 2.059.914 3.149.915 3.174 0 5.757-2.585 5.758-5.765.001-3.18-2.585-5.766-5.758-5.758zm0 1.5c2.35 0 4.258 1.908 4.258 4.258 0 2.35-1.908 4.258-4.258 4.258-.949 0-1.836-.305-2.56-.828l-.265-.196-.767.202.204-.748-.129-.28c-.484-.722-.738-1.556-.738-2.414.001-2.35 1.908-4.258 4.258-4.258zm-2.538 2.186c-.147.13-.359.377-.359.613 0 .236.313.594.391.69.078.096.677 1.034 1.635 1.398.229.087.407.139.584.139.216 0 .415-.081.565-.222.242-.227.273-.336.334-.547.061-.211.033-.39-.024-.536-.062-.146-.179-.254-.327-.37-.148-.116-.296-.196-.417-.314-.121-.118-.242-.308-.121-.482.121-.174.274-.24.462-.322.188-.082.313-.145.432-.301.118-.156.118-.312.047-.469-.071-.157-.266-.237-.416-.237h-.103c-.157 0-.293.044-.41.129-.117.085-.234.234-.297.318-.063.084-.155.172-.141.328.014.156.172.322.219.39.047.068.047.083-.015.086-.062.003-.156-.034-.234-.101-.078-.067-.166-.195-.252-.26-.086-.065-.181-.066-.262-.022-.081.044-.174.11-.236.179z"/>
+          </svg>
+          Som ativado ✅
+        `;
+        // Mantém a cor laranja (não adiciona classe 'ativo')
       } catch (e) {
         alert('Não foi possível ativar o áudio. Verifique as permissões do navegador.');
       }
@@ -1671,10 +1674,9 @@
       atualizarPlacar();
       verificarConfiguracoes();
 
-      // Reseta o áudio
+      // Reseta o áudio (volta ao estado inicial, mas mantém o ícone original)
       audioAtivado = false;
       const btn = document.getElementById('btnAudioActivate');
-      btn.classList.remove('ativo');
       btn.innerHTML = '<span class="material-icons-round">volume_up</span> Ativar som de confirmação';
     }
   </script>
