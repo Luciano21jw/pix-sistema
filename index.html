@@ -573,10 +573,13 @@
     .btn-whatsapp-circle:active {
       transform: scale(0.95);
     }
-    .btn-whatsapp-circle svg {
-      width: 32px;
-      height: 32px;
-      fill: currentColor;
+    .btn-whatsapp-circle .telefone-icon {
+      color: #fff;
+      font-size: 28px;
+      line-height: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
     .footer-actions, .btn-cancel {
@@ -768,10 +771,8 @@
           <label><span class="material-icons-round">whatsapp</span> Número WhatsApp (com DDD)</label>
           <div class="whatsapp-field">
             <input type="text" id="whatsappNumber" placeholder="11999999999" value="11999999999">
-            <button class="btn-whatsapp-circle" onclick="enviarWhatsApp()" title="Enviar comprovante via WhatsApp">
-              <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.582 2.128 2.182-.573c.978.596 2.059.914 3.149.915 3.174 0 5.757-2.585 5.758-5.765.001-3.18-2.585-5.766-5.758-5.758zm0 1.5c2.35 0 4.258 1.908 4.258 4.258 0 2.35-1.908 4.258-4.258 4.258-.949 0-1.836-.305-2.56-.828l-.265-.196-.767.202.204-.748-.129-.28c-.484-.722-.738-1.556-.738-2.414.001-2.35 1.908-4.258 4.258-4.258zm-2.538 2.186c-.147.13-.359.377-.359.613 0 .236.313.594.391.69.078.096.677 1.034 1.635 1.398.229.087.407.139.584.139.216 0 .415-.081.565-.222.242-.227.273-.336.334-.547.061-.211.033-.39-.024-.536-.062-.146-.179-.254-.327-.37-.148-.116-.296-.196-.417-.314-.121-.118-.242-.308-.121-.482.121-.174.274-.24.462-.322.188-.082.313-.145.432-.301.118-.156.118-.312.047-.469-.071-.157-.266-.237-.416-.237h-.103c-.157 0-.293.044-.41.129-.117.085-.234.234-.297.318-.063.084-.155.172-.141.328.014.156.172.322.219.39.047.068.047.083-.015.086-.062.003-.156-.034-.234-.101-.078-.067-.166-.195-.252-.26-.086-.065-.181-.066-.262-.022-.081.044-.174.11-.236.179z"/>
-              </svg>
+            <button class="btn-whatsapp-circle" onclick="enviarWhatsApp()" title="Enviar comprovante via WhatsApp" aria-label="Enviar comprovante via WhatsApp">
+              <span class="telefone-icon">📞</span>
             </button>
           </div>
         </div>
