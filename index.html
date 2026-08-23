@@ -298,22 +298,6 @@
     }
     .btn-pdf:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(255,87,34,0.4); }
 
-    .btn-audio-activate {
-      background: #ffa726;
-      color: #000;
-      box-shadow: 0 4px 16px rgba(255,167,38,0.3);
-      font-size: 0.85rem;
-      padding: 10px;
-    }
-    .btn-audio-activate:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(255,167,38,0.4); }
-    /* Ícone do WhatsApp dentro do botão de áudio */
-    .btn-audio-activate svg {
-      width: 24px;
-      height: 24px;
-      fill: currentColor;
-      flex-shrink: 0;
-    }
-
     .footer-actions {
       display: flex;
       gap: 12px;
@@ -600,39 +584,6 @@
       max-width: 340px;
     }
 
-    /* Animação do ícone de áudio */
-    .audio-playing .material-icons-round {
-      animation: pulse-audio 0.3s ease 2;
-    }
-    @keyframes pulse-audio {
-      0%, 100% { transform: scale(1); }
-      50% { transform: scale(1.3); color: #ffeb3b; }
-    }
-
-    /* Botão de ativação de áudio (sempre laranja) */
-    .audio-activate-container {
-      margin-top: 8px;
-    }
-    .btn-audio-activate {
-      background: #ffa726;
-      color: #000;
-      box-shadow: 0 4px 16px rgba(255,167,38,0.3);
-      font-size: 0.85rem;
-      padding: 10px;
-      border: none;
-      border-radius: var(--radius-sm);
-      font-weight: 700;
-      cursor: pointer;
-      transition: var(--transition);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      width: 100%;
-    }
-    .btn-audio-activate:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(255,167,38,0.4); }
-    /* Não há mais classe .ativo para este botão, mantemos sempre laranja */
-
     /* Responsivo */
     @media (max-width: 480px) {
       body { padding: 12px; }
@@ -810,7 +761,7 @@
         </div>
       </div>
 
-      <!-- ===== AÇÕES (WhatsApp + PDF + Áudio) ===== -->
+      <!-- ===== AÇÕES (WhatsApp + PDF) ===== -->
       <div id="acoesRecibo">
         <!-- WhatsApp: campo + botão redondo -->
         <div class="input-group">
@@ -829,13 +780,6 @@
         <button class="btn-pdf" onclick="gerarPDF()" id="btnPDF">
           <span class="material-icons-round">picture_as_pdf</span> Recibo PDF
         </button>
-
-        <!-- Botão de ativação de áudio (substitui o "Ouvir confirmação") -->
-        <div class="audio-activate-container">
-          <button class="btn-audio-activate" id="btnAudioActivate" onclick="ativarAudio()">
-            <span class="material-icons-round">volume_up</span> Ativar som de confirmação
-          </button>
-        </div>
       </div>
 
       <div class="footer-actions">
@@ -1130,76 +1074,6 @@
     }
 
     // ============================================================
-    //  ÁUDIO - GLOBAL (com ícone do WhatsApp ao ativar)
-    // ============================================================
-    let audioContext = null;
-    let audioAtivado = false;
-
-    function ativarAudio() {
-      try {
-        if (!audioContext) {
-          audioContext = new (window.AudioContext || window.webkitAudioContext)();
-        }
-        if (audioContext.state === 'suspended') {
-          audioContext.resume();
-        }
-        audioAtivado = true;
-        const btn = document.getElementById('btnAudioActivate');
-        // Substitui o ícone e o texto pelo símbolo do WhatsApp
-        btn.innerHTML = `
-          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" style="width:24px;height:24px;fill:currentColor;">
-            <path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.582 2.128 2.182-.573c.978.596 2.059.914 3.149.915 3.174 0 5.757-2.585 5.758-5.765.001-3.18-2.585-5.766-5.758-5.758zm0 1.5c2.35 0 4.258 1.908 4.258 4.258 0 2.35-1.908 4.258-4.258 4.258-.949 0-1.836-.305-2.56-.828l-.265-.196-.767.202.204-.748-.129-.28c-.484-.722-.738-1.556-.738-2.414.001-2.35 1.908-4.258 4.258-4.258zm-2.538 2.186c-.147.13-.359.377-.359.613 0 .236.313.594.391.69.078.096.677 1.034 1.635 1.398.229.087.407.139.584.139.216 0 .415-.081.565-.222.242-.227.273-.336.334-.547.061-.211.033-.39-.024-.536-.062-.146-.179-.254-.327-.37-.148-.116-.296-.196-.417-.314-.121-.118-.242-.308-.121-.482.121-.174.274-.24.462-.322.188-.082.313-.145.432-.301.118-.156.118-.312.047-.469-.071-.157-.266-.237-.416-.237h-.103c-.157 0-.293.044-.41.129-.117.085-.234.234-.297.318-.063.084-.155.172-.141.328.014.156.172.322.219.39.047.068.047.083-.015.086-.062.003-.156-.034-.234-.101-.078-.067-.166-.195-.252-.26-.086-.065-.181-.066-.262-.022-.081.044-.174.11-.236.179z"/>
-          </svg>
-          Som ativado ✅
-        `;
-        // Mantém a cor laranja (não adiciona classe 'ativo')
-      } catch (e) {
-        alert('Não foi possível ativar o áudio. Verifique as permissões do navegador.');
-      }
-    }
-
-    function tocarBeep() {
-      if (!audioAtivado || !audioContext) {
-        // Tenta ativar automaticamente (pode não funcionar sem interação)
-        ativarAudio();
-        // Se ainda não funcionou, tenta tocar mesmo assim (alguns navegadores permitem)
-        if (!audioAtivado) {
-          console.warn('Áudio não ativado pelo usuário.');
-          return;
-        }
-      }
-      try {
-        const osc1 = audioContext.createOscillator();
-        const gain1 = audioContext.createGain();
-        osc1.connect(gain1);
-        gain1.connect(audioContext.destination);
-        osc1.frequency.value = 880;
-        osc1.type = 'sine';
-        gain1.gain.setValueAtTime(0.3, audioContext.currentTime);
-        gain1.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 0.4);
-        osc1.start(audioContext.currentTime);
-        osc1.stop(audioContext.currentTime + 0.4);
-
-        setTimeout(() => {
-          try {
-            const osc2 = audioContext.createOscillator();
-            const gain2 = audioContext.createGain();
-            osc2.connect(gain2);
-            gain2.connect(audioContext.destination);
-            osc2.frequency.value = 660;
-            osc2.type = 'sine';
-            gain2.gain.setValueAtTime(0.2, audioContext.currentTime);
-            gain2.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 0.3);
-            osc2.start(audioContext.currentTime);
-            osc2.stop(audioContext.currentTime + 0.3);
-          } catch (e) { /* ignora */ }
-        }, 200);
-      } catch (e) {
-        console.warn('Erro ao tocar beep:', e);
-      }
-    }
-
-    // ============================================================
     //  GERAR PIX
     // ============================================================
     function gerarPix() {
@@ -1381,7 +1255,7 @@
     }
 
     // ============================================================
-    //  CONFIRMAR PAGAMENTO + ÁUDIO (se ativado)
+    //  CONFIRMAR PAGAMENTO
     // ============================================================
     function confirmarPagamento(resultado) {
       if (vendaConfirmada) return;
@@ -1406,17 +1280,6 @@
       badge.innerHTML = '✅ PAGO';
       badge.className = 'badge success';
       atualizarPlacar();
-
-      // Toca o beep se o áudio estiver ativado
-      if (audioAtivado) {
-        tocarBeep();
-      } else {
-        // Tenta ativar automaticamente (última chance)
-        ativarAudio();
-        setTimeout(() => {
-          if (audioAtivado) tocarBeep();
-        }, 300);
-      }
     }
 
     // ============================================================
@@ -1673,11 +1536,6 @@
       resetDataField();
       atualizarPlacar();
       verificarConfiguracoes();
-
-      // Reseta o áudio (volta ao estado inicial, mas mantém o ícone original)
-      audioAtivado = false;
-      const btn = document.getElementById('btnAudioActivate');
-      btn.innerHTML = '<span class="material-icons-round">volume_up</span> Ativar som de confirmação';
     }
   </script>
 </body>
