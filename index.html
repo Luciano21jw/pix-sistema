@@ -55,6 +55,129 @@
     ::-webkit-scrollbar-track { background: var(--bg-secondary); }
     ::-webkit-scrollbar-thumb { background: var(--brand); border-radius: 4px; }
 
+    /* ===== TOAST / NOTIFICAÇÃO ===== */
+    #toast-container {
+      position: fixed;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 999999;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      width: 90%;
+      max-width: 400px;
+      pointer-events: none;
+    }
+    .toast {
+      padding: 14px 20px;
+      border-radius: var(--radius-sm);
+      background: var(--bg-secondary);
+      border: 1px solid rgba(255,255,255,0.1);
+      color: var(--text-primary);
+      font-size: 0.95rem;
+      font-weight: 500;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.6);
+      animation: toastIn 0.4s ease, toastOut 0.4s ease 2.6s forwards;
+      width: 100%;
+      text-align: center;
+      pointer-events: auto;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+    .toast.success { border-color: var(--success); color: var(--success); }
+    .toast.error { border-color: var(--danger); color: var(--danger); }
+    .toast.warning { border-color: var(--warning); color: var(--warning); }
+    .toast.info { border-color: var(--brand); color: var(--brand-light); }
+
+    .toast .material-icons-round { font-size: 22px; }
+
+    @keyframes toastIn {
+      from { opacity: 0; transform: translateY(30px) scale(0.95); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+    @keyframes toastOut {
+      from { opacity: 1; transform: translateY(0) scale(1); }
+      to { opacity: 0; transform: translateY(20px) scale(0.95); }
+    }
+
+    /* ===== MODAL DE CONFIRMAÇÃO PERSONALIZADO ===== */
+    #confirmModal {
+      display: none;
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.7);
+      backdrop-filter: blur(8px);
+      z-index: 999998;
+      align-items: center;
+      justify-content: center;
+      animation: fadeIn 0.3s ease;
+    }
+    #confirmModal.ativo { display: flex; }
+    #confirmModal .modal-box {
+      background: var(--bg-secondary);
+      padding: 32px 24px 24px;
+      border-radius: var(--radius);
+      max-width: 360px;
+      width: 90%;
+      border: 1px solid rgba(255,255,255,0.06);
+      box-shadow: 0 24px 64px rgba(0,0,0,0.8);
+      text-align: center;
+      animation: modalPop 0.3s ease;
+    }
+    @keyframes modalPop {
+      from { opacity: 0; transform: scale(0.9) translateY(20px); }
+      to { opacity: 1; transform: scale(1) translateY(0); }
+    }
+    #confirmModal .modal-icon {
+      font-size: 48px;
+      margin-bottom: 8px;
+      display: block;
+    }
+    #confirmModal .modal-title {
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 6px;
+    }
+    #confirmModal .modal-message {
+      font-size: 0.95rem;
+      color: var(--text-secondary);
+      margin-bottom: 20px;
+      line-height: 1.5;
+    }
+    #confirmModal .modal-buttons {
+      display: flex;
+      gap: 12px;
+    }
+    #confirmModal .modal-buttons button {
+      flex: 1;
+      padding: 12px;
+      border: none;
+      border-radius: var(--radius-sm);
+      font-weight: 600;
+      font-size: 0.95rem;
+      cursor: pointer;
+      transition: var(--transition);
+      font-family: inherit;
+    }
+    #confirmModal .modal-buttons .btn-confirm {
+      background: var(--danger);
+      color: #fff;
+    }
+    #confirmModal .modal-buttons .btn-confirm:hover { transform: scale(1.02); }
+    #confirmModal .modal-buttons .btn-cancel-modal {
+      background: rgba(255,255,255,0.06);
+      color: var(--text-secondary);
+    }
+    #confirmModal .modal-buttons .btn-cancel-modal:hover { background: rgba(255,255,255,0.12); }
+
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
     .scoreboard {
       background: rgba(50,188,173,0.08);
       backdrop-filter: blur(8px);
@@ -645,6 +768,22 @@
 </head>
 <body>
 
+  <!-- TOAST CONTAINER -->
+  <div id="toast-container"></div>
+
+  <!-- MODAL DE CONFIRMAÇÃO -->
+  <div id="confirmModal">
+    <div class="modal-box">
+      <span class="modal-icon">⚠️</span>
+      <div class="modal-title" id="modalTitle">Confirmar</div>
+      <div class="modal-message" id="modalMessage">Deseja continuar?</div>
+      <div class="modal-buttons">
+        <button class="btn-cancel-modal" id="modalCancel">Cancelar</button>
+        <button class="btn-confirm" id="modalConfirm">Confirmar</button>
+      </div>
+    </div>
+  </div>
+
   <!-- SPLASH SCREEN -->
   <div id="splash-screen">
     <div class="logo">Pix Pro</div>
@@ -784,7 +923,7 @@
         </button>
       </div>
 
-      <button class="btn-cancel" onclick="cancelarVenda()">
+      <button class="btn-cancel" onclick="confirmarCancelamento()">
         <span class="material-icons-round">cancel</span> Cancelar Venda
       </button>
     </div>
@@ -796,6 +935,59 @@
   </button>
 
   <script>
+    // ============================================================
+    //  TOAST / NOTIFICAÇÃO (SUBSTITUI O ALERT)
+    // ============================================================
+    function showToast(message, type = 'info', duration = 3000) {
+      const container = document.getElementById('toast-container');
+      const toast = document.createElement('div');
+      toast.className = `toast ${type}`;
+      
+      const icons = {
+        success: 'check_circle',
+        error: 'error',
+        warning: 'warning',
+        info: 'info'
+      };
+      
+      toast.innerHTML = `
+        <span class="material-icons-round">${icons[type] || 'info'}</span>
+        ${message}
+      `;
+      
+      container.appendChild(toast);
+      
+      setTimeout(() => {
+        if (toast.parentNode) toast.remove();
+      }, duration);
+    }
+
+    // ============================================================
+    //  MODAL DE CONFIRMAÇÃO (SUBSTITUI O confirm)
+    // ============================================================
+    let confirmResolve = null;
+
+    function showConfirm(title, message) {
+      return new Promise((resolve) => {
+        const modal = document.getElementById('confirmModal');
+        document.getElementById('modalTitle').textContent = title;
+        document.getElementById('modalMessage').textContent = message;
+        modal.classList.add('ativo');
+        
+        confirmResolve = resolve;
+      });
+    }
+
+    document.getElementById('modalConfirm').addEventListener('click', () => {
+      document.getElementById('confirmModal').classList.remove('ativo');
+      if (confirmResolve) confirmResolve(true);
+    });
+
+    document.getElementById('modalCancel').addEventListener('click', () => {
+      document.getElementById('confirmModal').classList.remove('ativo');
+      if (confirmResolve) confirmResolve(false);
+    });
+
     // ============================================================
     //  CONFIGURAÇÃO
     // ============================================================
@@ -839,7 +1031,7 @@
           await deferredPrompt.prompt();
           const result = await deferredPrompt.userChoice;
           if (result.outcome === 'accepted') {
-            console.log('App instalado');
+            showToast('App instalado com sucesso!', 'success');
           }
           deferredPrompt = null;
         }
@@ -890,6 +1082,7 @@
       const timeoutId = setTimeout(() => {
         delete window[callbackName];
         usarFallbackProdutos();
+        showToast('Usando produtos locais (offline)', 'warning', 2000);
       }, 3000);
 
       window[callbackName] = function(data) {
@@ -1037,7 +1230,7 @@
       const nome = select.value;
       const valorStr = select.options[select.selectedIndex]?.dataset.valor;
       if (!nome || !valorStr) {
-        alert('Selecione um produto primeiro!');
+        showToast('Selecione um produto primeiro!', 'warning');
         return;
       }
       const valorUnitario = parseFloat(valorStr.replace(',', '.'));
@@ -1056,26 +1249,29 @@
       atualizarLista();
       atualizarTotal();
       atualizarDropdownRemover();
+      showToast(`${nome} adicionado!`, 'success', 1500);
     }
 
     function removerProduto() {
       const select = document.getElementById('produtoRemove');
       const nome = select.value;
       if (!nome) {
-        alert('Selecione um produto para remover!');
+        showToast('Selecione um produto para remover!', 'warning');
         return;
       }
       const index = produtosSelecionados.findIndex(p => p.nome === nome);
       if (index === -1) {
-        alert('Produto não encontrado!');
+        showToast('Produto não encontrado!', 'error');
         return;
       }
       const produto = produtosSelecionados[index];
       if (produto.qtd > 1) {
         produto.qtd -= 1;
         produto.valorTotal = produto.qtd * produto.valorUnitario;
+        showToast(`1x ${nome} removido`, 'info', 1500);
       } else {
         produtosSelecionados.splice(index, 1);
+        showToast(`${nome} removido`, 'info', 1500);
       }
       atualizarLista();
       atualizarTotal();
@@ -1146,11 +1342,11 @@
       };
 
       if (produtosSelecionados.length === 0) {
-        alert('Adicione pelo menos um produto!');
+        showToast('Adicione pelo menos um produto!', 'warning');
         return;
       }
       if (dados.valor === "0,00") {
-        alert('Valor total é zero!');
+        showToast('Valor total é zero!', 'warning');
         return;
       }
 
@@ -1163,7 +1359,7 @@
         delete window[callbackName];
         document.getElementById('loader').style.display = 'none';
         document.getElementById('btnGerar').style.display = 'flex';
-        alert('❌ Tempo esgotado! Verifique sua conexão com a internet.');
+        showToast('❌ Tempo esgotado! Verifique sua conexão.', 'error');
       }, 15000);
 
       window[callbackName] = function(resultado) {
@@ -1203,9 +1399,10 @@
             document.getElementById('totalHoje').innerText = resultado.novoTotal;
           }
 
+          showToast('✅ Pix gerado com sucesso!', 'success', 2000);
           iniciarVerificacaoAutomatica();
         } else {
-          alert('❌ Erro ao gerar Pix: ' + (resultado?.erro || 'Erro desconhecido'));
+          showToast('❌ Erro ao gerar Pix: ' + (resultado?.erro || 'Erro desconhecido'), 'error');
           document.getElementById('btnGerar').style.display = 'flex';
         }
         delete window[callbackName];
@@ -1226,7 +1423,7 @@
           clearTimeout(timeoutId);
           document.getElementById('loader').style.display = 'none';
           document.getElementById('btnGerar').style.display = 'flex';
-          alert('❌ Erro de conexão com o Apps Script!');
+          showToast('❌ Erro de conexão com o Apps Script!', 'error');
           delete window[callbackName];
         };
         document.body.appendChild(script);
@@ -1234,7 +1431,7 @@
         clearTimeout(timeoutId);
         document.getElementById('loader').style.display = 'none';
         document.getElementById('btnGerar').style.display = 'flex';
-        alert('❌ Erro ao conectar com o servidor!');
+        showToast('❌ Erro ao conectar com o servidor!', 'error');
         delete window[callbackName];
       }
     }
@@ -1285,6 +1482,7 @@
             document.getElementById('temporizador').textContent = '⏱️ Tempo esgotado!';
             document.getElementById('temporizador').style.color = '#ff5252';
             loopAtivo = false;
+            showToast('⏱️ Tempo de verificação esgotado', 'warning');
           }
         } else {
           document.getElementById('temporizador').textContent =
@@ -1365,21 +1563,31 @@
       badge.innerHTML = '✅ PAGO';
       badge.className = 'badge success';
       atualizarPlacar();
+      
+      showToast('🎉 Pagamento confirmado com sucesso!', 'success', 3000);
     }
 
     // ============================================================
-    //  CANCELAR VENDA
+    //  CONFIRMAR CANCELAMENTO (com modal personalizado)
     // ============================================================
-    function cancelarVenda() {
+    async function confirmarCancelamento() {
       const pixCode = document.getElementById('pixCodeText').value;
       if (!pixCode) {
-        alert('Nenhum código Pix encontrado!');
+        showToast('Nenhum código Pix encontrado!', 'warning');
         return;
       }
-      if (!confirm('⚠️ Cancelar esta venda?\n\nA planilha será atualizada com status CANCELADO.')) {
-        return;
+      
+      const confirmado = await showConfirm(
+        '⚠️ Cancelar Venda',
+        'A planilha será atualizada com status CANCELADO. Deseja continuar?'
+      );
+      
+      if (confirmado) {
+        executarCancelamento(pixCode);
       }
+    }
 
+    function executarCancelamento(pixCode) {
       loopAtivo = false;
       if (timerVerificacao) {
         clearTimeout(timerVerificacao);
@@ -1395,20 +1603,20 @@
         delete window[callbackName];
         document.getElementById('loader').style.display = 'none';
         document.getElementById('btnGerar').style.display = 'flex';
-        alert('❌ Tempo esgotado ao cancelar!');
+        showToast('❌ Tempo esgotado ao cancelar!', 'error');
       }, 10000);
 
       window[callbackName] = function(resultado) {
         clearTimeout(timeoutId);
         document.getElementById('loader').style.display = 'none';
         if (resultado && resultado.success) {
-          alert('✅ Venda cancelada com sucesso!');
+          showToast('✅ Venda cancelada com sucesso!', 'success');
           if (resultado.novoTotal) {
             document.getElementById('totalHoje').innerText = resultado.novoTotal;
           }
           novaVenda();
         } else {
-          alert('❌ Erro: ' + (resultado?.mensagem || 'Erro desconhecido'));
+          showToast('❌ Erro: ' + (resultado?.mensagem || 'Erro desconhecido'), 'error');
           document.getElementById('btnGerar').style.display = 'flex';
         }
         delete window[callbackName];
@@ -1426,7 +1634,7 @@
           clearTimeout(timeoutId);
           document.getElementById('loader').style.display = 'none';
           document.getElementById('btnGerar').style.display = 'flex';
-          alert('❌ Erro de conexão!');
+          showToast('❌ Erro de conexão!', 'error');
           delete window[callbackName];
         };
         document.body.appendChild(script);
@@ -1434,7 +1642,7 @@
         clearTimeout(timeoutId);
         document.getElementById('loader').style.display = 'none';
         document.getElementById('btnGerar').style.display = 'flex';
-        alert('❌ Erro ao conectar!');
+        showToast('❌ Erro ao conectar!', 'error');
         delete window[callbackName];
       }
     }
@@ -1445,12 +1653,12 @@
     function enviarWhatsApp() {
       const numero = document.getElementById('whatsappNumber').value.trim();
       if (!numero) {
-        alert('Por favor, informe o número do WhatsApp (apenas o número, sem o 55).');
+        showToast('Informe o número do WhatsApp', 'warning');
         return;
       }
       const numLimpo = numero.replace(/\D/g, '');
       if (numLimpo.length < 10) {
-        alert('Número inválido. Digite o DDD + número (ex: 11999999999).');
+        showToast('Número inválido. Digite DDD + número', 'warning');
         return;
       }
       const numeroCompleto = DDI + numLimpo;
@@ -1481,6 +1689,7 @@
       const texto = encodeURIComponent(msg);
       const url = `https://api.whatsapp.com/send?phone=${numeroCompleto}&text=${texto}`;
       window.open(url, '_blank');
+      showToast('📱 Abrindo WhatsApp...', 'info', 2000);
     }
 
     // ============================================================
@@ -1564,7 +1773,7 @@
       document.body.appendChild(tempDiv);
 
       if (typeof html2pdf === 'undefined') {
-        alert('Biblioteca de PDF não carregada. Tente novamente.');
+        showToast('Biblioteca de PDF não carregada', 'error');
         document.body.removeChild(tempDiv);
         btn.disabled = false;
         btn.innerHTML = '<span class="material-icons-round">picture_as_pdf</span> Recibo PDF';
@@ -1583,9 +1792,10 @@
         document.body.removeChild(tempDiv);
         btn.disabled = false;
         btn.innerHTML = '<span class="material-icons-round">picture_as_pdf</span> Recibo PDF';
+        showToast('📄 PDF gerado com sucesso!', 'success', 2000);
       }).catch((err) => {
         console.error('Erro ao gerar PDF:', err);
-        alert('Erro ao gerar o recibo. Verifique o console.');
+        showToast('Erro ao gerar o recibo', 'error');
         document.body.removeChild(tempDiv);
         btn.disabled = false;
         btn.innerHTML = '<span class="material-icons-round">picture_as_pdf</span> Recibo PDF';
@@ -1600,7 +1810,7 @@
       c.select();
       c.setSelectionRange(0, 99999);
       document.execCommand("copy");
-      alert("✅ Pix copiado!");
+      showToast('✅ Código Pix copiado!', 'success', 2000);
     }
 
     function novaVenda() {
@@ -1637,6 +1847,8 @@
       resetDataField();
       atualizarPlacar();
       verificarConfiguracoes();
+      
+      showToast('🔄 Nova venda iniciada', 'info', 1500);
     }
   </script>
 </body>
