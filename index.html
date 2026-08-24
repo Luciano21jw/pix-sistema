@@ -641,16 +641,6 @@
     }
     #installBtn:hover { transform: translateX(-50%) translateY(-3px) scale(1.02); box-shadow: 0 12px 40px rgba(50,188,173,0.5); }
     #installBtn .material-icons-round { font-size: 22px; }
-
-    .status-online {
-      display: inline-block;
-      width: 10px;
-      height: 10px;
-      border-radius: 50%;
-      margin-left: 6px;
-    }
-    .status-online.online { background: var(--success); }
-    .status-online.offline { background: var(--danger); }
   </style>
 </head>
 <body>
@@ -678,13 +668,6 @@
       <div id="configWarning" class="config-error" style="display:none;">
         <span class="material-icons-round">warning</span>
         <div><strong>Configuração incompleta!</strong><br>Configure sua <strong>Chave Pix</strong> e <strong>Nome do Recebedor</strong> na aba "Configurações" da planilha.</div>
-      </div>
-
-      <!-- Status da API -->
-      <div id="apiStatus" style="display:flex; align-items:center; gap:8px; margin-bottom:12px; font-size:0.8rem; color:var(--text-muted);">
-        <span>🔌 API:</span>
-        <span id="apiStatusText" style="color:var(--warning);">Conectando...</span>
-        <span class="status-online" id="apiStatusDot"></span>
       </div>
 
       <div class="input-group">
@@ -820,7 +803,7 @@
     const DDI = '55';
 
     // ============================================================
-    //  PRODUTOS DE FALLBACK (usados se a API falhar)
+    //  PRODUTOS DE FALLBACK
     // ============================================================
     const PRODUTOS_FALLBACK = [
       { nome: 'Produto A', valor: '10,00' },
@@ -835,7 +818,6 @@
     // ============================================================
     let produtosSelecionados = [];
     let listaProdutosDisponiveis = [];
-    let apiOnline = false;
     let vendaConfirmada = false;
     let timerVerificacao = null;
     let tempoDecorrido = 0;
@@ -878,7 +860,6 @@
       document.getElementById('whatsappNumber').value = '11999999999';
       resetDataField();
       
-      // Carrega tudo
       carregarProdutos();
       verificarConfiguracoes();
       atualizarPlacar();
@@ -892,23 +873,7 @@
       document.getElementById('dataVenda').value = dataFmt;
     }
 
-    // ============================================================
-    //  FUNÇÕES DE API COM FALLBACK
-    // ============================================================
-    function atualizarStatusAPI(online) {
-      apiOnline = online;
-      const text = document.getElementById('apiStatusText');
-      const dot = document.getElementById('apiStatusDot');
-      if (online) {
-        text.textContent = 'Online';
-        text.style.color = 'var(--success)';
-        dot.className = 'status-online online';
-      } else {
-        text.textContent = 'Offline (usando fallback)';
-        text.style.color = 'var(--warning)';
-        dot.className = 'status-online offline';
-      }
-    }
+    function getScriptUrl() { return SCRIPT_URL; }
 
     // ============================================================
     //  CARREGAR PRODUTOS - COM FALLBACK
@@ -925,12 +890,11 @@
       const timeoutId = setTimeout(() => {
         delete window[callbackName];
         usarFallbackProdutos();
-      }, 5000);
+      }, 3000);
 
       window[callbackName] = function(data) {
         clearTimeout(timeoutId);
         if (data && !data.erro && Array.isArray(data) && data.length > 0) {
-          atualizarStatusAPI(true);
           aplicarProdutos(data);
         } else {
           usarFallbackProdutos();
@@ -955,7 +919,6 @@
     }
 
     function usarFallbackProdutos() {
-      atualizarStatusAPI(false);
       aplicarProdutos(PRODUTOS_FALLBACK);
     }
 
@@ -1012,7 +975,6 @@
         } else {
           document.getElementById('configWarning').style.display = 'none';
           document.getElementById('btnGerar').disabled = false;
-          atualizarStatusAPI(true);
         }
         delete window[callbackName];
       };
@@ -1066,8 +1028,6 @@
         delete window[callbackName];
       }
     }
-
-    function getScriptUrl() { return SCRIPT_URL; }
 
     // ============================================================
     //  MANIPULAR PRODUTOS
