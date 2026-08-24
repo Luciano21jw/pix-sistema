@@ -818,7 +818,7 @@
         <label><span class="material-icons-round">add_shopping_cart</span> Adicionar Produto</label>
         <div class="row-inputs">
           <select id="produtoAdd">
-            <option value="">Carregando produtos...</option>
+            <option value="">⏳ Carregando produtos da planilha...</option>
           </select>
           <button class="btn-add" onclick="adicionarProduto()" aria-label="Adicionar produto">
             <svg viewBox="0 0 24 24"><path d="M19 13H13V19H11V13H5V11H11V5H13V11H19V13Z"/></svg>
@@ -936,7 +936,7 @@
 
   <script>
     // ============================================================
-    //  TOAST / NOTIFICAÇÃO (SUBSTITUI O ALERT)
+    //  TOAST / NOTIFICAÇÃO
     // ============================================================
     function showToast(message, type = 'info', duration = 3000) {
       const container = document.getElementById('toast-container');
@@ -963,7 +963,7 @@
     }
 
     // ============================================================
-    //  MODAL DE CONFIRMAÇÃO (SUBSTITUI O confirm)
+    //  MODAL DE CONFIRMAÇÃO
     // ============================================================
     let confirmResolve = null;
 
@@ -995,7 +995,7 @@
     const DDI = '55';
 
     // ============================================================
-    //  PRODUTOS DE FALLBACK
+    //  PRODUTOS DE FALLBACK (usados se a API falhar)
     // ============================================================
     const PRODUTOS_FALLBACK = [
       { nome: 'Produto A', valor: '10,00' },
@@ -1068,29 +1068,33 @@
     function getScriptUrl() { return SCRIPT_URL; }
 
     // ============================================================
-    //  CARREGAR PRODUTOS - COM FALLBACK
+    //  CARREGAR PRODUTOS - COM TIMEOUT MAIOR
     // ============================================================
     function carregarProdutos() {
       const selectAdd = document.getElementById('produtoAdd');
       const selectRemove = document.getElementById('produtoRemove');
       
-      selectAdd.innerHTML = '<option value="">⏳ Carregando...</option>';
+      selectAdd.innerHTML = '<option value="">⏳ Carregando produtos da planilha...</option>';
       selectRemove.innerHTML = '<option value="">⏳ Carregando...</option>';
 
       const url = getScriptUrl();
       const callbackName = 'produtos_' + Date.now();
+      
+      // TIMEOUT DE 10 SEGUNDOS (era 3)
       const timeoutId = setTimeout(() => {
         delete window[callbackName];
         usarFallbackProdutos();
-        showToast('Usando produtos locais (offline)', 'warning', 2000);
-      }, 3000);
+        showToast('⏳ Produtos da planilha não carregaram, usando lista local', 'warning', 3000);
+      }, 10000);
 
       window[callbackName] = function(data) {
         clearTimeout(timeoutId);
         if (data && !data.erro && Array.isArray(data) && data.length > 0) {
           aplicarProdutos(data);
+          showToast('✅ Produtos carregados da planilha!', 'success', 2000);
         } else {
           usarFallbackProdutos();
+          showToast('⚠️ Erro ao carregar produtos da planilha', 'error', 3000);
         }
         delete window[callbackName];
       };
@@ -1102,12 +1106,14 @@
           clearTimeout(timeoutId);
           delete window[callbackName];
           usarFallbackProdutos();
+          showToast('❌ Erro de conexão com a planilha', 'error', 3000);
         };
         document.body.appendChild(script);
       } catch(e) {
         clearTimeout(timeoutId);
         delete window[callbackName];
         usarFallbackProdutos();
+        showToast('❌ Erro ao conectar com a planilha', 'error', 3000);
       }
     }
 
@@ -1153,7 +1159,7 @@
         delete window[callbackName];
         document.getElementById('configWarning').style.display = 'none';
         document.getElementById('btnGerar').disabled = false;
-      }, 4000);
+      }, 8000);
 
       window[callbackName] = function(data) {
         clearTimeout(timeoutId);
@@ -1198,7 +1204,7 @@
       const callbackName = 'total_' + Date.now();
       const timeoutId = setTimeout(() => {
         delete window[callbackName];
-      }, 4000);
+      }, 8000);
 
       window[callbackName] = function(data) {
         clearTimeout(timeoutId);
@@ -1568,7 +1574,7 @@
     }
 
     // ============================================================
-    //  CONFIRMAR CANCELAMENTO (com modal personalizado)
+    //  CONFIRMAR CANCELAMENTO
     // ============================================================
     async function confirmarCancelamento() {
       const pixCode = document.getElementById('pixCodeText').value;
