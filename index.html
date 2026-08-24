@@ -55,10 +55,10 @@
     ::-webkit-scrollbar-track { background: var(--bg-secondary); }
     ::-webkit-scrollbar-thumb { background: var(--brand); border-radius: 4px; }
 
-    /* ===== TOAST / NOTIFICAÇÃO ===== */
+    /* ===== TOAST / NOTIFICAÇÃO (AUMENTADO PARA SUBIR MAIS) ===== */
     #toast-container {
       position: fixed;
-      bottom: 30px;
+      bottom: 90px; /* Subiu de 30px para 90px */
       left: 50%;
       transform: translateX(-50%);
       z-index: 999999;
@@ -178,16 +178,20 @@
 
     @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
+    /* ============================================ */
+    /*  SCOREBOARD - FONTE AUMENTADA (IGUAL "Nova Venda") */
+    /* ============================================ */
     .scoreboard {
       background: rgba(50,188,173,0.08);
       backdrop-filter: blur(8px);
       border: 1px solid rgba(50,188,173,0.2);
       color: var(--brand-light);
-      padding: 10px 20px;
+      padding: 14px 24px;              /* Padding maior */
       border-radius: 50px;
       margin-bottom: 20px;
-      font-weight: 600;
-      font-size: 0.9rem;
+      font-weight: 800;                /* Peso igual ao título */
+      font-size: 1.6rem;               /* Tamanho igual ao título "Nova Venda" */
+      letter-spacing: -0.5px;          /* Espaçamento igual ao h2 */
       display: flex;
       align-items: center;
       gap: 10px;
@@ -196,14 +200,16 @@
       justify-content: center;
       box-shadow: 0 2px 12px rgba(0,0,0,0.3);
     }
-    .scoreboard .material-icons-round { font-size: 20px; }
+    .scoreboard .material-icons-round { font-size: 28px; } /* Ícone igual ao h2 */
     .scoreboard .badge {
       background: rgba(255,255,255,0.08);
       color: var(--text-secondary);
-      padding: 2px 12px;
+      padding: 4px 14px;
       border-radius: 30px;
-      font-size: 0.7rem;
+      font-size: 0.8rem; 
       font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
     }
     .scoreboard .badge.success { background: rgba(0,230,118,0.2); color: var(--success); }
 
@@ -1080,7 +1086,6 @@
       const url = getScriptUrl();
       const callbackName = 'produtos_' + Date.now();
       
-      // TIMEOUT DE 10 SEGUNDOS (era 3)
       const timeoutId = setTimeout(() => {
         delete window[callbackName];
         usarFallbackProdutos();
