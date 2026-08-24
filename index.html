@@ -12,15 +12,14 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%2332bcad'/%3E%3Ctext x='50' y='68' font-size='50' text-anchor='middle' fill='white' font-family='sans-serif'%3EP%3C/text%3E%3C/svg%3E">
 
-  <!-- Google Fonts + Material Icons + html2pdf - CARREGAMENTO ASSÍNCRONO -->
+  <!-- Google Fonts + Material Icons + html2pdf -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
-  <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet" media="print" onload="this.media='all'">
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js" async></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
   <style>
-    /* ===== RESET & VARIÁVEIS ===== */
     * { margin: 0; padding: 0; box-sizing: border-box; }
     :root {
       --brand: #32bcad;
@@ -56,7 +55,6 @@
     ::-webkit-scrollbar-track { background: var(--bg-secondary); }
     ::-webkit-scrollbar-thumb { background: var(--brand); border-radius: 4px; }
 
-    /* SCOREBOARD */
     .scoreboard {
       background: rgba(50,188,173,0.08);
       backdrop-filter: blur(8px);
@@ -86,7 +84,6 @@
     }
     .scoreboard .badge.success { background: rgba(0,230,118,0.2); color: var(--success); }
 
-    /* CONTAINER */
     .container {
       background: var(--bg-secondary);
       padding: 24px;
@@ -333,7 +330,6 @@
     }
     @keyframes spin { 100% { transform: rotate(360deg); } }
 
-    /* ===== TELA DE RESUMO CENTRALIZADA ===== */
     #step-pix {
       display: none;
       animation: fadeSlide 0.4s ease;
@@ -417,7 +413,6 @@
     }
     .pix-code-copy:hover { border-color: var(--brand); color: var(--text-primary); background: rgba(50,188,173,0.04); }
 
-    /* Produtos nota fiscal */
     .produtos-nota {
       background: rgba(0,0,0,0.25);
       border-radius: var(--radius-sm);
@@ -537,7 +532,6 @@
     @keyframes fadeIn { from { opacity: 0; transform: scale(0.96); } to { opacity: 1; transform: scale(1); } }
     @keyframes fadeInItem { from { opacity: 0; transform: translateX(-8px); } to { opacity: 1; transform: translateX(0); } }
 
-    /* ===== AÇÕES (centralizadas) ===== */
     #acoesRecibo {
       width: 100%;
       max-width: 340px;
@@ -551,7 +545,6 @@
     }
     .whatsapp-field input { flex: 1; }
 
-    /* Botão redondo do WhatsApp - ÍCONE BRANCO */
     .btn-whatsapp-circle {
       width: 56px;
       height: 56px;
@@ -590,7 +583,6 @@
       max-width: 340px;
     }
 
-    /* Responsivo */
     @media (max-width: 480px) {
       body { padding: 12px; }
       .container { padding: 18px; }
@@ -649,6 +641,16 @@
     }
     #installBtn:hover { transform: translateX(-50%) translateY(-3px) scale(1.02); box-shadow: 0 12px 40px rgba(50,188,173,0.5); }
     #installBtn .material-icons-round { font-size: 22px; }
+
+    .status-online {
+      display: inline-block;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      margin-left: 6px;
+    }
+    .status-online.online { background: var(--success); }
+    .status-online.offline { background: var(--danger); }
   </style>
 </head>
 <body>
@@ -678,6 +680,13 @@
         <div><strong>Configuração incompleta!</strong><br>Configure sua <strong>Chave Pix</strong> e <strong>Nome do Recebedor</strong> na aba "Configurações" da planilha.</div>
       </div>
 
+      <!-- Status da API -->
+      <div id="apiStatus" style="display:flex; align-items:center; gap:8px; margin-bottom:12px; font-size:0.8rem; color:var(--text-muted);">
+        <span>🔌 API:</span>
+        <span id="apiStatusText" style="color:var(--warning);">Conectando...</span>
+        <span class="status-online" id="apiStatusDot"></span>
+      </div>
+
       <div class="input-group">
         <label><span class="material-icons-round">calendar_today</span> Data</label>
         <input type="date" id="dataVenda">
@@ -686,7 +695,9 @@
       <div class="input-group">
         <label><span class="material-icons-round">add_shopping_cart</span> Adicionar Produto</label>
         <div class="row-inputs">
-          <select id="produtoAdd"><option value="">Carregando...</option></select>
+          <select id="produtoAdd">
+            <option value="">Carregando produtos...</option>
+          </select>
           <button class="btn-add" onclick="adicionarProduto()" aria-label="Adicionar produto">
             <svg viewBox="0 0 24 24"><path d="M19 13H13V19H11V13H5V11H11V5H13V11H19V13Z"/></svg>
           </button>
@@ -696,7 +707,9 @@
       <div class="input-group">
         <label><span class="material-icons-round">remove_shopping_cart</span> Remover Produto</label>
         <div class="row-inputs">
-          <select id="produtoRemove"><option value="">Selecione...</option></select>
+          <select id="produtoRemove">
+            <option value="">Selecione um produto</option>
+          </select>
           <button class="btn-remove" onclick="removerProduto()" aria-label="Remover produto">
             <svg viewBox="0 0 24 24"><path d="M19 13H5V11H19V13Z"/></svg>
           </button>
@@ -732,7 +745,7 @@
       </div>
     </div>
 
-    <!-- TELA 2: RESUMO PIX (CENTRALIZADO) -->
+    <!-- TELA 2: RESUMO PIX -->
     <div id="step-pix" style="display:none; text-align:center;">
       <span class="material-icons-round" style="color:var(--success); font-size:52px;">check_circle</span>
       <div class="client-name" id="displayCliente"></div>
@@ -759,7 +772,6 @@
         📋 Clique para copiar o código Pix
       </div>
 
-      <!-- Produtos -->
       <div id="produtosNota" class="produtos-nota">
         <div class="titulo"><span class="material-icons-round">receipt_long</span> Produtos</div>
         <div id="listaProdutosNota">
@@ -767,9 +779,7 @@
         </div>
       </div>
 
-      <!-- ===== AÇÕES (WhatsApp + PDF) ===== -->
       <div id="acoesRecibo">
-        <!-- WhatsApp: campo + botão redondo -->
         <div class="input-group">
           <label><span class="material-icons-round">whatsapp</span> Número WhatsApp (com DDD)</label>
           <div class="whatsapp-field">
@@ -780,7 +790,6 @@
           </div>
         </div>
 
-        <!-- Botão PDF -->
         <button class="btn-pdf" onclick="gerarPDF()" id="btnPDF">
           <span class="material-icons-round">picture_as_pdf</span> Recibo PDF
         </button>
@@ -805,12 +814,33 @@
 
   <script>
     // ============================================================
-    //  CONFIGURAÇÃO - APONTE PARA SEU APPS SCRIPT
+    //  CONFIGURAÇÃO
     // ============================================================
     const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzgSMN74JrxceIXNx_JrTyRK7GaUAXHWPfov5M1PJcrJvztxFOz3dYh7k2iJdFKYNG92w/exec';
     const DDI = '55';
 
-    function getScriptUrl() { return SCRIPT_URL; }
+    // ============================================================
+    //  PRODUTOS DE FALLBACK (usados se a API falhar)
+    // ============================================================
+    const PRODUTOS_FALLBACK = [
+      { nome: 'Produto A', valor: '10,00' },
+      { nome: 'Produto B', valor: '25,50' },
+      { nome: 'Produto C', valor: '50,00' },
+      { nome: 'Produto D', valor: '100,00' },
+      { nome: 'Serviço Premium', valor: '200,00' }
+    ];
+
+    // ============================================================
+    //  VARIÁVEIS GLOBAIS
+    // ============================================================
+    let produtosSelecionados = [];
+    let listaProdutosDisponiveis = [];
+    let apiOnline = false;
+    let vendaConfirmada = false;
+    let timerVerificacao = null;
+    let tempoDecorrido = 0;
+    const maxTempo = 300;
+    let loopAtivo = false;
 
     // ============================================================
     //  PWA - INSTALAÇÃO
@@ -828,8 +858,6 @@
           const result = await deferredPrompt.userChoice;
           if (result.outcome === 'accepted') {
             console.log('App instalado');
-          } else {
-            console.log('Instalação recusada');
           }
           deferredPrompt = null;
         }
@@ -837,29 +865,23 @@
     });
 
     // ============================================================
-    //  SPLASH SCREEN - FADE MAIS RÁPIDO
+    //  SPLASH SCREEN
     // ============================================================
     window.addEventListener('load', () => {
-      // Splash desaparece mais rápido (300ms em vez de 600ms)
       setTimeout(() => {
         document.getElementById('splash-screen').classList.add('fade-out');
         setTimeout(() => {
           document.getElementById('splash-screen').style.display = 'none';
         }, 300);
       }, 300);
-      document.getElementById('whatsappNumber').value = '11999999999';
       
-      // Carrega produtos e configurações em paralelo
+      document.getElementById('whatsappNumber').value = '11999999999';
+      resetDataField();
+      
+      // Carrega tudo
       carregarProdutos();
       verificarConfiguracoes();
       atualizarPlacar();
-    });
-
-    // ============================================================
-    //  INICIALIZAÇÃO
-    // ============================================================
-    document.addEventListener('DOMContentLoaded', () => {
-      resetDataField();
     });
 
     function resetDataField() {
@@ -871,132 +893,76 @@
     }
 
     // ============================================================
-    //  VERIFICAR CONFIGURAÇÕES (com cache)
+    //  FUNÇÕES DE API COM FALLBACK
     // ============================================================
-    let configCache = null;
-    let configCacheTime = 0;
-
-    function verificarConfiguracoes() {
-      const now = Date.now();
-      // Cache por 30 segundos para evitar chamadas repetidas
-      if (configCache && (now - configCacheTime) < 30000) {
-        aplicarConfiguracao(configCache);
-        return;
-      }
-
-      const url = getScriptUrl();
-      const callbackName = 'config_' + Date.now();
-      window[callbackName] = function(data) {
-        configCache = data;
-        configCacheTime = now;
-        aplicarConfiguracao(data);
-        delete window[callbackName];
-      };
-      const script = document.createElement('script');
-      script.src = url + '?action=verificarConfiguracoes&callback=' + callbackName;
-      script.onerror = () => { delete window[callbackName]; };
-      document.body.appendChild(script);
-    }
-
-    function aplicarConfiguracao(data) {
-      if (data && data.configurado === false) {
-        const warn = document.getElementById('configWarning');
-        warn.style.display = 'flex';
-        warn.innerHTML = `
-          <span class="material-icons-round">warning</span>
-          <div><strong>⚠️ ${data.mensagem}</strong></div>
-        `;
-        document.getElementById('btnGerar').disabled = true;
+    function atualizarStatusAPI(online) {
+      apiOnline = online;
+      const text = document.getElementById('apiStatusText');
+      const dot = document.getElementById('apiStatusDot');
+      if (online) {
+        text.textContent = 'Online';
+        text.style.color = 'var(--success)';
+        dot.className = 'status-online online';
       } else {
-        document.getElementById('configWarning').style.display = 'none';
-        document.getElementById('btnGerar').disabled = false;
+        text.textContent = 'Offline (usando fallback)';
+        text.style.color = 'var(--warning)';
+        dot.className = 'status-online offline';
       }
     }
 
     // ============================================================
-    //  ATUALIZAR PLACAR (com cache)
+    //  CARREGAR PRODUTOS - COM FALLBACK
     // ============================================================
-    let totalCache = null;
-    let totalCacheTime = 0;
-
-    function atualizarPlacar() {
-      const now = Date.now();
-      if (totalCache && (now - totalCacheTime) < 30000) {
-        if (totalCache && totalCache.total) {
-          document.getElementById('totalHoje').innerText = totalCache.total;
-        }
-        return;
-      }
-
-      const url = getScriptUrl();
-      const callbackName = 'total_' + Date.now();
-      window[callbackName] = function(data) {
-        totalCache = data;
-        totalCacheTime = now;
-        if (data && data.total) {
-          document.getElementById('totalHoje').innerText = data.total;
-        }
-        delete window[callbackName];
-      };
-      const script = document.createElement('script');
-      script.src = url + '?action=getTotalVendasHoje&callback=' + callbackName;
-      script.onerror = () => { delete window[callbackName]; };
-      document.body.appendChild(script);
-    }
-
-    // ============================================================
-    //  PRODUTOS (com cache)
-    // ============================================================
-    let produtosCache = null;
-    let produtosCacheTime = 0;
-    let produtosSelecionados = [];
-    let listaProdutosDisponiveis = [];
-
     function carregarProdutos() {
-      const now = Date.now();
-      if (produtosCache && (now - produtosCacheTime) < 60000) {
-        aplicarProdutos(produtosCache);
-        return;
-      }
-
       const selectAdd = document.getElementById('produtoAdd');
       const selectRemove = document.getElementById('produtoRemove');
-      selectAdd.innerHTML = '<option value="">Carregando...</option>';
-      selectRemove.innerHTML = '<option value="">Carregando...</option>';
+      
+      selectAdd.innerHTML = '<option value="">⏳ Carregando...</option>';
+      selectRemove.innerHTML = '<option value="">⏳ Carregando...</option>';
 
       const url = getScriptUrl();
       const callbackName = 'produtos_' + Date.now();
+      const timeoutId = setTimeout(() => {
+        delete window[callbackName];
+        usarFallbackProdutos();
+      }, 5000);
+
       window[callbackName] = function(data) {
-        produtosCache = data;
-        produtosCacheTime = now;
-        aplicarProdutos(data);
+        clearTimeout(timeoutId);
+        if (data && !data.erro && Array.isArray(data) && data.length > 0) {
+          atualizarStatusAPI(true);
+          aplicarProdutos(data);
+        } else {
+          usarFallbackProdutos();
+        }
         delete window[callbackName];
       };
 
-      const script = document.createElement('script');
-      script.src = url + '?action=getProdutos&callback=' + callbackName;
-      script.onerror = () => {
-        selectAdd.innerHTML = '<option value="">⚠️ Erro de conexão</option>';
-        selectRemove.innerHTML = '<option value="">⚠️ Erro de conexão</option>';
+      try {
+        const script = document.createElement('script');
+        script.src = url + '?action=getProdutos&callback=' + callbackName;
+        script.onerror = () => {
+          clearTimeout(timeoutId);
+          delete window[callbackName];
+          usarFallbackProdutos();
+        };
+        document.body.appendChild(script);
+      } catch(e) {
+        clearTimeout(timeoutId);
         delete window[callbackName];
-      };
-      document.body.appendChild(script);
+        usarFallbackProdutos();
+      }
+    }
+
+    function usarFallbackProdutos() {
+      atualizarStatusAPI(false);
+      aplicarProdutos(PRODUTOS_FALLBACK);
     }
 
     function aplicarProdutos(data) {
       const selectAdd = document.getElementById('produtoAdd');
       const selectRemove = document.getElementById('produtoRemove');
 
-      if (data && data.erro) {
-        selectAdd.innerHTML = '<option value="">⚠️ ' + data.mensagem + '</option>';
-        selectRemove.innerHTML = '<option value="">⚠️ ' + data.mensagem + '</option>';
-        return;
-      }
-      if (Array.isArray(data) && data.length > 0 && data[0] && data[0].erro) {
-        selectAdd.innerHTML = '<option value="">⚠️ ' + data[0].mensagem + '</option>';
-        selectRemove.innerHTML = '<option value="">⚠️ ' + data[0].mensagem + '</option>';
-        return;
-      }
       if (!data || data.length === 0) {
         selectAdd.innerHTML = '<option value="">⚠️ Nenhum produto</option>';
         selectRemove.innerHTML = '<option value="">⚠️ Nenhum produto</option>';
@@ -1022,7 +988,89 @@
     }
 
     // ============================================================
-    //  MANIPULAR PRODUTOS - FUNÇÕES OTIMIZADAS
+    //  VERIFICAR CONFIGURAÇÕES
+    // ============================================================
+    function verificarConfiguracoes() {
+      const url = getScriptUrl();
+      const callbackName = 'config_' + Date.now();
+      const timeoutId = setTimeout(() => {
+        delete window[callbackName];
+        document.getElementById('configWarning').style.display = 'none';
+        document.getElementById('btnGerar').disabled = false;
+      }, 4000);
+
+      window[callbackName] = function(data) {
+        clearTimeout(timeoutId);
+        if (data && data.configurado === false) {
+          const warn = document.getElementById('configWarning');
+          warn.style.display = 'flex';
+          warn.innerHTML = `
+            <span class="material-icons-round">warning</span>
+            <div><strong>⚠️ ${data.mensagem}</strong></div>
+          `;
+          document.getElementById('btnGerar').disabled = true;
+        } else {
+          document.getElementById('configWarning').style.display = 'none';
+          document.getElementById('btnGerar').disabled = false;
+          atualizarStatusAPI(true);
+        }
+        delete window[callbackName];
+      };
+
+      try {
+        const script = document.createElement('script');
+        script.src = url + '?action=verificarConfiguracoes&callback=' + callbackName;
+        script.onerror = () => {
+          clearTimeout(timeoutId);
+          delete window[callbackName];
+          document.getElementById('configWarning').style.display = 'none';
+          document.getElementById('btnGerar').disabled = false;
+        };
+        document.body.appendChild(script);
+      } catch(e) {
+        clearTimeout(timeoutId);
+        delete window[callbackName];
+        document.getElementById('configWarning').style.display = 'none';
+        document.getElementById('btnGerar').disabled = false;
+      }
+    }
+
+    // ============================================================
+    //  ATUALIZAR PLACAR
+    // ============================================================
+    function atualizarPlacar() {
+      const url = getScriptUrl();
+      const callbackName = 'total_' + Date.now();
+      const timeoutId = setTimeout(() => {
+        delete window[callbackName];
+      }, 4000);
+
+      window[callbackName] = function(data) {
+        clearTimeout(timeoutId);
+        if (data && data.total) {
+          document.getElementById('totalHoje').innerText = data.total;
+        }
+        delete window[callbackName];
+      };
+
+      try {
+        const script = document.createElement('script');
+        script.src = url + '?action=getTotalVendasHoje&callback=' + callbackName;
+        script.onerror = () => {
+          clearTimeout(timeoutId);
+          delete window[callbackName];
+        };
+        document.body.appendChild(script);
+      } catch(e) {
+        clearTimeout(timeoutId);
+        delete window[callbackName];
+      }
+    }
+
+    function getScriptUrl() { return SCRIPT_URL; }
+
+    // ============================================================
+    //  MANIPULAR PRODUTOS
     // ============================================================
     function adicionarProduto() {
       const select = document.getElementById('produtoAdd');
@@ -1124,7 +1172,7 @@
     }
 
     // ============================================================
-    //  GERAR PIX - OTIMIZADO
+    //  GERAR PIX
     // ============================================================
     function gerarPix() {
       const url = getScriptUrl();
@@ -1151,7 +1199,15 @@
       vendaConfirmada = false;
 
       const callbackName = 'pix_' + Date.now();
+      const timeoutId = setTimeout(() => {
+        delete window[callbackName];
+        document.getElementById('loader').style.display = 'none';
+        document.getElementById('btnGerar').style.display = 'flex';
+        alert('❌ Tempo esgotado! Verifique sua conexão com a internet.');
+      }, 15000);
+
       window[callbackName] = function(resultado) {
+        clearTimeout(timeoutId);
         document.getElementById('loader').style.display = 'none';
         if (resultado && resultado.success) {
           const pixCode = resultado.pixCode;
@@ -1185,8 +1241,6 @@
 
           if (resultado.novoTotal) {
             document.getElementById('totalHoje').innerText = resultado.novoTotal;
-            totalCache = { total: resultado.novoTotal };
-            totalCacheTime = Date.now();
           }
 
           iniciarVerificacaoAutomatica();
@@ -1197,27 +1251,36 @@
         delete window[callbackName];
       };
 
-      const params = new URLSearchParams({
-        action: 'registrarVenda',
-        data: dados.data,
-        valor: dados.valor,
-        cliente: dados.cliente,
-        descricao: dados.descricao,
-        callback: callbackName
-      });
-      const script = document.createElement('script');
-      script.src = url + '?' + params.toString();
-      script.onerror = () => {
+      try {
+        const params = new URLSearchParams({
+          action: 'registrarVenda',
+          data: dados.data,
+          valor: dados.valor,
+          cliente: dados.cliente,
+          descricao: dados.descricao,
+          callback: callbackName
+        });
+        const script = document.createElement('script');
+        script.src = url + '?' + params.toString();
+        script.onerror = () => {
+          clearTimeout(timeoutId);
+          document.getElementById('loader').style.display = 'none';
+          document.getElementById('btnGerar').style.display = 'flex';
+          alert('❌ Erro de conexão com o Apps Script!');
+          delete window[callbackName];
+        };
+        document.body.appendChild(script);
+      } catch(e) {
+        clearTimeout(timeoutId);
         document.getElementById('loader').style.display = 'none';
         document.getElementById('btnGerar').style.display = 'flex';
-        alert('❌ Erro de conexão com o Apps Script!');
+        alert('❌ Erro ao conectar com o servidor!');
         delete window[callbackName];
-      };
-      document.body.appendChild(script);
+      }
     }
 
     // ============================================================
-    //  ATUALIZAR LISTA DE PRODUTOS NA NOTA FISCAL
+    //  ATUALIZAR PRODUTOS NA NOTA
     // ============================================================
     function atualizarProdutosNota() {
       const container = document.getElementById('listaProdutosNota');
@@ -1245,15 +1308,8 @@
     }
 
     // ============================================================
-    //  VERIFICAÇÃO AUTOMÁTICA - OTIMIZADA
+    //  VERIFICAÇÃO AUTOMÁTICA
     // ============================================================
-    let statusAtual = 'PENDENTE';
-    let vendaConfirmada = false;
-    let timerVerificacao = null;
-    let tempoDecorrido = 0;
-    const maxTempo = 300;
-    let loopAtivo = false;
-
     function iniciarVerificacaoAutomatica() {
       if (timerVerificacao) clearInterval(timerVerificacao);
       tempoDecorrido = 0;
@@ -1280,7 +1336,15 @@
         if (!loopAtivo || vendaConfirmada) return;
         const url = getScriptUrl();
         const callbackName = 'verify_' + Date.now();
+        const timeoutId = setTimeout(() => {
+          delete window[callbackName];
+          if (loopAtivo && !vendaConfirmada && tempoDecorrido < maxTempo) {
+            timerVerificacao = setTimeout(executarVerificacao, 5000);
+          }
+        }, 8000);
+
         window[callbackName] = function(resultado) {
+          clearTimeout(timeoutId);
           if (!loopAtivo || vendaConfirmada) { delete window[callbackName]; return; }
           if (resultado && resultado.encontrado && resultado.confirmado) {
             confirmarPagamento(resultado);
@@ -1292,15 +1356,25 @@
           }
           delete window[callbackName];
         };
-        const script = document.createElement('script');
-        script.src = url + '?action=verificarPagamento&callback=' + callbackName;
-        script.onerror = () => {
+
+        try {
+          const script = document.createElement('script');
+          script.src = url + '?action=verificarPagamento&callback=' + callbackName;
+          script.onerror = () => {
+            clearTimeout(timeoutId);
+            delete window[callbackName];
+            if (loopAtivo && !vendaConfirmada && tempoDecorrido < maxTempo) {
+              timerVerificacao = setTimeout(executarVerificacao, 5000);
+            }
+          };
+          document.body.appendChild(script);
+        } catch(e) {
+          clearTimeout(timeoutId);
           delete window[callbackName];
           if (loopAtivo && !vendaConfirmada && tempoDecorrido < maxTempo) {
             timerVerificacao = setTimeout(executarVerificacao, 5000);
           }
-        };
-        document.body.appendChild(script);
+        }
       }
 
       timerVerificacao = setTimeout(executarVerificacao, 3000);
@@ -1314,7 +1388,6 @@
       vendaConfirmada = true;
       loopAtivo = false;
       if (timerVerificacao) { clearTimeout(timerVerificacao); timerVerificacao = null; }
-      statusAtual = 'PAGO';
 
       const container = document.getElementById('checkWritingContainer');
       container.classList.add('visivel');
@@ -1358,14 +1431,20 @@
 
       const url = getScriptUrl();
       const callbackName = 'cancel_' + Date.now();
+      const timeoutId = setTimeout(() => {
+        delete window[callbackName];
+        document.getElementById('loader').style.display = 'none';
+        document.getElementById('btnGerar').style.display = 'flex';
+        alert('❌ Tempo esgotado ao cancelar!');
+      }, 10000);
+
       window[callbackName] = function(resultado) {
+        clearTimeout(timeoutId);
         document.getElementById('loader').style.display = 'none';
         if (resultado && resultado.success) {
           alert('✅ Venda cancelada com sucesso!');
           if (resultado.novoTotal) {
             document.getElementById('totalHoje').innerText = resultado.novoTotal;
-            totalCache = { total: resultado.novoTotal };
-            totalCacheTime = Date.now();
           }
           novaVenda();
         } else {
@@ -1375,24 +1454,33 @@
         delete window[callbackName];
       };
 
-      const params = new URLSearchParams({
-        action: 'cancelarVenda',
-        pixCode: pixCode,
-        callback: callbackName
-      });
-      const script = document.createElement('script');
-      script.src = url + '?' + params.toString();
-      script.onerror = () => {
+      try {
+        const params = new URLSearchParams({
+          action: 'cancelarVenda',
+          pixCode: pixCode,
+          callback: callbackName
+        });
+        const script = document.createElement('script');
+        script.src = url + '?' + params.toString();
+        script.onerror = () => {
+          clearTimeout(timeoutId);
+          document.getElementById('loader').style.display = 'none';
+          document.getElementById('btnGerar').style.display = 'flex';
+          alert('❌ Erro de conexão!');
+          delete window[callbackName];
+        };
+        document.body.appendChild(script);
+      } catch(e) {
+        clearTimeout(timeoutId);
         document.getElementById('loader').style.display = 'none';
         document.getElementById('btnGerar').style.display = 'flex';
-        alert('❌ Erro de conexão!');
+        alert('❌ Erro ao conectar!');
         delete window[callbackName];
-      };
-      document.body.appendChild(script);
+      }
     }
 
     // ============================================================
-    //  ENVIAR COMPROVANTE VIA WHATSAPP
+    //  ENVIAR WHATSAPP
     // ============================================================
     function enviarWhatsApp() {
       const numero = document.getElementById('whatsappNumber').value.trim();
@@ -1428,7 +1516,7 @@
         msg += `\n`;
       }
       msg += `🔑 *Pagamento via Pix confirmado!* ✅\n\n`;
-      msg += `_Este é um comprovante automático. O recibo em PDF segue anexado._`;
+      msg += `_Este é um comprovante automático._`;
 
       const texto = encodeURIComponent(msg);
       const url = `https://api.whatsapp.com/send?phone=${numeroCompleto}&text=${texto}`;
@@ -1570,7 +1658,6 @@
       window.pixCodeAtual = null;
       window.paymentIdAtual = null;
       window.dadosVenda = null;
-      statusAtual = 'PENDENTE';
       vendaConfirmada = false;
       tempoDecorrido = 0;
 
