@@ -12,10 +12,12 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%2332bcad'/%3E%3Ctext x='50' y='68' font-size='50' text-anchor='middle' fill='white' font-family='sans-serif'%3EP%3C/text%3E%3C/svg%3E">
 
-  <!-- Google Fonts + Material Icons + html2pdf -->
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+  <!-- Google Fonts + Material Icons + html2pdf - CARREGAMENTO ASSÍNCRONO -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet" media="print" onload="this.media='all'">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js" async></script>
 
   <style>
     /* ===== RESET & VARIÁVEIS ===== */
@@ -549,7 +551,7 @@
     }
     .whatsapp-field input { flex: 1; }
 
-    /* Botão redondo do WhatsApp */
+    /* Botão redondo do WhatsApp - ÍCONE BRANCO */
     .btn-whatsapp-circle {
       width: 56px;
       height: 56px;
@@ -574,12 +576,13 @@
       transform: scale(0.95);
     }
     .btn-whatsapp-circle .telefone-icon {
-      color: #fff;
+      color: #ffffff !important;
       font-size: 28px;
       line-height: 1;
       display: flex;
       align-items: center;
       justify-content: center;
+      filter: brightness(0) invert(1);
     }
 
     .footer-actions, .btn-cancel {
@@ -608,7 +611,7 @@
       align-items: center;
       justify-content: center;
       z-index: 99999;
-      transition: opacity 0.6s ease;
+      transition: opacity 0.4s ease;
       opacity: 1;
       pointer-events: none;
     }
@@ -834,16 +837,22 @@
     });
 
     // ============================================================
-    //  SPLASH SCREEN
+    //  SPLASH SCREEN - FADE MAIS RÁPIDO
     // ============================================================
     window.addEventListener('load', () => {
+      // Splash desaparece mais rápido (300ms em vez de 600ms)
       setTimeout(() => {
         document.getElementById('splash-screen').classList.add('fade-out');
         setTimeout(() => {
           document.getElementById('splash-screen').style.display = 'none';
-        }, 600);
-      }, 600);
+        }, 300);
+      }, 300);
       document.getElementById('whatsappNumber').value = '11999999999';
+      
+      // Carrega produtos e configurações em paralelo
+      carregarProdutos();
+      verificarConfiguracoes();
+      atualizarPlacar();
     });
 
     // ============================================================
@@ -851,9 +860,6 @@
     // ============================================================
     document.addEventListener('DOMContentLoaded', () => {
       resetDataField();
-      atualizarPlacar();
-      carregarProdutos();
-      verificarConfiguracoes();
     });
 
     function resetDataField() {
@@ -865,24 +871,25 @@
     }
 
     // ============================================================
-    //  VERIFICAR CONFIGURAÇÕES
+    //  VERIFICAR CONFIGURAÇÕES (com cache)
     // ============================================================
+    let configCache = null;
+    let configCacheTime = 0;
+
     function verificarConfiguracoes() {
+      const now = Date.now();
+      // Cache por 30 segundos para evitar chamadas repetidas
+      if (configCache && (now - configCacheTime) < 30000) {
+        aplicarConfiguracao(configCache);
+        return;
+      }
+
       const url = getScriptUrl();
       const callbackName = 'config_' + Date.now();
       window[callbackName] = function(data) {
-        if (data && data.configurado === false) {
-          const warn = document.getElementById('configWarning');
-          warn.style.display = 'flex';
-          warn.innerHTML = `
-            <span class="material-icons-round">warning</span>
-            <div><strong>⚠️ ${data.mensagem}</strong></div>
-          `;
-          document.getElementById('btnGerar').disabled = true;
-        } else {
-          document.getElementById('configWarning').style.display = 'none';
-          document.getElementById('btnGerar').disabled = false;
-        }
+        configCache = data;
+        configCacheTime = now;
+        aplicarConfiguracao(data);
         delete window[callbackName];
       };
       const script = document.createElement('script');
@@ -891,13 +898,41 @@
       document.body.appendChild(script);
     }
 
+    function aplicarConfiguracao(data) {
+      if (data && data.configurado === false) {
+        const warn = document.getElementById('configWarning');
+        warn.style.display = 'flex';
+        warn.innerHTML = `
+          <span class="material-icons-round">warning</span>
+          <div><strong>⚠️ ${data.mensagem}</strong></div>
+        `;
+        document.getElementById('btnGerar').disabled = true;
+      } else {
+        document.getElementById('configWarning').style.display = 'none';
+        document.getElementById('btnGerar').disabled = false;
+      }
+    }
+
     // ============================================================
-    //  ATUALIZAR PLACAR
+    //  ATUALIZAR PLACAR (com cache)
     // ============================================================
+    let totalCache = null;
+    let totalCacheTime = 0;
+
     function atualizarPlacar() {
+      const now = Date.now();
+      if (totalCache && (now - totalCacheTime) < 30000) {
+        if (totalCache && totalCache.total) {
+          document.getElementById('totalHoje').innerText = totalCache.total;
+        }
+        return;
+      }
+
       const url = getScriptUrl();
       const callbackName = 'total_' + Date.now();
       window[callbackName] = function(data) {
+        totalCache = data;
+        totalCacheTime = now;
         if (data && data.total) {
           document.getElementById('totalHoje').innerText = data.total;
         }
@@ -910,12 +945,20 @@
     }
 
     // ============================================================
-    //  PRODUTOS
+    //  PRODUTOS (com cache)
     // ============================================================
+    let produtosCache = null;
+    let produtosCacheTime = 0;
     let produtosSelecionados = [];
     let listaProdutosDisponiveis = [];
 
     function carregarProdutos() {
+      const now = Date.now();
+      if (produtosCache && (now - produtosCacheTime) < 60000) {
+        aplicarProdutos(produtosCache);
+        return;
+      }
+
       const selectAdd = document.getElementById('produtoAdd');
       const selectRemove = document.getElementById('produtoRemove');
       selectAdd.innerHTML = '<option value="">Carregando...</option>';
@@ -924,41 +967,9 @@
       const url = getScriptUrl();
       const callbackName = 'produtos_' + Date.now();
       window[callbackName] = function(data) {
-        if (data && data.erro) {
-          selectAdd.innerHTML = '<option value="">⚠️ ' + data.mensagem + '</option>';
-          selectRemove.innerHTML = '<option value="">⚠️ ' + data.mensagem + '</option>';
-          delete window[callbackName];
-          return;
-        }
-        if (Array.isArray(data) && data.length > 0 && data[0] && data[0].erro) {
-          selectAdd.innerHTML = '<option value="">⚠️ ' + data[0].mensagem + '</option>';
-          selectRemove.innerHTML = '<option value="">⚠️ ' + data[0].mensagem + '</option>';
-          delete window[callbackName];
-          return;
-        }
-        if (!data || data.length === 0) {
-          selectAdd.innerHTML = '<option value="">⚠️ Nenhum produto</option>';
-          selectRemove.innerHTML = '<option value="">⚠️ Nenhum produto</option>';
-          delete window[callbackName];
-          return;
-        }
-
-        listaProdutosDisponiveis = data;
-        selectAdd.innerHTML = '<option value="">Selecione...</option>';
-        selectRemove.innerHTML = '<option value="">Selecione...</option>';
-
-        data.forEach(p => {
-          const optAdd = document.createElement('option');
-          optAdd.value = p.nome;
-          optAdd.dataset.valor = p.valor;
-          optAdd.textContent = p.nome + ' - R$ ' + p.valor;
-          selectAdd.appendChild(optAdd);
-
-          const optRem = document.createElement('option');
-          optRem.value = p.nome;
-          optRem.textContent = p.nome;
-          selectRemove.appendChild(optRem);
-        });
+        produtosCache = data;
+        produtosCacheTime = now;
+        aplicarProdutos(data);
         delete window[callbackName];
       };
 
@@ -972,8 +983,46 @@
       document.body.appendChild(script);
     }
 
+    function aplicarProdutos(data) {
+      const selectAdd = document.getElementById('produtoAdd');
+      const selectRemove = document.getElementById('produtoRemove');
+
+      if (data && data.erro) {
+        selectAdd.innerHTML = '<option value="">⚠️ ' + data.mensagem + '</option>';
+        selectRemove.innerHTML = '<option value="">⚠️ ' + data.mensagem + '</option>';
+        return;
+      }
+      if (Array.isArray(data) && data.length > 0 && data[0] && data[0].erro) {
+        selectAdd.innerHTML = '<option value="">⚠️ ' + data[0].mensagem + '</option>';
+        selectRemove.innerHTML = '<option value="">⚠️ ' + data[0].mensagem + '</option>';
+        return;
+      }
+      if (!data || data.length === 0) {
+        selectAdd.innerHTML = '<option value="">⚠️ Nenhum produto</option>';
+        selectRemove.innerHTML = '<option value="">⚠️ Nenhum produto</option>';
+        return;
+      }
+
+      listaProdutosDisponiveis = data;
+      selectAdd.innerHTML = '<option value="">Selecione...</option>';
+      selectRemove.innerHTML = '<option value="">Selecione...</option>';
+
+      data.forEach(p => {
+        const optAdd = document.createElement('option');
+        optAdd.value = p.nome;
+        optAdd.dataset.valor = p.valor;
+        optAdd.textContent = p.nome + ' - R$ ' + p.valor;
+        selectAdd.appendChild(optAdd);
+
+        const optRem = document.createElement('option');
+        optRem.value = p.nome;
+        optRem.textContent = p.nome;
+        selectRemove.appendChild(optRem);
+      });
+    }
+
     // ============================================================
-    //  MANIPULAR PRODUTOS
+    //  MANIPULAR PRODUTOS - FUNÇÕES OTIMIZADAS
     // ============================================================
     function adicionarProduto() {
       const select = document.getElementById('produtoAdd');
@@ -1075,7 +1124,7 @@
     }
 
     // ============================================================
-    //  GERAR PIX
+    //  GERAR PIX - OTIMIZADO
     // ============================================================
     function gerarPix() {
       const url = getScriptUrl();
@@ -1136,6 +1185,8 @@
 
           if (resultado.novoTotal) {
             document.getElementById('totalHoje').innerText = resultado.novoTotal;
+            totalCache = { total: resultado.novoTotal };
+            totalCacheTime = Date.now();
           }
 
           iniciarVerificacaoAutomatica();
@@ -1194,7 +1245,7 @@
     }
 
     // ============================================================
-    //  VERIFICAÇÃO AUTOMÁTICA
+    //  VERIFICAÇÃO AUTOMÁTICA - OTIMIZADA
     // ============================================================
     let statusAtual = 'PENDENTE';
     let vendaConfirmada = false;
@@ -1252,7 +1303,7 @@
         document.body.appendChild(script);
       }
 
-      timerVerificacao = setTimeout(executarVerificacao, 5000);
+      timerVerificacao = setTimeout(executarVerificacao, 3000);
     }
 
     // ============================================================
@@ -1313,6 +1364,8 @@
           alert('✅ Venda cancelada com sucesso!');
           if (resultado.novoTotal) {
             document.getElementById('totalHoje').innerText = resultado.novoTotal;
+            totalCache = { total: resultado.novoTotal };
+            totalCacheTime = Date.now();
           }
           novaVenda();
         } else {
@@ -1383,7 +1436,7 @@
     }
 
     // ============================================================
-    //  GERAR PDF A PARTIR DOS DADOS
+    //  GERAR PDF
     // ============================================================
     function gerarPDF() {
       const btn = document.getElementById('btnPDF');
