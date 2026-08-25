@@ -50,16 +50,15 @@
       flex-direction: column;
       align-items: center;
       padding: 16px;
-      padding-top: 50px;
     }
     ::-webkit-scrollbar { width: 4px; }
     ::-webkit-scrollbar-track { background: var(--bg-secondary); }
     ::-webkit-scrollbar-thumb { background: var(--brand); border-radius: 4px; }
 
-    /* ===== TOAST / NOTIFICAÇÃO ===== */
+    /* ===== TOAST / NOTIFICAÇÃO (AUMENTADO PARA SUBIR MAIS) ===== */
     #toast-container {
       position: fixed;
-      bottom: 30px;
+      bottom: 90px; /* Subiu de 30px para 90px */
       left: 50%;
       transform: translateX(-50%);
       z-index: 999999;
@@ -93,6 +92,7 @@
     .toast.error { border-color: var(--danger); color: var(--danger); }
     .toast.warning { border-color: var(--warning); color: var(--warning); }
     .toast.info { border-color: var(--brand); color: var(--brand-light); }
+
     .toast .material-icons-round { font-size: 22px; }
 
     @keyframes toastIn {
@@ -104,7 +104,7 @@
       to { opacity: 0; transform: translateY(20px) scale(0.95); }
     }
 
-    /* ===== MODAL DE CONFIRMAÇÃO ===== */
+    /* ===== MODAL DE CONFIRMAÇÃO PERSONALIZADO ===== */
     #confirmModal {
       display: none;
       position: fixed;
@@ -133,7 +133,11 @@
       from { opacity: 0; transform: scale(0.9) translateY(20px); }
       to { opacity: 1; transform: scale(1) translateY(0); }
     }
-    #confirmModal .modal-icon { font-size: 48px; margin-bottom: 8px; display: block; }
+    #confirmModal .modal-icon {
+      font-size: 48px;
+      margin-bottom: 8px;
+      display: block;
+    }
     #confirmModal .modal-title {
       font-size: 1.2rem;
       font-weight: 700;
@@ -173,20 +177,22 @@
     #confirmModal .modal-buttons .btn-cancel-modal:hover { background: rgba(255,255,255,0.12); }
 
     @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-    @keyframes fadeInItem { from { opacity: 0; transform: translateX(-8px); } to { opacity: 1; transform: translateX(0); } }
 
-    /* ===== SCOREBOARD ===== */
+    /* ============================================ */
+    /*  SCOREBOARD - FONTE AUMENTADA (IGUAL "Nova Venda") */
+    /* ============================================ */
     .scoreboard {
       background: rgba(50,188,173,0.08);
       backdrop-filter: blur(8px);
       border: 1px solid rgba(50,188,173,0.2);
       color: var(--brand-light);
-      padding: 12px 24px 4mm 24px;
+      padding: 14px 24px;              /* Padding maior */
       border-radius: 50px;
       margin-bottom: 20px;
-      margin-top: 4px;
-      font-weight: 800;
-      font-size: 1.4rem;
+      margin-top: 12px;                /* ⬅️ ADICIONEI ISSO PARA DESCER UM POUCO */
+      font-weight: 800;                /* Peso igual ao título */
+      font-size: 1.6rem;               /* Tamanho igual ao título "Nova Venda" */
+      letter-spacing: -0.5px;          /* Espaçamento igual ao h2 */
       display: flex;
       align-items: center;
       gap: 10px;
@@ -195,32 +201,18 @@
       justify-content: center;
       box-shadow: 0 2px 12px rgba(0,0,0,0.3);
     }
-    .scoreboard .material-icons-round { font-size: 26px; }
+    .scoreboard .material-icons-round { font-size: 28px; } /* Ícone igual ao h2 */
     .scoreboard .badge {
       background: rgba(255,255,255,0.08);
       color: var(--text-secondary);
       padding: 4px 14px;
       border-radius: 30px;
-      font-size: 0.9rem;
-      font-weight: 700;
+      font-size: 0.8rem; 
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
     }
     .scoreboard .badge.success { background: rgba(0,230,118,0.2); color: var(--success); }
-
-    /* ===== LOADING INDICATOR ===== */
-    #loadingIndicator {
-      display: none;
-      text-align: center;
-      padding: 4px;
-      font-size: 0.8rem;
-      color: var(--text-muted);
-      margin-bottom: 8px;
-    }
-    #loadingIndicator .material-icons-round {
-      font-size: 16px;
-      animation: spin 0.8s linear infinite;
-      display: inline-block;
-    }
-    @keyframes spin { 100% { transform: rotate(360deg); } }
 
     .container {
       background: var(--bg-secondary);
@@ -313,18 +305,8 @@
       background: rgba(50,188,173,0.05);
       border-color: rgba(50,188,173,0.2);
       padding: 12px;
-      cursor: text;
-      transition: all 0.3s ease;
     }
-    .money-input:hover {
-      background: rgba(50,188,173,0.08);
-      border-color: rgba(50,188,173,0.4);
-    }
-    .money-input:focus {
-      background: rgba(50,188,173,0.12);
-      border-color: var(--brand);
-      box-shadow: 0 0 0 4px rgba(50,188,173,0.15);
-    }
+    .money-input:focus { border-color: var(--brand); }
 
     .row-inputs {
       display: flex;
@@ -333,7 +315,7 @@
     }
     .row-inputs select { flex: 1; }
 
-    .btn-add, .btn-remove, .btn-cadastrar-produto {
+    .btn-add, .btn-remove {
       width: 52px;
       height: 52px;
       border-radius: var(--radius-sm);
@@ -361,13 +343,7 @@
       border: 1px solid rgba(255,82,82,0.2);
     }
     .btn-remove:hover { background: rgba(255,82,82,0.25); transform: scale(1.05); }
-    .btn-cadastrar-produto {
-      background: var(--warning);
-      color: #000;
-      box-shadow: 0 4px 12px rgba(255,193,7,0.3);
-    }
-    .btn-cadastrar-produto:hover { transform: scale(1.05) translateY(-2px); box-shadow: 0 8px 20px rgba(255,193,7,0.4); }
-    .btn-add svg, .btn-remove svg, .btn-cadastrar-produto svg { width: 24px; height: 24px; fill: currentColor; }
+    .btn-add svg, .btn-remove svg { width: 24px; height: 24px; fill: currentColor; }
 
     .produtos-lista {
       background: rgba(0,0,0,0.3);
@@ -403,51 +379,6 @@
       margin-top: 6px;
     }
     .lista-vazia { color: var(--text-muted); text-align: center; padding: 16px 0; font-size: 0.85rem; }
-
-    /* ===== ÁREA DE DESCONTO ===== */
-    #descontoInfo {
-      display: none;
-      margin-top: 10px;
-      padding: 10px 14px;
-      background: rgba(0,230,118,0.06);
-      border-radius: 10px;
-      border: 1px solid rgba(0,230,118,0.12);
-      animation: fadeIn 0.3s ease;
-    }
-    #descontoInfo .desconto-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 2px 0;
-    }
-    #descontoInfo .desconto-label {
-      color: var(--text-secondary);
-      font-size: 0.85rem;
-      display: flex;
-      align-items: center;
-      gap: 4px;
-    }
-    #descontoInfo .desconto-label .material-icons-round { font-size: 16px; }
-    #descontoInfo .desconto-value {
-      font-weight: 700;
-      font-size: 1rem;
-    }
-    #descontoInfo .desconto-value.positive { color: var(--success); }
-    #descontoInfo .desconto-value.negative { color: var(--danger); }
-    #descontoInfo .desconto-divider {
-      border-top: 1px solid rgba(255,255,255,0.05);
-      margin: 4px 0;
-    }
-    #descontoInfo .valor-original {
-      color: var(--text-muted);
-      font-size: 0.85rem;
-      text-decoration: line-through;
-    }
-    #descontoInfo .desconto-percentual {
-      color: var(--warning);
-      font-weight: 600;
-      font-size: 0.9rem;
-    }
 
     button {
       width: 100%;
@@ -496,27 +427,6 @@
     }
     .btn-pdf:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(255,87,34,0.4); }
 
-    .btn-cadastrar {
-      background: linear-gradient(135deg, var(--warning), #e6a800);
-      color: #000;
-      box-shadow: 0 4px 16px rgba(255,193,7,0.3);
-    }
-    .btn-cadastrar:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(255,193,7,0.4); }
-
-    .btn-voltar {
-      background: rgba(255,255,255,0.06);
-      color: var(--text-secondary);
-      border: 1px solid rgba(255,255,255,0.08);
-    }
-    .btn-voltar:hover { background: rgba(255,255,255,0.12); }
-
-    .btn-salvar-produtos {
-      background: linear-gradient(135deg, var(--success), #00c853);
-      color: #000;
-      box-shadow: 0 4px 16px rgba(0,230,118,0.3);
-    }
-    .btn-salvar-produtos:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(0,230,118,0.4); }
-
     .footer-actions {
       display: flex;
       gap: 12px;
@@ -548,6 +458,7 @@
       margin: 0 auto 12px;
       border-radius: 50%;
     }
+    @keyframes spin { 100% { transform: rotate(360deg); } }
 
     #step-pix {
       display: none;
@@ -559,13 +470,6 @@
       width: 100%;
     }
     @keyframes fadeSlide { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-
-    #step-cadastro {
-      display: none;
-      animation: fadeSlide 0.4s ease;
-      flex-direction: column;
-      width: 100%;
-    }
 
     #step-pix .client-name {
       color: var(--text-primary);
@@ -755,6 +659,8 @@
       50% { opacity: 1; transform: translate(-50%,-50%) scale(1.2); }
       100% { opacity: 0.4; transform: translate(-50%,-50%) scale(1); }
     }
+    @keyframes fadeIn { from { opacity: 0; transform: scale(0.96); } to { opacity: 1; transform: scale(1); } }
+    @keyframes fadeInItem { from { opacity: 0; transform: translateX(-8px); } to { opacity: 1; transform: translateX(0); } }
 
     #acoesRecibo {
       width: 100%;
@@ -789,7 +695,9 @@
       transform: scale(1.08);
       box-shadow: 0 8px 24px rgba(37,211,102,0.5);
     }
-    .btn-whatsapp-circle:active { transform: scale(0.95); }
+    .btn-whatsapp-circle:active {
+      transform: scale(0.95);
+    }
     .btn-whatsapp-circle .telefone-icon {
       color: #ffffff !important;
       font-size: 28px;
@@ -805,89 +713,13 @@
       max-width: 340px;
     }
 
-    /* ===== LISTA DE PRODUTOS GERENCIÁVEL ===== */
-    .produto-gerencia-item {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 10px 8px;
-      border-bottom: 1px solid rgba(255,255,255,0.06);
-      gap: 10px;
-      animation: fadeInItem 0.2s ease;
-    }
-    .produto-gerencia-item .nome-produto {
-      flex: 1;
-      font-weight: 600;
-      color: var(--text-primary);
-      font-size: 0.9rem;
-    }
-    .produto-gerencia-item .preco-produto {
-      width: 100px;
-    }
-    .produto-gerencia-item .preco-produto input {
-      padding: 8px 10px;
-      font-size: 0.9rem;
-      text-align: center;
-      background: var(--bg-input);
-      border: 1.5px solid rgba(255,255,255,0.06);
-      color: var(--brand-light);
-      border-radius: var(--radius-sm);
-      font-weight: 600;
-      width: 100%;
-      transition: var(--transition);
-    }
-    .produto-gerencia-item .preco-produto input:focus {
-      border-color: var(--brand);
-      box-shadow: 0 0 0 3px rgba(50,188,173,0.15);
-      outline: none;
-    }
-    .produto-gerencia-item .btn-remover-produto {
-      width: 36px;
-      height: 36px;
-      border-radius: 50%;
-      background: rgba(255,82,82,0.12);
-      color: var(--danger);
-      border: 1px solid rgba(255,82,82,0.15);
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: var(--transition);
-      flex-shrink: 0;
-      font-size: 0.9rem;
-      margin-top: 0;
-    }
-    .produto-gerencia-item .btn-remover-produto:hover {
-      background: rgba(255,82,82,0.25);
-      transform: scale(1.05);
-    }
-
-    .lista-produtos-gerencia {
-      max-height: 350px;
-      overflow-y: auto;
-      margin: 8px 0 16px;
-      border: 1px solid rgba(255,255,255,0.04);
-      border-radius: var(--radius-sm);
-      padding: 4px 8px;
-      background: rgba(0,0,0,0.2);
-    }
-    .lista-produtos-gerencia .vazio {
-      color: var(--text-muted);
-      text-align: center;
-      padding: 30px 0;
-      font-size: 0.9rem;
-    }
-
     @media (max-width: 480px) {
-      body { padding: 12px; padding-top: 44px; }
+      body { padding: 12px; }
       .container { padding: 18px; }
       .pix-amount { font-size: 2.2rem; }
       .qr-container { width: 160px; height: 160px; }
       h2 { font-size: 1.3rem; }
       .money-input { font-size: 1.5rem; }
-      .scoreboard { font-size: 1.2rem; padding: 10px 18px 4mm 18px; margin-top: 2px; }
-      .produto-gerencia-item { flex-wrap: wrap; }
-      .produto-gerencia-item .preco-produto { width: 80px; }
     }
 
     .hidden { display: none !important; }
@@ -972,16 +804,10 @@
     <span class="badge" id="statusBadge">🔍</span>
   </div>
 
-  <!-- LOADING INDICATOR -->
-  <div id="loadingIndicator">
-    <span class="material-icons-round">refresh</span>
-    Carregando produtos...
-  </div>
-
   <!-- CONTAINER PRINCIPAL -->
   <div class="container">
 
-    <!-- TELA 1: FORMULÁRIO DE VENDA -->
+    <!-- TELA 1: FORMULÁRIO -->
     <div id="step-form">
       <h2><span class="material-icons-round">point_of_sale</span> Nova Venda</h2>
 
@@ -999,13 +825,10 @@
         <label><span class="material-icons-round">add_shopping_cart</span> Adicionar Produto</label>
         <div class="row-inputs">
           <select id="produtoAdd">
-            <option value="">Selecione...</option>
+            <option value="">⏳ Carregando produtos da planilha...</option>
           </select>
           <button class="btn-add" onclick="adicionarProduto()" aria-label="Adicionar produto">
             <svg viewBox="0 0 24 24"><path d="M19 13H13V19H11V13H5V11H11V5H13V11H19V13Z"/></svg>
-          </button>
-          <button class="btn-cadastrar-produto" onclick="abrirGerenciamento()" aria-label="Gerenciar produtos" title="Gerenciar produtos">
-            <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm5 11h-4v4h-2v-4H7v-2h4V7h2v4h4v2z"/></svg>
           </button>
         </div>
       </div>
@@ -1026,32 +849,9 @@
         <div class="lista-vazia">Nenhum produto adicionado</div>
       </div>
 
-      <!-- CAMPO DE VALOR EDITÁVEL COM DESCONTO -->
       <div class="input-group">
-        <label>
-          <span class="material-icons-round">attach_money</span> 
-          Valor Total 
-          <span style="color: var(--text-muted); font-weight: 400; font-size: 0.7rem;">(clique para editar)</span>
-        </label>
-        <input type="text" id="valor" class="money-input" inputmode="decimal" value="0,00" style="cursor: text;">
-        
-        <div id="descontoInfo">
-          <div class="desconto-row">
-            <span class="desconto-label">
-              <span class="material-icons-round">local_offer</span> Desconto:
-            </span>
-            <span class="desconto-value positive" id="descontoValor">- R$ 0,00</span>
-          </div>
-          <div class="desconto-divider"></div>
-          <div class="desconto-row">
-            <span class="desconto-label">Valor original:</span>
-            <span class="valor-original" id="valorOriginal">R$ 0,00</span>
-          </div>
-          <div class="desconto-row">
-            <span class="desconto-label">Percentual:</span>
-            <span class="desconto-percentual" id="descontoPercentual">0%</span>
-          </div>
-        </div>
+        <label><span class="material-icons-round">attach_money</span> Valor Total</label>
+        <input type="text" id="valor" class="money-input" inputmode="numeric" value="0,00" readonly>
       </div>
 
       <div class="input-group">
@@ -1066,10 +866,6 @@
 
       <button class="btn-primary" id="btnGerar" onclick="gerarPix()">
         Gerar Pix <span class="material-icons-round">arrow_forward</span>
-      </button>
-
-      <button class="btn-outline" onclick="abrirGerenciamento()" style="margin-top:8px;">
-        <span class="material-icons-round">settings</span> Gerenciar Produtos
       </button>
 
       <div id="loader">
@@ -1138,49 +934,6 @@
         <span class="material-icons-round">cancel</span> Cancelar Venda
       </button>
     </div>
-
-    <!-- TELA 3: GERENCIAMENTO DE PRODUTOS -->
-    <div id="step-cadastro" style="display:none;">
-      <h2><span class="material-icons-round">settings</span> Gerenciar Produtos</h2>
-
-      <!-- NOVO PRODUTO -->
-      <div style="background: rgba(255,193,7,0.05); border: 1px solid rgba(255,193,7,0.12); border-radius: var(--radius-sm); padding: 14px; margin-bottom: 16px;">
-        <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
-          <input type="text" id="novoProdutoNome" placeholder="Novo produto..." style="flex: 2; min-width: 120px; padding: 10px 12px; font-size: 0.9rem; margin-top: 0; text-transform: uppercase;">
-          <input type="text" id="novoProdutoPreco" class="money-input" inputmode="decimal" placeholder="0,00" value="0,00" style="flex: 1; min-width: 80px; padding: 10px 12px; font-size: 1.2rem; margin-top: 0;">
-          <button class="btn-cadastrar" onclick="salvarProduto()" id="btnSalvarProduto" style="flex: 1; min-width: 80px; padding: 10px; margin-top: 0; font-size: 0.85rem;">
-            <span class="material-icons-round" style="font-size: 18px;">add</span> Adicionar
-          </button>
-        </div>
-        <div id="loaderCadastro" style="display:none; margin:8px 0 0;">
-          <div class="spinner" style="width:24px; height:24px; margin:0 auto;"></div>
-          <p style="color:var(--text-secondary); font-size:0.8rem; text-align:center;">Cadastrando...</p>
-        </div>
-      </div>
-
-      <!-- LISTA DE PRODUTOS -->
-      <label style="font-size:0.8rem; font-weight:500; color:var(--text-secondary); display:flex; align-items:center; gap:6px; margin-bottom:6px;">
-        <span class="material-icons-round" style="font-size:16px;">inventory</span> Produtos cadastrados
-        <span style="margin-left:auto; color:var(--text-muted); font-size:0.7rem;" id="contadorProdutos">(0)</span>
-      </label>
-      <div class="lista-produtos-gerencia" id="listaProdutosGerencia">
-        <div class="vazio">Carregando produtos...</div>
-      </div>
-
-      <!-- BOTÕES -->
-      <button class="btn-salvar-produtos" onclick="salvarAlteracoesProdutos()" id="btnSalvarAlteracoes">
-        <span class="material-icons-round">save</span> Salvar Alterações
-      </button>
-
-      <button class="btn-voltar" onclick="voltarParaVenda()" style="margin-top:8px;">
-        <span class="material-icons-round">arrow_back</span> Voltar
-      </button>
-
-      <div id="loaderSalvar" style="display:none; margin:16px 0;">
-        <div class="spinner"></div>
-        <p style="color:var(--text-secondary); font-size:0.9rem; text-align:center;">Salvando alterações...</p>
-      </div>
-    </div>
   </div>
 
   <!-- BOTÃO INSTALAR PWA -->
@@ -1189,50 +942,6 @@
   </button>
 
   <script>
-    // ============================================================
-    //  CONFIGURAÇÕES GLOBAIS
-    // ============================================================
-    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbx_vjbQ4TylZHcblOrE5shfyvJ4t9er9l2naxnltpjI2w97E7ctjM2Xtm0pP5cXiS3iBw/exec';
-    const DDI = '55';
-
-    // ============================================================
-    //  CACHE - OTIMIZAÇÃO DE VELOCIDADE
-    // ============================================================
-    let cacheProdutos = null;
-    let cacheProdutosTimestamp = 0;
-    const CACHE_TTL = 60000; // 1 minuto
-    
-    let cacheTotal = null;
-    let cacheTotalTimestamp = 0;
-    const TOTAL_CACHE_TTL = 30000; // 30 segundos
-    
-    let cacheConfig = null;
-    let cacheConfigTimestamp = 0;
-    const CONFIG_CACHE_TTL = 120000; // 2 minutos
-
-    // ============================================================
-    //  PRODUTOS DE FALLBACK
-    // ============================================================
-    const PRODUTOS_FALLBACK = [
-      { nome: 'Produto A', valor: '10,00' },
-      { nome: 'Produto B', valor: '25,50' },
-      { nome: 'Produto C', valor: '50,00' },
-      { nome: 'Produto D', valor: '100,00' },
-      { nome: 'Serviço Premium', valor: '200,00' }
-    ];
-
-    // ============================================================
-    //  VARIÁVEIS GLOBAIS
-    // ============================================================
-    let produtosSelecionados = [];
-    let listaProdutosDisponiveis = [];
-    let vendaConfirmada = false;
-    let timerVerificacao = null;
-    let tempoDecorrido = 0;
-    let loopAtivo = false;
-    let valorOriginalTotal = 0;
-    let produtosParaSalvar = [];
-
     // ============================================================
     //  TOAST / NOTIFICAÇÃO
     // ============================================================
@@ -1271,6 +980,7 @@
         document.getElementById('modalTitle').textContent = title;
         document.getElementById('modalMessage').textContent = message;
         modal.classList.add('ativo');
+        
         confirmResolve = resolve;
       });
     }
@@ -1286,9 +996,59 @@
     });
 
     // ============================================================
+    //  CONFIGURAÇÃO
+    // ============================================================
+    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyTkAurFVEeFKOTuYonV9UTxDOObKxbv-XOPCgoBo-beahk6yf9x4uGDUHuuFsWcXhb3Q/exec';
+    const DDI = '55';
+
+    // ============================================================
+    //  PRODUTOS DE FALLBACK (usados se a API falhar)
+    // ============================================================
+    const PRODUTOS_FALLBACK = [
+      { nome: 'Produto A', valor: '10,00' },
+      { nome: 'Produto B', valor: '25,50' },
+      { nome: 'Produto C', valor: '50,00' },
+      { nome: 'Produto D', valor: '100,00' },
+      { nome: 'Serviço Premium', valor: '200,00' }
+    ];
+
+    // ============================================================
+    //  VARIÁVEIS GLOBAIS
+    // ============================================================
+    let produtosSelecionados = [];
+    let listaProdutosDisponiveis = [];
+    let vendaConfirmada = false;
+    let timerVerificacao = null;
+    let tempoDecorrido = 0;
+    const maxTempo = 300;
+    let loopAtivo = false;
+
+    // ============================================================
+    //  PWA - INSTALAÇÃO
+    // ============================================================
+    let deferredPrompt;
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredPrompt = e;
+      const btn = document.getElementById('installBtn');
+      btn.style.display = 'flex';
+      btn.addEventListener('click', async () => {
+        btn.style.display = 'none';
+        if (deferredPrompt) {
+          await deferredPrompt.prompt();
+          const result = await deferredPrompt.userChoice;
+          if (result.outcome === 'accepted') {
+            showToast('App instalado com sucesso!', 'success');
+          }
+          deferredPrompt = null;
+        }
+      });
+    });
+
+    // ============================================================
     //  SPLASH SCREEN
     // ============================================================
-    window.addEventListener('load', async () => {
+    window.addEventListener('load', () => {
       setTimeout(() => {
         document.getElementById('splash-screen').classList.add('fade-out');
         setTimeout(() => {
@@ -1299,90 +1059,72 @@
       document.getElementById('whatsappNumber').value = '11999999999';
       resetDataField();
       
-      // Carrega tudo de forma otimizada
-      await carregarTudo();
-      
-      configurarCampoValor();
-      configurarCampoPrecoCadastro();
+      carregarProdutos();
+      verificarConfiguracoes();
+      atualizarPlacar();
     });
 
+    function resetDataField() {
+      const hoje = new Date();
+      const dataFmt = hoje.getFullYear() + '-' +
+        String(hoje.getMonth() + 1).padStart(2, '0') + '-' +
+        String(hoje.getDate()).padStart(2, '0');
+      document.getElementById('dataVenda').value = dataFmt;
+    }
+
+    function getScriptUrl() { return SCRIPT_URL; }
+
     // ============================================================
-    //  CARREGAMENTO OTIMIZADO
+    //  CARREGAR PRODUTOS - COM TIMEOUT MAIOR
     // ============================================================
-    async function carregarTudo() {
-      // Mostra indicador de carregamento
-      document.getElementById('loadingIndicator').style.display = 'block';
+    function carregarProdutos() {
+      const selectAdd = document.getElementById('produtoAdd');
+      const selectRemove = document.getElementById('produtoRemove');
       
+      selectAdd.innerHTML = '<option value="">⏳ Carregando produtos da planilha...</option>';
+      selectRemove.innerHTML = '<option value="">⏳ Carregando...</option>';
+
+      const url = getScriptUrl();
+      const callbackName = 'produtos_' + Date.now();
+      
+      const timeoutId = setTimeout(() => {
+        delete window[callbackName];
+        usarFallbackProdutos();
+        showToast('⏳ Produtos da planilha não carregaram, usando lista local', 'warning', 3000);
+      }, 10000);
+
+      window[callbackName] = function(data) {
+        clearTimeout(timeoutId);
+        if (data && !data.erro && Array.isArray(data) && data.length > 0) {
+          aplicarProdutos(data);
+          showToast('✅ Produtos carregados da planilha!', 'success', 2000);
+        } else {
+          usarFallbackProdutos();
+          showToast('⚠️ Erro ao carregar produtos da planilha', 'error', 3000);
+        }
+        delete window[callbackName];
+      };
+
       try {
-        // Carrega produtos com cache
-        const produtos = await carregarProdutosAsync();
-        aplicarProdutos(produtos);
-        
-        // Verifica configurações com cache
-        verificarConfiguracoes(true);
-        
-        // Atualiza placar com cache
-        atualizarPlacar(true);
-        
-      } catch (e) {
-        console.error('Erro ao carregar:', e);
-        showToast('⚠️ Erro ao carregar dados', 'warning', 2000);
-      } finally {
-        document.getElementById('loadingIndicator').style.display = 'none';
+        const script = document.createElement('script');
+        script.src = url + '?action=getProdutos&callback=' + callbackName;
+        script.onerror = () => {
+          clearTimeout(timeoutId);
+          delete window[callbackName];
+          usarFallbackProdutos();
+          showToast('❌ Erro de conexão com a planilha', 'error', 3000);
+        };
+        document.body.appendChild(script);
+      } catch(e) {
+        clearTimeout(timeoutId);
+        delete window[callbackName];
+        usarFallbackProdutos();
+        showToast('❌ Erro ao conectar com a planilha', 'error', 3000);
       }
     }
 
-    // ============================================================
-    //  CARREGAR PRODUTOS COM CACHE
-    // ============================================================
-    function carregarProdutosAsync() {
-      return new Promise((resolve) => {
-        const agora = Date.now();
-        
-        // Se tiver cache válido, resolve imediatamente
-        if (cacheProdutos && (agora - cacheProdutosTimestamp) < CACHE_TTL) {
-          resolve(cacheProdutos);
-          return;
-        }
-        
-        const url = SCRIPT_URL;
-        const callbackName = 'produtos_async_' + Date.now();
-        const timeoutId = setTimeout(() => {
-          delete window[callbackName];
-          if (cacheProdutos) {
-            resolve(cacheProdutos);
-          } else {
-            resolve(PRODUTOS_FALLBACK);
-          }
-        }, 5000);
-
-        window[callbackName] = function(data) {
-          clearTimeout(timeoutId);
-          if (data && !data.erro && Array.isArray(data) && data.length > 0) {
-            cacheProdutos = data;
-            cacheProdutosTimestamp = agora;
-            resolve(data);
-          } else {
-            resolve(cacheProdutos || PRODUTOS_FALLBACK);
-          }
-          delete window[callbackName];
-        };
-
-        try {
-          const script = document.createElement('script');
-          script.src = url + '?action=getProdutos&callback=' + callbackName + '&t=' + agora;
-          script.onerror = () => {
-            clearTimeout(timeoutId);
-            delete window[callbackName];
-            resolve(cacheProdutos || PRODUTOS_FALLBACK);
-          };
-          document.body.appendChild(script);
-        } catch(e) {
-          clearTimeout(timeoutId);
-          delete window[callbackName];
-          resolve(cacheProdutos || PRODUTOS_FALLBACK);
-        }
-      });
+    function usarFallbackProdutos() {
+      aplicarProdutos(PRODUTOS_FALLBACK);
     }
 
     function aplicarProdutos(data) {
@@ -1414,35 +1156,37 @@
     }
 
     // ============================================================
-    //  VERIFICAR CONFIGURAÇÕES COM CACHE
+    //  VERIFICAR CONFIGURAÇÕES
     // ============================================================
-    function verificarConfiguracoes(forcarRecarga = false) {
-      const agora = Date.now();
-      
-      if (!forcarRecarga && cacheConfig !== null && (agora - cacheConfigTimestamp) < CONFIG_CACHE_TTL) {
-        aplicarConfiguracao(cacheConfig);
-        return;
-      }
-      
-      const url = SCRIPT_URL;
+    function verificarConfiguracoes() {
+      const url = getScriptUrl();
       const callbackName = 'config_' + Date.now();
       const timeoutId = setTimeout(() => {
         delete window[callbackName];
         document.getElementById('configWarning').style.display = 'none';
         document.getElementById('btnGerar').disabled = false;
-      }, 5000);
+      }, 8000);
 
       window[callbackName] = function(data) {
         clearTimeout(timeoutId);
-        cacheConfig = data;
-        cacheConfigTimestamp = agora;
-        aplicarConfiguracao(data);
+        if (data && data.configurado === false) {
+          const warn = document.getElementById('configWarning');
+          warn.style.display = 'flex';
+          warn.innerHTML = `
+            <span class="material-icons-round">warning</span>
+            <div><strong>⚠️ ${data.mensagem}</strong></div>
+          `;
+          document.getElementById('btnGerar').disabled = true;
+        } else {
+          document.getElementById('configWarning').style.display = 'none';
+          document.getElementById('btnGerar').disabled = false;
+        }
         delete window[callbackName];
       };
 
       try {
         const script = document.createElement('script');
-        script.src = url + '?action=verificarConfiguracoes&callback=' + callbackName + '&t=' + agora;
+        script.src = url + '?action=verificarConfiguracoes&callback=' + callbackName;
         script.onerror = () => {
           clearTimeout(timeoutId);
           delete window[callbackName];
@@ -1458,43 +1202,19 @@
       }
     }
 
-    function aplicarConfiguracao(data) {
-      if (data && data.configurado === false) {
-        const warn = document.getElementById('configWarning');
-        warn.style.display = 'flex';
-        warn.innerHTML = `
-          <span class="material-icons-round">warning</span>
-          <div><strong>⚠️ ${data.mensagem}</strong></div>
-        `;
-        document.getElementById('btnGerar').disabled = true;
-      } else {
-        document.getElementById('configWarning').style.display = 'none';
-        document.getElementById('btnGerar').disabled = false;
-      }
-    }
-
     // ============================================================
-    //  ATUALIZAR PLACAR COM CACHE
+    //  ATUALIZAR PLACAR
     // ============================================================
-    function atualizarPlacar(forcarRecarga = false) {
-      const agora = Date.now();
-      
-      if (!forcarRecarga && cacheTotal !== null && (agora - cacheTotalTimestamp) < TOTAL_CACHE_TTL) {
-        document.getElementById('totalHoje').innerText = cacheTotal;
-        return;
-      }
-      
-      const url = SCRIPT_URL;
+    function atualizarPlacar() {
+      const url = getScriptUrl();
       const callbackName = 'total_' + Date.now();
       const timeoutId = setTimeout(() => {
         delete window[callbackName];
-      }, 5000);
+      }, 8000);
 
       window[callbackName] = function(data) {
         clearTimeout(timeoutId);
         if (data && data.total) {
-          cacheTotal = data.total;
-          cacheTotalTimestamp = agora;
           document.getElementById('totalHoje').innerText = data.total;
         }
         delete window[callbackName];
@@ -1502,7 +1222,7 @@
 
       try {
         const script = document.createElement('script');
-        script.src = url + '?action=getTotalVendasHoje&callback=' + callbackName + '&t=' + agora;
+        script.src = url + '?action=getTotalVendasHoje&callback=' + callbackName;
         script.onerror = () => {
           clearTimeout(timeoutId);
           delete window[callbackName];
@@ -1515,129 +1235,7 @@
     }
 
     // ============================================================
-    //  FUNÇÕES AUXILIARES
-    // ============================================================
-    function resetDataField() {
-      const hoje = new Date();
-      const dataFmt = hoje.getFullYear() + '-' +
-        String(hoje.getMonth() + 1).padStart(2, '0') + '-' +
-        String(hoje.getDate()).padStart(2, '0');
-      document.getElementById('dataVenda').value = dataFmt;
-    }
-
-    function getScriptUrl() { return SCRIPT_URL; }
-
-    function configurarCampoValor() {
-      const valorInput = document.getElementById('valor');
-      
-      valorInput.addEventListener('input', function(e) {
-        let valor = this.value.replace(/[^0-9,]/g, '');
-        const partes = valor.split(',');
-        if (partes.length > 2) {
-          valor = partes[0] + ',' + partes.slice(1).join('');
-        }
-        this.value = valor;
-        calcularDesconto();
-      });
-      
-      valorInput.addEventListener('blur', function() {
-        let valor = this.value.replace(',', '.');
-        const num = parseFloat(valor);
-        if (!isNaN(num) && num > 0) {
-          this.value = num.toFixed(2).replace('.', ',');
-          calcularDesconto();
-        } else if (this.value.trim() === '' || this.value === '0' || this.value === '0,00') {
-          const totalOriginal = calcularTotalOriginal();
-          this.value = totalOriginal.toFixed(2).replace('.', ',');
-          calcularDesconto();
-        }
-      });
-    }
-
-    function configurarCampoPrecoCadastro() {
-      const precoInput = document.getElementById('novoProdutoPreco');
-      
-      precoInput.addEventListener('input', function(e) {
-        let valor = this.value.replace(/[^0-9,]/g, '');
-        const partes = valor.split(',');
-        if (partes.length > 2) {
-          valor = partes[0] + ',' + partes.slice(1).join('');
-        }
-        this.value = valor;
-      });
-      
-      precoInput.addEventListener('blur', function() {
-        let valor = this.value.replace(',', '.');
-        const num = parseFloat(valor);
-        if (!isNaN(num) && num > 0) {
-          this.value = num.toFixed(2).replace('.', ',');
-        } else {
-          this.value = '0,00';
-        }
-      });
-    }
-
-    // ============================================================
-    //  FUNÇÕES DE CÁLCULO
-    // ============================================================
-    function calcularTotalOriginal() {
-      let total = 0;
-      produtosSelecionados.forEach(p => { 
-        total += p.valorUnitario * p.qtd; 
-      });
-      return total;
-    }
-
-    function calcularDesconto() {
-      const valorInput = document.getElementById('valor');
-      const totalOriginal = calcularTotalOriginal();
-      valorOriginalTotal = totalOriginal;
-      
-      const descontoInfo = document.getElementById('descontoInfo');
-      
-      if (totalOriginal === 0) {
-        descontoInfo.style.display = 'none';
-        return;
-      }
-      
-      const valorDigitado = parseFloat(valorInput.value.replace(',', '.')) || 0;
-      
-      if (valorDigitado >= totalOriginal) {
-        valorInput.value = totalOriginal.toFixed(2).replace('.', ',');
-        descontoInfo.style.display = 'none';
-        return;
-      }
-      
-      const desconto = totalOriginal - valorDigitado;
-      const descontoPercentual = totalOriginal > 0 ? (desconto / totalOriginal) * 100 : 0;
-      
-      if (desconto > 0.01) {
-        descontoInfo.style.display = 'block';
-        document.getElementById('descontoValor').textContent = `- R$ ${desconto.toFixed(2).replace('.', ',')}`;
-        document.getElementById('valorOriginal').textContent = `R$ ${totalOriginal.toFixed(2).replace('.', ',')}`;
-        document.getElementById('descontoPercentual').textContent = `${descontoPercentual.toFixed(1)}%`;
-        
-        const descontoValor = document.getElementById('descontoValor');
-        if (descontoPercentual > 20) {
-          descontoValor.className = 'desconto-value negative';
-        } else {
-          descontoValor.className = 'desconto-value positive';
-        }
-      } else {
-        descontoInfo.style.display = 'none';
-      }
-      
-      if (produtosSelecionados.length > 0 && totalOriginal > 0 && valorDigitado > 0) {
-        const fator = valorDigitado / totalOriginal;
-        produtosSelecionados.forEach(p => {
-          p.valorTotal = p.valorUnitario * p.qtd * fator;
-        });
-        atualizarLista();
-      }
-    }
-
-    // ============================================================
-    //  MANIPULAR PRODUTOS NA VENDA
+    //  MANIPULAR PRODUTOS
     // ============================================================
     function adicionarProduto() {
       const select = document.getElementById('produtoAdd');
@@ -1648,7 +1246,6 @@
         return;
       }
       const valorUnitario = parseFloat(valorStr.replace(',', '.'));
-      
       const existente = produtosSelecionados.find(p => p.nome === nome);
       if (existente) {
         existente.qtd += 1;
@@ -1661,24 +1258,10 @@
           valorTotal: valorUnitario
         });
       }
-      
       atualizarLista();
-      
-      const totalOriginal = calcularTotalOriginal();
-      const valorInput = document.getElementById('valor');
-      const valorAtual = parseFloat(valorInput.value.replace(',', '.')) || totalOriginal;
-      
-      if (valorAtual < totalOriginal && valorOriginalTotal > 0) {
-        const descontoPercentual = 1 - (valorAtual / valorOriginalTotal);
-        const novoValor = totalOriginal * (1 - descontoPercentual);
-        valorInput.value = novoValor.toFixed(2).replace('.', ',');
-      } else {
-        valorInput.value = totalOriginal.toFixed(2).replace('.', ',');
-      }
-      
-      calcularDesconto();
+      atualizarTotal();
       atualizarDropdownRemover();
-      showToast(`${nome} adicionado!`, 'success', 1000);
+      showToast(`${nome} adicionado!`, 'success', 1500);
     }
 
     function removerProduto() {
@@ -1697,27 +1280,13 @@
       if (produto.qtd > 1) {
         produto.qtd -= 1;
         produto.valorTotal = produto.qtd * produto.valorUnitario;
-        showToast(`1x ${nome} removido`, 'info', 1000);
+        showToast(`1x ${nome} removido`, 'info', 1500);
       } else {
         produtosSelecionados.splice(index, 1);
-        showToast(`${nome} removido`, 'info', 1000);
+        showToast(`${nome} removido`, 'info', 1500);
       }
-      
       atualizarLista();
-      
-      const totalOriginal = calcularTotalOriginal();
-      const valorInput = document.getElementById('valor');
-      const valorAtual = parseFloat(valorInput.value.replace(',', '.')) || totalOriginal;
-      
-      if (valorAtual < totalOriginal && valorOriginalTotal > 0) {
-        const descontoPercentual = 1 - (valorAtual / valorOriginalTotal);
-        const novoValor = totalOriginal * (1 - descontoPercentual);
-        valorInput.value = novoValor.toFixed(2).replace('.', ',');
-      } else {
-        valorInput.value = totalOriginal.toFixed(2).replace('.', ',');
-      }
-      
-      calcularDesconto();
+      atualizarTotal();
       atualizarDropdownRemover();
     }
 
@@ -1751,291 +1320,22 @@
           </div>
         `;
       });
-      const total = produtosSelecionados.reduce((acc, p) => acc + p.valorTotal, 0);
-      html += `<div class="total-produtos">Total: R$ ${total.toFixed(2).replace('.', ',')}</div>`;
+      html += `<div class="total-produtos">Total: R$ ${calcularTotal()}</div>`;
       container.innerHTML = html;
     }
 
-    // ============================================================
-    //  GERENCIAMENTO DE PRODUTOS
-    // ============================================================
-    function abrirGerenciamento() {
-      document.getElementById('step-form').style.display = 'none';
-      document.getElementById('step-pix').style.display = 'none';
-      document.getElementById('step-cadastro').style.display = 'flex';
-      document.getElementById('novoProdutoNome').value = '';
-      document.getElementById('novoProdutoPreco').value = '0,00';
-      document.getElementById('novoProdutoNome').focus();
-      
-      carregarListaGerenciamento();
+    function calcularTotal() {
+      let total = 0;
+      produtosSelecionados.forEach(p => { total += p.valorTotal; });
+      return total.toFixed(2).replace('.', ',');
     }
 
-    function voltarParaVenda() {
-      document.getElementById('step-cadastro').style.display = 'none';
-      document.getElementById('step-form').style.display = 'block';
-      carregarProdutosAsync().then(produtos => aplicarProdutos(produtos));
-      atualizarPlacar(true);
-    }
-
-    function carregarListaGerenciamento() {
-      const container = document.getElementById('listaProdutosGerencia');
-      container.innerHTML = '<div class="vazio">Carregando produtos...</div>';
-      
-      const url = SCRIPT_URL;
-      const callbackName = 'gerencia_' + Date.now();
-      const timeoutId = setTimeout(() => {
-        delete window[callbackName];
-        container.innerHTML = '<div class="vazio">❌ Erro ao carregar produtos</div>';
-        showToast('❌ Tempo esgotado!', 'error');
-      }, 8000);
-
-      window[callbackName] = function(data) {
-        clearTimeout(timeoutId);
-        if (data && !data.erro && Array.isArray(data) && data.length > 0) {
-          produtosParaSalvar = data.map(p => ({ ...p }));
-          renderizarListaGerenciamento(data);
-          document.getElementById('contadorProdutos').textContent = `(${data.length})`;
-        } else {
-          container.innerHTML = '<div class="vazio">⚠️ Nenhum produto cadastrado</div>';
-          produtosParaSalvar = [];
-          document.getElementById('contadorProdutos').textContent = '(0)';
-        }
-        delete window[callbackName];
-      };
-
-      try {
-        const script = document.createElement('script');
-        script.src = url + '?action=getProdutos&callback=' + callbackName + '&t=' + Date.now();
-        script.onerror = () => {
-          clearTimeout(timeoutId);
-          delete window[callbackName];
-          container.innerHTML = '<div class="vazio">❌ Erro de conexão</div>';
-          showToast('❌ Erro de conexão!', 'error');
-        };
-        document.body.appendChild(script);
-      } catch(e) {
-        clearTimeout(timeoutId);
-        delete window[callbackName];
-        container.innerHTML = '<div class="vazio">❌ Erro ao conectar</div>';
-        showToast('❌ Erro ao conectar!', 'error');
-      }
-    }
-
-    function renderizarListaGerenciamento(produtos) {
-      const container = document.getElementById('listaProdutosGerencia');
-      
-      if (!produtos || produtos.length === 0) {
-        container.innerHTML = '<div class="vazio">Nenhum produto cadastrado</div>';
-        return;
-      }
-
-      let html = '';
-      produtos.forEach((p, index) => {
-        html += `
-          <div class="produto-gerencia-item" data-index="${index}">
-            <span class="nome-produto">${p.nome}</span>
-            <div class="preco-produto">
-              <input type="text" class="preco-input" value="${p.valor}" data-index="${index}" 
-                     inputmode="decimal" placeholder="0,00">
-            </div>
-            <button class="btn-remover-produto" onclick="removerProdutoGerencia(${index})" title="Remover produto">
-              ✕
-            </button>
-          </div>
-        `;
-      });
-      container.innerHTML = html;
-
-      document.querySelectorAll('.preco-input').forEach(input => {
-        input.addEventListener('input', function(e) {
-          let valor = this.value.replace(/[^0-9,]/g, '');
-          const partes = valor.split(',');
-          if (partes.length > 2) {
-            valor = partes[0] + ',' + partes.slice(1).join('');
-          }
-          this.value = valor;
-          const index = parseInt(this.dataset.index);
-          if (!isNaN(index) && produtosParaSalvar[index]) {
-            produtosParaSalvar[index].valor = valor || '0,00';
-          }
-        });
-
-        input.addEventListener('blur', function() {
-          let valor = this.value.replace(',', '.');
-          const num = parseFloat(valor);
-          if (!isNaN(num) && num > 0) {
-            this.value = num.toFixed(2).replace('.', ',');
-          } else {
-            this.value = '0,00';
-          }
-          const index = parseInt(this.dataset.index);
-          if (!isNaN(index) && produtosParaSalvar[index]) {
-            produtosParaSalvar[index].valor = this.value;
-          }
-        });
-      });
-    }
-
-    function removerProdutoGerencia(index) {
-      const produtos = produtosParaSalvar;
-      if (index >= 0 && index < produtos.length) {
-        const nome = produtos[index].nome;
-        produtos.splice(index, 1);
-        renderizarListaGerenciamento(produtos);
-        document.getElementById('contadorProdutos').textContent = `(${produtos.length})`;
-        showToast(`🗑️ "${nome}" removido`, 'info', 1000);
-      }
-    }
-
-    // ============================================================
-    //  SALVAR NOVO PRODUTO
-    // ============================================================
-    function salvarProduto() {
-      const nome = document.getElementById('novoProdutoNome').value.trim().toUpperCase();
-      const preco = document.getElementById('novoProdutoPreco').value.replace(',', '.');
-      
-      if (!nome) {
-        showToast('Digite o nome do produto!', 'warning');
-        return;
-      }
-      
-      if (parseFloat(preco) <= 0) {
-        showToast('Digite um preço válido!', 'warning');
-        return;
-      }
-
-      const existe = produtosParaSalvar.some(p => p.nome.toUpperCase() === nome);
-      if (existe) {
-        showToast(`❌ "${nome}" já existe!`, 'error');
-        return;
-      }
-
-      const btn = document.getElementById('btnSalvarProduto');
-      btn.disabled = true;
-      btn.innerHTML = '<span class="material-icons-round" style="font-size:18px;">hourglass_top</span> Salvando...';
-      document.getElementById('loaderCadastro').style.display = 'block';
-
-      const url = SCRIPT_URL;
-      const callbackName = 'cadastrar_' + Date.now();
-      const timeoutId = setTimeout(() => {
-        delete window[callbackName];
-        btn.disabled = false;
-        btn.innerHTML = '<span class="material-icons-round" style="font-size:18px;">add</span> Adicionar';
-        document.getElementById('loaderCadastro').style.display = 'none';
-        showToast('❌ Tempo esgotado!', 'error');
-      }, 10000);
-
-      window[callbackName] = function(resultado) {
-        clearTimeout(timeoutId);
-        btn.disabled = false;
-        btn.innerHTML = '<span class="material-icons-round" style="font-size:18px;">add</span> Adicionar';
-        document.getElementById('loaderCadastro').style.display = 'none';
-
-        if (resultado && resultado.success) {
-          showToast(`✅ "${nome}" cadastrado!`, 'success');
-          document.getElementById('novoProdutoNome').value = '';
-          document.getElementById('novoProdutoPreco').value = '0,00';
-          carregarListaGerenciamento();
-          // Limpa cache de produtos para forçar recarga
-          cacheProdutos = null;
-          cacheProdutosTimestamp = 0;
-          document.getElementById('novoProdutoNome').focus();
-        } else {
-          showToast('❌ Erro: ' + (resultado?.mensagem || 'Erro desconhecido'), 'error');
-        }
-        delete window[callbackName];
-      };
-
-      try {
-        const params = new URLSearchParams({
-          action: 'cadastrarProduto',
-          nome: nome,
-          preco: preco,
-          callback: callbackName
-        });
-        const script = document.createElement('script');
-        script.src = url + '?' + params.toString();
-        script.onerror = () => {
-          clearTimeout(timeoutId);
-          delete window[callbackName];
-          btn.disabled = false;
-          btn.innerHTML = '<span class="material-icons-round" style="font-size:18px;">add</span> Adicionar';
-          document.getElementById('loaderCadastro').style.display = 'none';
-          showToast('❌ Erro de conexão!', 'error');
-        };
-        document.body.appendChild(script);
-      } catch(e) {
-        clearTimeout(timeoutId);
-        delete window[callbackName];
-        btn.disabled = false;
-        btn.innerHTML = '<span class="material-icons-round" style="font-size:18px;">add</span> Adicionar';
-        document.getElementById('loaderCadastro').style.display = 'none';
-        showToast('❌ Erro ao conectar!', 'error');
-      }
-    }
-
-    // ============================================================
-    //  SALVAR ALTERAÇÕES EM MASSA
-    // ============================================================
-    function salvarAlteracoesProdutos() {
-      const btn = document.getElementById('btnSalvarAlteracoes');
-      btn.disabled = true;
-      btn.innerHTML = '<span class="material-icons-round">hourglass_top</span> Salvando...';
-      document.getElementById('loaderSalvar').style.display = 'block';
-
-      const url = SCRIPT_URL;
-      const callbackName = 'salvarMassas_' + Date.now();
-      const timeoutId = setTimeout(() => {
-        delete window[callbackName];
-        btn.disabled = false;
-        btn.innerHTML = '<span class="material-icons-round">save</span> Salvar Alterações';
-        document.getElementById('loaderSalvar').style.display = 'none';
-        showToast('❌ Tempo esgotado!', 'error');
-      }, 15000);
-
-      window[callbackName] = function(resultado) {
-        clearTimeout(timeoutId);
-        btn.disabled = false;
-        btn.innerHTML = '<span class="material-icons-round">save</span> Salvar Alterações';
-        document.getElementById('loaderSalvar').style.display = 'none';
-
-        if (resultado && resultado.success) {
-          showToast('✅ Alterações salvas!', 'success');
-          // Limpa caches
-          cacheProdutos = null;
-          cacheProdutosTimestamp = 0;
-          carregarListaGerenciamento();
-          carregarProdutosAsync().then(produtos => aplicarProdutos(produtos));
-        } else {
-          showToast('❌ Erro: ' + (resultado?.mensagem || 'Erro desconhecido'), 'error');
-        }
-        delete window[callbackName];
-      };
-
-      try {
-        const params = new URLSearchParams({
-          action: 'salvarProdutosMassa',
-          produtos: JSON.stringify(produtosParaSalvar),
-          callback: callbackName
-        });
-        const script = document.createElement('script');
-        script.src = url + '?' + params.toString();
-        script.onerror = () => {
-          clearTimeout(timeoutId);
-          delete window[callbackName];
-          btn.disabled = false;
-          btn.innerHTML = '<span class="material-icons-round">save</span> Salvar Alterações';
-          document.getElementById('loaderSalvar').style.display = 'none';
-          showToast('❌ Erro de conexão!', 'error');
-        };
-        document.body.appendChild(script);
-      } catch(e) {
-        clearTimeout(timeoutId);
-        delete window[callbackName];
-        btn.disabled = false;
-        btn.innerHTML = '<span class="material-icons-round">save</span> Salvar Alterações';
-        document.getElementById('loaderSalvar').style.display = 'none';
-        showToast('❌ Erro ao conectar!', 'error');
+    function atualizarTotal() {
+      const total = calcularTotal();
+      document.getElementById('valor').value = total;
+      if (produtosSelecionados.length > 0) {
+        const desc = produtosSelecionados.map(p => p.qtd + 'x ' + p.nome).join(', ');
+        document.getElementById('descricao').value = desc;
       }
     }
 
@@ -2043,39 +1343,22 @@
     //  GERAR PIX
     // ============================================================
     function gerarPix() {
-      const url = SCRIPT_URL;
+      const url = getScriptUrl();
       const cliente = document.getElementById('cliente').value.trim();
-      const valorInput = document.getElementById('valor');
-      
-      const valorComDesconto = valorInput.value.replace(',', '.');
-      const valorOriginal = calcularTotalOriginal().toFixed(2).replace('.', ',');
-      
-      const totalOriginal = calcularTotalOriginal();
-      const valorFinal = parseFloat(valorComDesconto);
-      const descontoCalculado = totalOriginal - valorFinal;
-      
       const dados = {
         data: document.getElementById('dataVenda').value,
-        valor: valorComDesconto,
+        valor: document.getElementById('valor').value,
         cliente: cliente,
         descricao: document.getElementById('descricao').value ||
-          produtosSelecionados.map(p => p.qtd + 'x ' + p.nome).join(', '),
-        produtos: JSON.stringify(produtosSelecionados.map(p => ({ 
-          nome: p.nome, 
-          qtd: p.qtd, 
-          valorUnitario: p.valorUnitario,
-          valorTotal: p.valorTotal
-        }))),
-        desconto: descontoCalculado.toFixed(2).replace('.', ','),
-        valorOriginal: valorOriginal
+          produtosSelecionados.map(p => p.qtd + 'x ' + p.nome).join(', ')
       };
 
       if (produtosSelecionados.length === 0) {
         showToast('Adicione pelo menos um produto!', 'warning');
         return;
       }
-      if (parseFloat(valorComDesconto) <= 0) {
-        showToast('Valor total inválido!', 'warning');
+      if (dados.valor === "0,00") {
+        showToast('Valor total é zero!', 'warning');
         return;
       }
 
@@ -2088,7 +1371,7 @@
         delete window[callbackName];
         document.getElementById('loader').style.display = 'none';
         document.getElementById('btnGerar').style.display = 'flex';
-        showToast('❌ Tempo esgotado!', 'error');
+        showToast('❌ Tempo esgotado! Verifique sua conexão.', 'error');
       }, 15000);
 
       window[callbackName] = function(resultado) {
@@ -2096,23 +1379,19 @@
         document.getElementById('loader').style.display = 'none';
         if (resultado && resultado.success) {
           const pixCode = resultado.pixCode;
-          
-          const valorExibir = valorComDesconto.replace('.', ',');
-          document.getElementById('displayValor').innerText = valorExibir;
-          
-          const nomeCliente = cliente && cliente.trim() !== '' ? cliente : 'Cliente não informado';
+          document.getElementById('displayValor').innerText = resultado.valor;
+          const nomeCliente = resultado.cliente && resultado.cliente.trim() !== '' ? resultado.cliente : 'Cliente não informado';
           document.getElementById('displayCliente').innerText = nomeCliente;
           document.getElementById('pixCodeText').value = pixCode;
           window.pixCodeAtual = pixCode;
           window.paymentIdAtual = resultado.paymentId;
 
           window.dadosVenda = {
-            valor: valorExibir,
+            valor: resultado.valor,
             cliente: nomeCliente,
             descricao: dados.descricao,
             data: dados.data,
-            produtos: produtosSelecionados.map(p => ({ ...p })),
-            desconto: dados.desconto
+            produtos: produtosSelecionados.map(p => ({ ...p }))
           };
 
           atualizarProdutosNota();
@@ -2129,15 +1408,13 @@
           document.getElementById('qrContainer').classList.remove('confirmed');
 
           if (resultado.novoTotal) {
-            cacheTotal = resultado.novoTotal;
-            cacheTotalTimestamp = Date.now();
             document.getElementById('totalHoje').innerText = resultado.novoTotal;
           }
 
-          showToast('✅ Pix gerado!', 'success', 1500);
+          showToast('✅ Pix gerado com sucesso!', 'success', 2000);
           iniciarVerificacaoAutomatica();
         } else {
-          showToast('❌ Erro: ' + (resultado?.erro || 'Erro desconhecido'), 'error');
+          showToast('❌ Erro ao gerar Pix: ' + (resultado?.erro || 'Erro desconhecido'), 'error');
           document.getElementById('btnGerar').style.display = 'flex';
         }
         delete window[callbackName];
@@ -2150,9 +1427,6 @@
           valor: dados.valor,
           cliente: dados.cliente,
           descricao: dados.descricao,
-          produtos: dados.produtos,
-          desconto: dados.desconto,
-          valorOriginal: dados.valorOriginal,
           callback: callbackName
         });
         const script = document.createElement('script');
@@ -2161,7 +1435,7 @@
           clearTimeout(timeoutId);
           document.getElementById('loader').style.display = 'none';
           document.getElementById('btnGerar').style.display = 'flex';
-          showToast('❌ Erro de conexão!', 'error');
+          showToast('❌ Erro de conexão com o Apps Script!', 'error');
           delete window[callbackName];
         };
         document.body.appendChild(script);
@@ -2169,119 +1443,9 @@
         clearTimeout(timeoutId);
         document.getElementById('loader').style.display = 'none';
         document.getElementById('btnGerar').style.display = 'flex';
-        showToast('❌ Erro ao conectar!', 'error');
+        showToast('❌ Erro ao conectar com o servidor!', 'error');
         delete window[callbackName];
       }
-    }
-
-    // ============================================================
-    //  VERIFICAÇÃO AUTOMÁTICA OTIMIZADA
-    // ============================================================
-    function iniciarVerificacaoAutomatica() {
-      if (timerVerificacao) clearInterval(timerVerificacao);
-      tempoDecorrido = 0;
-      loopAtivo = true;
-
-      let tentativas = 0;
-      const MAX_TENTATIVAS = 60;
-
-      function executarVerificacao() {
-        if (!loopAtivo || vendaConfirmada || tentativas >= MAX_TENTATIVAS) {
-          if (tentativas >= MAX_TENTATIVAS && !vendaConfirmada) {
-            document.getElementById('temporizador').textContent = '⏱️ Tempo esgotado!';
-            document.getElementById('temporizador').style.color = '#ff5252';
-            loopAtivo = false;
-            showToast('⏱️ Tempo de verificação esgotado', 'warning');
-          }
-          return;
-        }
-        
-        tentativas++;
-        const restante = MAX_TENTATIVAS - tentativas;
-        document.getElementById('temporizador').textContent = 
-          '⏱️ Verificando... ' + Math.floor(restante / 12) + 'm ' + Math.floor((restante % 12) * 5) + 's';
-
-        const url = SCRIPT_URL;
-        const callbackName = 'verify_' + Date.now();
-        const timeoutId = setTimeout(() => {
-          delete window[callbackName];
-          if (loopAtivo && !vendaConfirmada) {
-            timerVerificacao = setTimeout(executarVerificacao, 5000);
-          }
-        }, 5000);
-
-        window[callbackName] = function(resultado) {
-          clearTimeout(timeoutId);
-          if (!loopAtivo || vendaConfirmada) { 
-            delete window[callbackName]; 
-            return; 
-          }
-          
-          if (resultado && resultado.encontrado && resultado.confirmado) {
-            confirmarPagamento(resultado);
-            delete window[callbackName];
-            return;
-          }
-          
-          if (loopAtivo && !vendaConfirmada) {
-            timerVerificacao = setTimeout(executarVerificacao, 5000);
-          }
-          delete window[callbackName];
-        };
-
-        try {
-          const script = document.createElement('script');
-          script.src = url + '?action=verificarPagamento&callback=' + callbackName + '&t=' + Date.now();
-          script.onerror = () => {
-            clearTimeout(timeoutId);
-            delete window[callbackName];
-            if (loopAtivo && !vendaConfirmada) {
-              timerVerificacao = setTimeout(executarVerificacao, 5000);
-            }
-          };
-          document.body.appendChild(script);
-        } catch(e) {
-          clearTimeout(timeoutId);
-          delete window[callbackName];
-          if (loopAtivo && !vendaConfirmada) {
-            timerVerificacao = setTimeout(executarVerificacao, 5000);
-          }
-        }
-      }
-
-      timerVerificacao = setTimeout(executarVerificacao, 2000);
-    }
-
-    // ============================================================
-    //  CONFIRMAR PAGAMENTO
-    // ============================================================
-    function confirmarPagamento(resultado) {
-      if (vendaConfirmada) return;
-      vendaConfirmada = true;
-      loopAtivo = false;
-      if (timerVerificacao) { clearTimeout(timerVerificacao); timerVerificacao = null; }
-
-      const container = document.getElementById('checkWritingContainer');
-      container.classList.add('visivel');
-      const path = container.querySelector('.check-path');
-      path.style.animation = 'none';
-      path.offsetHeight;
-      path.style.animation = 'drawCheck 1.2s ease-in-out forwards';
-
-      document.getElementById('statusPagamento').style.display = 'none';
-      document.getElementById('temporizador').textContent = '✅ Pagamento confirmado!';
-      document.getElementById('temporizador').style.color = '#00e676';
-      document.getElementById('qrContainer').classList.add('confirmed');
-
-      const badge = document.getElementById('statusBadge');
-      badge.innerHTML = '✅ PAGO';
-      badge.className = 'badge success';
-      
-      // Atualiza placar com força
-      cacheTotal = null;
-      atualizarPlacar(true);
-      
-      showToast('🎉 Pagamento confirmado!', 'success', 3000);
     }
 
     // ============================================================
@@ -2310,6 +1474,109 @@
       const total = produtos.reduce((acc, p) => acc + p.valorTotal, 0);
       html += `<div class="total-nota">Total: R$ ${total.toFixed(2).replace('.', ',')}</div>`;
       container.innerHTML = html;
+    }
+
+    // ============================================================
+    //  VERIFICAÇÃO AUTOMÁTICA
+    // ============================================================
+    function iniciarVerificacaoAutomatica() {
+      if (timerVerificacao) clearInterval(timerVerificacao);
+      tempoDecorrido = 0;
+      loopAtivo = true;
+
+      const timerTempo = setInterval(() => {
+        if (!loopAtivo) { clearInterval(timerTempo); return; }
+        tempoDecorrido++;
+        const restante = maxTempo - tempoDecorrido;
+        if (restante <= 0) {
+          clearInterval(timerTempo);
+          if (!vendaConfirmada) {
+            document.getElementById('temporizador').textContent = '⏱️ Tempo esgotado!';
+            document.getElementById('temporizador').style.color = '#ff5252';
+            loopAtivo = false;
+            showToast('⏱️ Tempo de verificação esgotado', 'warning');
+          }
+        } else {
+          document.getElementById('temporizador').textContent =
+            '⏱️ Verificando... ' + Math.floor(restante / 60) + 'm ' + (restante % 60) + 's';
+        }
+      }, 1000);
+
+      function executarVerificacao() {
+        if (!loopAtivo || vendaConfirmada) return;
+        const url = getScriptUrl();
+        const callbackName = 'verify_' + Date.now();
+        const timeoutId = setTimeout(() => {
+          delete window[callbackName];
+          if (loopAtivo && !vendaConfirmada && tempoDecorrido < maxTempo) {
+            timerVerificacao = setTimeout(executarVerificacao, 5000);
+          }
+        }, 8000);
+
+        window[callbackName] = function(resultado) {
+          clearTimeout(timeoutId);
+          if (!loopAtivo || vendaConfirmada) { delete window[callbackName]; return; }
+          if (resultado && resultado.encontrado && resultado.confirmado) {
+            confirmarPagamento(resultado);
+            delete window[callbackName];
+            return;
+          }
+          if (loopAtivo && !vendaConfirmada && tempoDecorrido < maxTempo) {
+            timerVerificacao = setTimeout(executarVerificacao, 5000);
+          }
+          delete window[callbackName];
+        };
+
+        try {
+          const script = document.createElement('script');
+          script.src = url + '?action=verificarPagamento&callback=' + callbackName;
+          script.onerror = () => {
+            clearTimeout(timeoutId);
+            delete window[callbackName];
+            if (loopAtivo && !vendaConfirmada && tempoDecorrido < maxTempo) {
+              timerVerificacao = setTimeout(executarVerificacao, 5000);
+            }
+          };
+          document.body.appendChild(script);
+        } catch(e) {
+          clearTimeout(timeoutId);
+          delete window[callbackName];
+          if (loopAtivo && !vendaConfirmada && tempoDecorrido < maxTempo) {
+            timerVerificacao = setTimeout(executarVerificacao, 5000);
+          }
+        }
+      }
+
+      timerVerificacao = setTimeout(executarVerificacao, 3000);
+    }
+
+    // ============================================================
+    //  CONFIRMAR PAGAMENTO
+    // ============================================================
+    function confirmarPagamento(resultado) {
+      if (vendaConfirmada) return;
+      vendaConfirmada = true;
+      loopAtivo = false;
+      if (timerVerificacao) { clearTimeout(timerVerificacao); timerVerificacao = null; }
+
+      const container = document.getElementById('checkWritingContainer');
+      container.classList.add('visivel');
+      const path = container.querySelector('.check-path');
+      path.style.animation = 'none';
+      path.offsetHeight;
+      path.style.animation = 'drawCheck 1.2s ease-in-out forwards';
+
+      document.getElementById('statusPagamento').style.display = 'none';
+      document.getElementById('temporizador').textContent = '✅ Pagamento confirmado!';
+      document.getElementById('temporizador').style.color = '#00e676';
+      document.getElementById('qrContainer').classList.add('confirmed');
+
+      const badge = document.getElementById('statusBadge');
+      badge.innerHTML = '✅ PAGO';
+      badge.className = 'badge success';
+      atualizarPlacar();
+      
+      showToast('🎉 Pagamento confirmado com sucesso!', 'success', 3000);
     }
 
     // ============================================================
@@ -2342,23 +1609,21 @@
       document.getElementById('btnGerar').style.display = 'none';
       document.getElementById('loader').style.display = 'block';
 
-      const url = SCRIPT_URL;
+      const url = getScriptUrl();
       const callbackName = 'cancel_' + Date.now();
       const timeoutId = setTimeout(() => {
         delete window[callbackName];
         document.getElementById('loader').style.display = 'none';
         document.getElementById('btnGerar').style.display = 'flex';
-        showToast('❌ Tempo esgotado!', 'error');
+        showToast('❌ Tempo esgotado ao cancelar!', 'error');
       }, 10000);
 
       window[callbackName] = function(resultado) {
         clearTimeout(timeoutId);
         document.getElementById('loader').style.display = 'none';
         if (resultado && resultado.success) {
-          showToast('✅ Venda cancelada!', 'success');
+          showToast('✅ Venda cancelada com sucesso!', 'success');
           if (resultado.novoTotal) {
-            cacheTotal = resultado.novoTotal;
-            cacheTotalTimestamp = Date.now();
             document.getElementById('totalHoje').innerText = resultado.novoTotal;
           }
           novaVenda();
@@ -2430,16 +1695,13 @@
         });
         msg += `\n`;
       }
-      if (dados.desconto && parseFloat(dados.desconto.replace(',', '.')) > 0) {
-        msg += `💸 *Desconto:* R$ ${dados.desconto}\n\n`;
-      }
       msg += `🔑 *Pagamento via Pix confirmado!* ✅\n\n`;
       msg += `_Este é um comprovante automático._`;
 
       const texto = encodeURIComponent(msg);
       const url = `https://api.whatsapp.com/send?phone=${numeroCompleto}&text=${texto}`;
       window.open(url, '_blank');
-      showToast('📱 Abrindo WhatsApp...', 'info', 1500);
+      showToast('📱 Abrindo WhatsApp...', 'info', 2000);
     }
 
     // ============================================================
@@ -2455,12 +1717,8 @@
         cliente: document.getElementById('displayCliente').innerText,
         descricao: 'Venda Pix',
         data: new Date().toLocaleDateString('pt-BR'),
-        produtos: [],
-        desconto: '0,00'
+        produtos: []
       };
-
-      const totalOriginal = dados.produtos.reduce((acc, p) => acc + (p.valorUnitario * p.qtd), 0);
-      const descontoNum = parseFloat(dados.desconto?.replace(',', '.') || 0);
 
       const reciboHTML = `
         <div style="font-family: 'Inter', Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 30px; background: #ffffff; color: #000000; border: 1px solid #ccc;">
@@ -2475,7 +1733,6 @@
             </div>
             <div>
               <p style="margin: 4px 0;"><strong>Valor:</strong> <span style="font-size: 22px; font-weight: 800;">R$ ${dados.valor || '0,00'}</span></p>
-              ${descontoNum > 0 ? `<p style="margin: 4px 0; color: #ff5252;"><strong>Desconto:</strong> - R$ ${dados.desconto}</p>` : ''}
             </div>
           </div>
           <div style="background: #f5f5f5; border-radius: 4px; padding: 12px; margin-bottom: 16px;">
@@ -2508,12 +1765,6 @@
               <div style="text-align: right; font-weight: 800; font-size: 18px; padding-top: 8px; margin-top: 8px; border-top: 2px solid #333;">
                 Total: R$ ${dados.produtos.reduce((acc, p) => acc + p.valorTotal, 0).toFixed(2).replace('.', ',')}
               </div>
-              ${descontoNum > 0 ? `
-                <div style="text-align: right; font-size: 14px; color: #666; margin-top: 4px;">
-                  <span style="text-decoration: line-through;">R$ ${totalOriginal.toFixed(2).replace('.', ',')}</span>
-                  <span style="color: #ff5252;"> (-${(descontoNum / totalOriginal * 100).toFixed(1)}%)</span>
-                </div>
-              ` : ''}
             ` : ''}
           </div>
           <div style="text-align: center; font-size: 12px; color: #888; border-top: 1px solid #ccc; padding-top: 16px; margin-top: 16px;">
@@ -2553,7 +1804,7 @@
         document.body.removeChild(tempDiv);
         btn.disabled = false;
         btn.innerHTML = '<span class="material-icons-round">picture_as_pdf</span> Recibo PDF';
-        showToast('📄 PDF gerado!', 'success', 1500);
+        showToast('📄 PDF gerado com sucesso!', 'success', 2000);
       }).catch((err) => {
         console.error('Erro ao gerar PDF:', err);
         showToast('Erro ao gerar o recibo', 'error');
@@ -2571,7 +1822,7 @@
       c.select();
       c.setSelectionRange(0, 99999);
       document.execCommand("copy");
-      showToast('✅ Código Pix copiado!', 'success', 1500);
+      showToast('✅ Código Pix copiado!', 'success', 2000);
     }
 
     function novaVenda() {
@@ -2583,7 +1834,6 @@
       document.getElementById('descricao').value = '';
       document.getElementById('produtoAdd').selectedIndex = 0;
       document.getElementById('produtoRemove').selectedIndex = 0;
-      document.getElementById('descontoInfo').style.display = 'none';
       atualizarLista();
       atualizarDropdownRemover();
 
@@ -2596,7 +1846,6 @@
       document.getElementById('btnGerar').style.display = 'flex';
       document.getElementById('step-pix').style.display = 'none';
       document.getElementById('step-form').style.display = 'block';
-      document.getElementById('step-cadastro').style.display = 'none';
       document.getElementById('qrContainer').classList.remove('confirmed');
       const badge = document.getElementById('statusBadge');
       badge.innerHTML = '🔍';
@@ -2608,34 +1857,11 @@
       document.getElementById('temporizador').textContent = '⏱️ Verificando automaticamente...';
       document.getElementById('temporizador').style.color = '#888';
       resetDataField();
-      atualizarPlacar(true);
-      verificarConfiguracoes(true);
-      carregarProdutosAsync().then(produtos => aplicarProdutos(produtos));
+      atualizarPlacar();
+      verificarConfiguracoes();
       
-      showToast('🔄 Nova venda iniciada', 'info', 1000);
+      showToast('🔄 Nova venda iniciada', 'info', 1500);
     }
-
-    // ============================================================
-    //  PWA - INSTALAÇÃO
-    // ============================================================
-    let deferredPrompt;
-    window.addEventListener('beforeinstallprompt', (e) => {
-      e.preventDefault();
-      deferredPrompt = e;
-      const btn = document.getElementById('installBtn');
-      btn.style.display = 'flex';
-      btn.addEventListener('click', async () => {
-        btn.style.display = 'none';
-        if (deferredPrompt) {
-          await deferredPrompt.prompt();
-          const result = await deferredPrompt.userChoice;
-          if (result.outcome === 'accepted') {
-            showToast('App instalado!', 'success');
-          }
-          deferredPrompt = null;
-        }
-      });
-    });
   </script>
 </body>
 </html>
