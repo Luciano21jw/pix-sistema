@@ -189,7 +189,7 @@
       padding: 14px 24px;              /* Padding maior */
       border-radius: 50px;
       margin-bottom: 20px;
-      margin-top: 12px;                /* ⬅️ ADICIONEI ISSO PARA DESCER UM POUCO */
+      margin-top: 12px;                /* Desce um pouco */
       font-weight: 800;                /* Peso igual ao título */
       font-size: 1.6rem;               /* Tamanho igual ao título "Nova Venda" */
       letter-spacing: -0.5px;          /* Espaçamento igual ao h2 */
@@ -868,6 +868,11 @@
         Gerar Pix <span class="material-icons-round">arrow_forward</span>
       </button>
 
+      <!-- BOTÃO PARA ABRIR GERENCIAMENTO DE PRODUTOS -->
+      <button class="btn-outline" onclick="abrirGerenciarProdutos()" style="margin-top: 8px;">
+        <span class="material-icons-round">inventory_2</span> Gerenciar Produtos
+      </button>
+
       <div id="loader">
         <div class="spinner"></div>
         <p style="color:var(--text-secondary); font-size:0.9rem;">Registrando venda...</p>
@@ -936,6 +941,36 @@
     </div>
   </div>
 
+  <!-- MODAL DE GERENCIAMENTO DE PRODUTOS -->
+  <div id="gerenciarModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); backdrop-filter:blur(8px); z-index:999997; align-items:center; justify-content:center;">
+    <div style="background:var(--bg-secondary); padding:24px; border-radius:var(--radius); max-width:440px; width:90%; border:1px solid rgba(255,255,255,0.06); box-shadow:0 24px 64px rgba(0,0,0,0.8); max-height:90vh; overflow-y:auto;">
+      <h2 style="font-size:1.4rem; margin-bottom:16px; display:flex; align-items:center; gap:10px;">
+        <span class="material-icons-round">inventory_2</span> Gerenciar Produtos
+      </h2>
+
+      <div class="input-group">
+        <label>Nome do Produto</label>
+        <input type="text" id="novoProdutoNome" placeholder="Ex: Produto A">
+      </div>
+      <div class="input-group">
+        <label>Preço (R$)</label>
+        <input type="text" id="novoProdutoPreco" class="money-input" style="font-size:1.2rem;" inputmode="decimal" placeholder="0,00">
+      </div>
+      <button class="btn-primary" onclick="salvarNovoProduto()" style="margin-top:0;">
+        <span class="material-icons-round">save</span> Adicionar / Atualizar Produto
+      </button>
+
+      <div style="margin-top:20px; border-top:1px solid rgba(255,255,255,0.08); padding-top:12px;">
+        <label style="font-size:0.9rem; color:var(--text-secondary); font-weight:600; margin-bottom:8px; display:block;">Produtos Cadastrados:</label>
+        <div id="listaGerenciar" style="max-height:250px; overflow-y:auto;"></div>
+      </div>
+
+      <button class="btn-cancel" onclick="fecharGerenciarProdutos()" style="margin-top:16px;">
+        <span class="material-icons-round">close</span> Fechar
+      </button>
+    </div>
+  </div>
+
   <!-- BOTÃO INSTALAR PWA -->
   <button id="installBtn">
     <span class="material-icons-round">install_mobile</span> Instalar App
@@ -998,7 +1033,7 @@
     // ============================================================
     //  CONFIGURAÇÃO
     // ============================================================
-    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyTkAurFVEeFKOTuYonV9UTxDOObKxbv-XOPCgoBo-beahk6yf9x4uGDUHuuFsWcXhb3Q/exec';
+    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxf5Kj4Mc99d3haVcyw48kj3eq3mOBd9lghjRcz2Yd8nDj_0GBpqecwL1OOrT3c_PnNiQ/exec';
     const DDI = '55';
 
     // ============================================================
@@ -1153,6 +1188,9 @@
         optRem.textContent = p.nome;
         selectRemove.appendChild(optRem);
       });
+
+      // Atualiza lista do modal de gerenciamento se estiver aberto
+      atualizarListaGerenciar();
     }
 
     // ============================================================
@@ -1336,6 +1374,162 @@
       if (produtosSelecionados.length > 0) {
         const desc = produtosSelecionados.map(p => p.qtd + 'x ' + p.nome).join(', ');
         document.getElementById('descricao').value = desc;
+      }
+    }
+
+    // ============================================================
+    //  GERENCIAR PRODUTOS (ABRIR MODAL)
+    // ============================================================
+    function abrirGerenciarProdutos() {
+      document.getElementById('gerenciarModal').style.display = 'flex';
+      document.getElementById('novoProdutoNome').value = '';
+      document.getElementById('novoProdutoPreco').value = '';
+      atualizarListaGerenciar();
+    }
+
+    function fecharGerenciarProdutos() {
+      document.getElementById('gerenciarModal').style.display = 'none';
+      carregarProdutos(); // Recarrega produtos para atualizar a lista principal
+    }
+
+    // ============================================================
+    //  ATUALIZAR LISTA NO MODAL DE GERENCIAMENTO
+    // ============================================================
+    function atualizarListaGerenciar() {
+      const container = document.getElementById('listaGerenciar');
+      if (!listaProdutosDisponiveis || listaProdutosDisponiveis.length === 0) {
+        container.innerHTML = '<p style="color:var(--text-muted); text-align:center; padding:12px 0;">Nenhum produto cadastrado.</p>';
+        return;
+      }
+      let html = '';
+      listaProdutosDisponiveis.forEach(p => {
+        html += `
+          <div style="display:flex; justify-content:space-between; align-items:center; padding:8px 0; border-bottom:1px solid rgba(255,255,255,0.04);">
+            <div style="flex:1;">
+              <div style="font-weight:600; color:var(--text-primary); font-size:0.9rem;">${p.nome}</div>
+              <div style="color:var(--brand-light); font-size:0.85rem;">R$ ${p.valor}</div>
+            </div>
+            <button onclick="editarProduto('${p.nome}', '${p.valor}')" style="width:auto; padding:8px 12px; margin-top:0; background:rgba(255,255,255,0.06); border:none; border-radius:8px; color:var(--text-secondary); cursor:pointer; font-size:0.8rem; display:flex; align-items:center; gap:4px; margin-left:8px;">
+              <span class="material-icons-round" style="font-size:16px;">edit</span> Editar
+            </button>
+            <button onclick="excluirProduto('${p.nome}')" style="width:auto; padding:8px 12px; margin-top:0; background:rgba(255,82,82,0.1); border:none; border-radius:8px; color:var(--danger); cursor:pointer; font-size:0.8rem; display:flex; align-items:center; gap:4px; margin-left:8px;">
+              <span class="material-icons-round" style="font-size:16px;">delete</span>
+            </button>
+          </div>
+        `;
+      });
+      container.innerHTML = html;
+    }
+
+    // ============================================================
+    //  EDITAR PRODUTO (CARREGA NO FORMULÁRIO)
+    // ============================================================
+    function editarProduto(nome, valor) {
+      document.getElementById('novoProdutoNome').value = nome;
+      document.getElementById('novoProdutoPreco').value = valor;
+      showToast('✏️ Editando: ' + nome, 'info', 1500);
+    }
+
+    // ============================================================
+    //  SALVAR PRODUTO (ADICIONAR OU ATUALIZAR)
+    // ============================================================
+    function salvarNovoProduto() {
+      const nome = document.getElementById('novoProdutoNome').value.trim();
+      const preco = document.getElementById('novoProdutoPreco').value.trim();
+
+      if (!nome || !preco) {
+        showToast('Preencha nome e preço!', 'warning');
+        return;
+      }
+
+      const url = getScriptUrl();
+      const callbackName = 'cadastrarProd_' + Date.now();
+      const timeoutId = setTimeout(() => {
+        delete window[callbackName];
+        showToast('❌ Tempo esgotado ao salvar produto!', 'error');
+      }, 10000);
+
+      window[callbackName] = function(resultado) {
+        clearTimeout(timeoutId);
+        if (resultado && resultado.success) {
+          showToast('✅ Produto salvo com sucesso!', 'success');
+          document.getElementById('novoProdutoNome').value = '';
+          document.getElementById('novoProdutoPreco').value = '';
+          carregarProdutos();
+        } else {
+          showToast('❌ Erro: ' + (resultado?.mensagem || 'Erro desconhecido'), 'error');
+        }
+        delete window[callbackName];
+      };
+
+      try {
+        const params = new URLSearchParams({
+          action: 'cadastrarProduto', // Usando a ação já existente no seu Apps Script
+          nome: nome,
+          preco: preco,
+          callback: callbackName
+        });
+        const script = document.createElement('script');
+        script.src = url + '?' + params.toString();
+        script.onerror = () => {
+          clearTimeout(timeoutId);
+          delete window[callbackName];
+          showToast('❌ Erro de conexão!', 'error');
+        };
+        document.body.appendChild(script);
+      } catch(e) {
+        clearTimeout(timeoutId);
+        delete window[callbackName];
+        showToast('❌ Erro ao conectar!', 'error');
+      }
+    }
+
+    // ============================================================
+    //  EXCLUIR PRODUTO (USANDO SALVAR EM MASSA)
+    // ============================================================
+    async function excluirProduto(nome) {
+      const confirmado = await showConfirm('🗑️ Excluir Produto', 'Deseja excluir "' + nome + '" permanentemente?');
+      if (!confirmado) return;
+
+      // Remove da lista atual
+      const novaLista = listaProdutosDisponiveis.filter(p => p.nome !== nome);
+
+      const url = getScriptUrl();
+      const callbackName = 'salvarMassa_' + Date.now();
+      const timeoutId = setTimeout(() => {
+        delete window[callbackName];
+        showToast('❌ Tempo esgotado ao excluir!', 'error');
+      }, 10000);
+
+      window[callbackName] = function(resultado) {
+        clearTimeout(timeoutId);
+        if (resultado && resultado.success) {
+          showToast('✅ Produto excluído!', 'success');
+          carregarProdutos();
+        } else {
+          showToast('❌ Erro: ' + (resultado?.mensagem || 'Erro desconhecido'), 'error');
+        }
+        delete window[callbackName];
+      };
+
+      try {
+        const params = new URLSearchParams({
+          action: 'salvarProdutosMassa', // Usando a ação já existente no seu Apps Script
+          produtos: JSON.stringify(novaLista),
+          callback: callbackName
+        });
+        const script = document.createElement('script');
+        script.src = url + '?' + params.toString();
+        script.onerror = () => {
+          clearTimeout(timeoutId);
+          delete window[callbackName];
+          showToast('❌ Erro de conexão!', 'error');
+        };
+        document.body.appendChild(script);
+      } catch(e) {
+        clearTimeout(timeoutId);
+        delete window[callbackName];
+        showToast('❌ Erro ao conectar!', 'error');
       }
     }
 
