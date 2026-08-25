@@ -50,7 +50,7 @@
       flex-direction: column;
       align-items: center;
       padding: 16px;
-      padding-top: 50px; /* ESPAÇO PARA NÃO FICAR COBERTO PELA BARRA DE STATUS */
+      padding-top: 50px;
     }
     ::-webkit-scrollbar { width: 4px; }
     ::-webkit-scrollbar-track { background: var(--bg-secondary); }
@@ -205,6 +205,22 @@
       font-weight: 700;
     }
     .scoreboard .badge.success { background: rgba(0,230,118,0.2); color: var(--success); }
+
+    /* ===== LOADING INDICATOR ===== */
+    #loadingIndicator {
+      display: none;
+      text-align: center;
+      padding: 4px;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+    }
+    #loadingIndicator .material-icons-round {
+      font-size: 16px;
+      animation: spin 0.8s linear infinite;
+      display: inline-block;
+    }
+    @keyframes spin { 100% { transform: rotate(360deg); } }
 
     .container {
       background: var(--bg-secondary);
@@ -532,7 +548,6 @@
       margin: 0 auto 12px;
       border-radius: 50%;
     }
-    @keyframes spin { 100% { transform: rotate(360deg); } }
 
     #step-pix {
       display: none;
@@ -957,6 +972,12 @@
     <span class="badge" id="statusBadge">🔍</span>
   </div>
 
+  <!-- LOADING INDICATOR -->
+  <div id="loadingIndicator">
+    <span class="material-icons-round">refresh</span>
+    Carregando produtos...
+  </div>
+
   <!-- CONTAINER PRINCIPAL -->
   <div class="container">
 
@@ -978,7 +999,7 @@
         <label><span class="material-icons-round">add_shopping_cart</span> Adicionar Produto</label>
         <div class="row-inputs">
           <select id="produtoAdd">
-            <option value="">⏳ Carregando produtos da planilha...</option>
+            <option value="">Selecione...</option>
           </select>
           <button class="btn-add" onclick="adicionarProduto()" aria-label="Adicionar produto">
             <svg viewBox="0 0 24 24"><path d="M19 13H13V19H11V13H5V11H11V5H13V11H19V13Z"/></svg>
@@ -1169,6 +1190,50 @@
 
   <script>
     // ============================================================
+    //  CONFIGURAÇÕES GLOBAIS
+    // ============================================================
+    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbx_vjbQ4TylZHcblOrE5shfyvJ4t9er9l2naxnltpjI2w97E7ctjM2Xtm0pP5cXiS3iBw/exec';
+    const DDI = '55';
+
+    // ============================================================
+    //  CACHE - OTIMIZAÇÃO DE VELOCIDADE
+    // ============================================================
+    let cacheProdutos = null;
+    let cacheProdutosTimestamp = 0;
+    const CACHE_TTL = 60000; // 1 minuto
+    
+    let cacheTotal = null;
+    let cacheTotalTimestamp = 0;
+    const TOTAL_CACHE_TTL = 30000; // 30 segundos
+    
+    let cacheConfig = null;
+    let cacheConfigTimestamp = 0;
+    const CONFIG_CACHE_TTL = 120000; // 2 minutos
+
+    // ============================================================
+    //  PRODUTOS DE FALLBACK
+    // ============================================================
+    const PRODUTOS_FALLBACK = [
+      { nome: 'Produto A', valor: '10,00' },
+      { nome: 'Produto B', valor: '25,50' },
+      { nome: 'Produto C', valor: '50,00' },
+      { nome: 'Produto D', valor: '100,00' },
+      { nome: 'Serviço Premium', valor: '200,00' }
+    ];
+
+    // ============================================================
+    //  VARIÁVEIS GLOBAIS
+    // ============================================================
+    let produtosSelecionados = [];
+    let listaProdutosDisponiveis = [];
+    let vendaConfirmada = false;
+    let timerVerificacao = null;
+    let tempoDecorrido = 0;
+    let loopAtivo = false;
+    let valorOriginalTotal = 0;
+    let produtosParaSalvar = [];
+
+    // ============================================================
     //  TOAST / NOTIFICAÇÃO
     // ============================================================
     function showToast(message, type = 'info', duration = 3000) {
@@ -1206,7 +1271,6 @@
         document.getElementById('modalTitle').textContent = title;
         document.getElementById('modalMessage').textContent = message;
         modal.classList.add('ativo');
-        
         confirmResolve = resolve;
       });
     }
@@ -1222,61 +1286,9 @@
     });
 
     // ============================================================
-    //  CONFIGURAÇÃO
-    // ============================================================
-    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwg5wzqsoksDF6WKYsPnf10s2tU9_rkJR_PbO6Wr2ZLJwjZ6lPVh2zkJMIl-_eBa88T5g/exec';
-    const DDI = '55';
-
-    // ============================================================
-    //  PRODUTOS DE FALLBACK
-    // ============================================================
-    const PRODUTOS_FALLBACK = [
-      { nome: 'Produto A', valor: '10,00' },
-      { nome: 'Produto B', valor: '25,50' },
-      { nome: 'Produto C', valor: '50,00' },
-      { nome: 'Produto D', valor: '100,00' },
-      { nome: 'Serviço Premium', valor: '200,00' }
-    ];
-
-    // ============================================================
-    //  VARIÁVEIS GLOBAIS
-    // ============================================================
-    let produtosSelecionados = [];
-    let listaProdutosDisponiveis = [];
-    let vendaConfirmada = false;
-    let timerVerificacao = null;
-    let tempoDecorrido = 0;
-    const maxTempo = 300;
-    let loopAtivo = false;
-    let valorOriginalTotal = 0;
-    let produtosParaSalvar = [];
-
-    // ============================================================
-    //  PWA - INSTALAÇÃO
-    // ============================================================
-    let deferredPrompt;
-    window.addEventListener('beforeinstallprompt', (e) => {
-      e.preventDefault();
-      deferredPrompt = e;
-      const btn = document.getElementById('installBtn');
-      btn.style.display = 'flex';
-      btn.addEventListener('click', async () => {
-        btn.style.display = 'none';
-        if (deferredPrompt) {
-          await deferredPrompt.prompt();
-          const result = await deferredPrompt.userChoice;
-          if (result.outcome === 'accepted') {
-            showToast('App instalado com sucesso!', 'success');
-          }
-          deferredPrompt = null;
-        }
-      });
-    });
-
-    // ============================================================
     //  SPLASH SCREEN
     // ============================================================
-    window.addEventListener('load', () => {
+    window.addEventListener('load', async () => {
       setTimeout(() => {
         document.getElementById('splash-screen').classList.add('fade-out');
         setTimeout(() => {
@@ -1287,14 +1299,224 @@
       document.getElementById('whatsappNumber').value = '11999999999';
       resetDataField();
       
-      carregarProdutos();
-      verificarConfiguracoes();
-      atualizarPlacar();
+      // Carrega tudo de forma otimizada
+      await carregarTudo();
       
       configurarCampoValor();
       configurarCampoPrecoCadastro();
     });
 
+    // ============================================================
+    //  CARREGAMENTO OTIMIZADO
+    // ============================================================
+    async function carregarTudo() {
+      // Mostra indicador de carregamento
+      document.getElementById('loadingIndicator').style.display = 'block';
+      
+      try {
+        // Carrega produtos com cache
+        const produtos = await carregarProdutosAsync();
+        aplicarProdutos(produtos);
+        
+        // Verifica configurações com cache
+        verificarConfiguracoes(true);
+        
+        // Atualiza placar com cache
+        atualizarPlacar(true);
+        
+      } catch (e) {
+        console.error('Erro ao carregar:', e);
+        showToast('⚠️ Erro ao carregar dados', 'warning', 2000);
+      } finally {
+        document.getElementById('loadingIndicator').style.display = 'none';
+      }
+    }
+
+    // ============================================================
+    //  CARREGAR PRODUTOS COM CACHE
+    // ============================================================
+    function carregarProdutosAsync() {
+      return new Promise((resolve) => {
+        const agora = Date.now();
+        
+        // Se tiver cache válido, resolve imediatamente
+        if (cacheProdutos && (agora - cacheProdutosTimestamp) < CACHE_TTL) {
+          resolve(cacheProdutos);
+          return;
+        }
+        
+        const url = SCRIPT_URL;
+        const callbackName = 'produtos_async_' + Date.now();
+        const timeoutId = setTimeout(() => {
+          delete window[callbackName];
+          if (cacheProdutos) {
+            resolve(cacheProdutos);
+          } else {
+            resolve(PRODUTOS_FALLBACK);
+          }
+        }, 5000);
+
+        window[callbackName] = function(data) {
+          clearTimeout(timeoutId);
+          if (data && !data.erro && Array.isArray(data) && data.length > 0) {
+            cacheProdutos = data;
+            cacheProdutosTimestamp = agora;
+            resolve(data);
+          } else {
+            resolve(cacheProdutos || PRODUTOS_FALLBACK);
+          }
+          delete window[callbackName];
+        };
+
+        try {
+          const script = document.createElement('script');
+          script.src = url + '?action=getProdutos&callback=' + callbackName + '&t=' + agora;
+          script.onerror = () => {
+            clearTimeout(timeoutId);
+            delete window[callbackName];
+            resolve(cacheProdutos || PRODUTOS_FALLBACK);
+          };
+          document.body.appendChild(script);
+        } catch(e) {
+          clearTimeout(timeoutId);
+          delete window[callbackName];
+          resolve(cacheProdutos || PRODUTOS_FALLBACK);
+        }
+      });
+    }
+
+    function aplicarProdutos(data) {
+      const selectAdd = document.getElementById('produtoAdd');
+      const selectRemove = document.getElementById('produtoRemove');
+
+      if (!data || data.length === 0) {
+        selectAdd.innerHTML = '<option value="">⚠️ Nenhum produto</option>';
+        selectRemove.innerHTML = '<option value="">⚠️ Nenhum produto</option>';
+        return;
+      }
+
+      listaProdutosDisponiveis = data;
+      selectAdd.innerHTML = '<option value="">Selecione...</option>';
+      selectRemove.innerHTML = '<option value="">Selecione...</option>';
+
+      data.forEach(p => {
+        const optAdd = document.createElement('option');
+        optAdd.value = p.nome;
+        optAdd.dataset.valor = p.valor;
+        optAdd.textContent = p.nome + ' - R$ ' + p.valor;
+        selectAdd.appendChild(optAdd);
+
+        const optRem = document.createElement('option');
+        optRem.value = p.nome;
+        optRem.textContent = p.nome;
+        selectRemove.appendChild(optRem);
+      });
+    }
+
+    // ============================================================
+    //  VERIFICAR CONFIGURAÇÕES COM CACHE
+    // ============================================================
+    function verificarConfiguracoes(forcarRecarga = false) {
+      const agora = Date.now();
+      
+      if (!forcarRecarga && cacheConfig !== null && (agora - cacheConfigTimestamp) < CONFIG_CACHE_TTL) {
+        aplicarConfiguracao(cacheConfig);
+        return;
+      }
+      
+      const url = SCRIPT_URL;
+      const callbackName = 'config_' + Date.now();
+      const timeoutId = setTimeout(() => {
+        delete window[callbackName];
+        document.getElementById('configWarning').style.display = 'none';
+        document.getElementById('btnGerar').disabled = false;
+      }, 5000);
+
+      window[callbackName] = function(data) {
+        clearTimeout(timeoutId);
+        cacheConfig = data;
+        cacheConfigTimestamp = agora;
+        aplicarConfiguracao(data);
+        delete window[callbackName];
+      };
+
+      try {
+        const script = document.createElement('script');
+        script.src = url + '?action=verificarConfiguracoes&callback=' + callbackName + '&t=' + agora;
+        script.onerror = () => {
+          clearTimeout(timeoutId);
+          delete window[callbackName];
+          document.getElementById('configWarning').style.display = 'none';
+          document.getElementById('btnGerar').disabled = false;
+        };
+        document.body.appendChild(script);
+      } catch(e) {
+        clearTimeout(timeoutId);
+        delete window[callbackName];
+        document.getElementById('configWarning').style.display = 'none';
+        document.getElementById('btnGerar').disabled = false;
+      }
+    }
+
+    function aplicarConfiguracao(data) {
+      if (data && data.configurado === false) {
+        const warn = document.getElementById('configWarning');
+        warn.style.display = 'flex';
+        warn.innerHTML = `
+          <span class="material-icons-round">warning</span>
+          <div><strong>⚠️ ${data.mensagem}</strong></div>
+        `;
+        document.getElementById('btnGerar').disabled = true;
+      } else {
+        document.getElementById('configWarning').style.display = 'none';
+        document.getElementById('btnGerar').disabled = false;
+      }
+    }
+
+    // ============================================================
+    //  ATUALIZAR PLACAR COM CACHE
+    // ============================================================
+    function atualizarPlacar(forcarRecarga = false) {
+      const agora = Date.now();
+      
+      if (!forcarRecarga && cacheTotal !== null && (agora - cacheTotalTimestamp) < TOTAL_CACHE_TTL) {
+        document.getElementById('totalHoje').innerText = cacheTotal;
+        return;
+      }
+      
+      const url = SCRIPT_URL;
+      const callbackName = 'total_' + Date.now();
+      const timeoutId = setTimeout(() => {
+        delete window[callbackName];
+      }, 5000);
+
+      window[callbackName] = function(data) {
+        clearTimeout(timeoutId);
+        if (data && data.total) {
+          cacheTotal = data.total;
+          cacheTotalTimestamp = agora;
+          document.getElementById('totalHoje').innerText = data.total;
+        }
+        delete window[callbackName];
+      };
+
+      try {
+        const script = document.createElement('script');
+        script.src = url + '?action=getTotalVendasHoje&callback=' + callbackName + '&t=' + agora;
+        script.onerror = () => {
+          clearTimeout(timeoutId);
+          delete window[callbackName];
+        };
+        document.body.appendChild(script);
+      } catch(e) {
+        clearTimeout(timeoutId);
+        delete window[callbackName];
+      }
+    }
+
+    // ============================================================
+    //  FUNÇÕES AUXILIARES
+    // ============================================================
     function resetDataField() {
       const hoje = new Date();
       const dataFmt = hoje.getFullYear() + '-' +
@@ -1305,9 +1527,6 @@
 
     function getScriptUrl() { return SCRIPT_URL; }
 
-    // ============================================================
-    //  CONFIGURAR CAMPOS DE VALOR
-    // ============================================================
     function configurarCampoValor() {
       const valorInput = document.getElementById('valor');
       
@@ -1418,166 +1637,6 @@
     }
 
     // ============================================================
-    //  CARREGAR PRODUTOS
-    // ============================================================
-    function carregarProdutos() {
-      const selectAdd = document.getElementById('produtoAdd');
-      const selectRemove = document.getElementById('produtoRemove');
-      
-      selectAdd.innerHTML = '<option value="">⏳ Carregando produtos da planilha...</option>';
-      selectRemove.innerHTML = '<option value="">⏳ Carregando...</option>';
-
-      const url = getScriptUrl();
-      const callbackName = 'produtos_' + Date.now();
-      
-      const timeoutId = setTimeout(() => {
-        delete window[callbackName];
-        usarFallbackProdutos();
-        showToast('⏳ Produtos da planilha não carregaram, usando lista local', 'warning', 3000);
-      }, 10000);
-
-      window[callbackName] = function(data) {
-        clearTimeout(timeoutId);
-        if (data && !data.erro && Array.isArray(data) && data.length > 0) {
-          aplicarProdutos(data);
-          showToast('✅ Produtos carregados da planilha!', 'success', 2000);
-        } else {
-          usarFallbackProdutos();
-          showToast('⚠️ Erro ao carregar produtos da planilha', 'error', 3000);
-        }
-        delete window[callbackName];
-      };
-
-      try {
-        const script = document.createElement('script');
-        script.src = url + '?action=getProdutos&callback=' + callbackName;
-        script.onerror = () => {
-          clearTimeout(timeoutId);
-          delete window[callbackName];
-          usarFallbackProdutos();
-          showToast('❌ Erro de conexão com a planilha', 'error', 3000);
-        };
-        document.body.appendChild(script);
-      } catch(e) {
-        clearTimeout(timeoutId);
-        delete window[callbackName];
-        usarFallbackProdutos();
-        showToast('❌ Erro ao conectar com a planilha', 'error', 3000);
-      }
-    }
-
-    function usarFallbackProdutos() {
-      aplicarProdutos(PRODUTOS_FALLBACK);
-    }
-
-    function aplicarProdutos(data) {
-      const selectAdd = document.getElementById('produtoAdd');
-      const selectRemove = document.getElementById('produtoRemove');
-
-      if (!data || data.length === 0) {
-        selectAdd.innerHTML = '<option value="">⚠️ Nenhum produto</option>';
-        selectRemove.innerHTML = '<option value="">⚠️ Nenhum produto</option>';
-        return;
-      }
-
-      listaProdutosDisponiveis = data;
-      selectAdd.innerHTML = '<option value="">Selecione...</option>';
-      selectRemove.innerHTML = '<option value="">Selecione...</option>';
-
-      data.forEach(p => {
-        const optAdd = document.createElement('option');
-        optAdd.value = p.nome;
-        optAdd.dataset.valor = p.valor;
-        optAdd.textContent = p.nome + ' - R$ ' + p.valor;
-        selectAdd.appendChild(optAdd);
-
-        const optRem = document.createElement('option');
-        optRem.value = p.nome;
-        optRem.textContent = p.nome;
-        selectRemove.appendChild(optRem);
-      });
-    }
-
-    // ============================================================
-    //  VERIFICAR CONFIGURAÇÕES
-    // ============================================================
-    function verificarConfiguracoes() {
-      const url = getScriptUrl();
-      const callbackName = 'config_' + Date.now();
-      const timeoutId = setTimeout(() => {
-        delete window[callbackName];
-        document.getElementById('configWarning').style.display = 'none';
-        document.getElementById('btnGerar').disabled = false;
-      }, 8000);
-
-      window[callbackName] = function(data) {
-        clearTimeout(timeoutId);
-        if (data && data.configurado === false) {
-          const warn = document.getElementById('configWarning');
-          warn.style.display = 'flex';
-          warn.innerHTML = `
-            <span class="material-icons-round">warning</span>
-            <div><strong>⚠️ ${data.mensagem}</strong></div>
-          `;
-          document.getElementById('btnGerar').disabled = true;
-        } else {
-          document.getElementById('configWarning').style.display = 'none';
-          document.getElementById('btnGerar').disabled = false;
-        }
-        delete window[callbackName];
-      };
-
-      try {
-        const script = document.createElement('script');
-        script.src = url + '?action=verificarConfiguracoes&callback=' + callbackName;
-        script.onerror = () => {
-          clearTimeout(timeoutId);
-          delete window[callbackName];
-          document.getElementById('configWarning').style.display = 'none';
-          document.getElementById('btnGerar').disabled = false;
-        };
-        document.body.appendChild(script);
-      } catch(e) {
-        clearTimeout(timeoutId);
-        delete window[callbackName];
-        document.getElementById('configWarning').style.display = 'none';
-        document.getElementById('btnGerar').disabled = false;
-      }
-    }
-
-    // ============================================================
-    //  ATUALIZAR PLACAR
-    // ============================================================
-    function atualizarPlacar() {
-      const url = getScriptUrl();
-      const callbackName = 'total_' + Date.now();
-      const timeoutId = setTimeout(() => {
-        delete window[callbackName];
-      }, 8000);
-
-      window[callbackName] = function(data) {
-        clearTimeout(timeoutId);
-        if (data && data.total) {
-          document.getElementById('totalHoje').innerText = data.total;
-        }
-        delete window[callbackName];
-      };
-
-      try {
-        const script = document.createElement('script');
-        script.src = url + '?action=getTotalVendasHoje&callback=' + callbackName;
-        script.onerror = () => {
-          clearTimeout(timeoutId);
-          delete window[callbackName];
-        };
-        document.body.appendChild(script);
-      } catch(e) {
-        clearTimeout(timeoutId);
-        delete window[callbackName];
-      }
-    }
-
-    // ============================================================
     //  MANIPULAR PRODUTOS NA VENDA
     // ============================================================
     function adicionarProduto() {
@@ -1619,7 +1678,7 @@
       
       calcularDesconto();
       atualizarDropdownRemover();
-      showToast(`${nome} adicionado!`, 'success', 1500);
+      showToast(`${nome} adicionado!`, 'success', 1000);
     }
 
     function removerProduto() {
@@ -1638,10 +1697,10 @@
       if (produto.qtd > 1) {
         produto.qtd -= 1;
         produto.valorTotal = produto.qtd * produto.valorUnitario;
-        showToast(`1x ${nome} removido`, 'info', 1500);
+        showToast(`1x ${nome} removido`, 'info', 1000);
       } else {
         produtosSelecionados.splice(index, 1);
-        showToast(`${nome} removido`, 'info', 1500);
+        showToast(`${nome} removido`, 'info', 1000);
       }
       
       atualizarLista();
@@ -1698,7 +1757,7 @@
     }
 
     // ============================================================
-    //  🔥 GERENCIAMENTO DE PRODUTOS
+    //  GERENCIAMENTO DE PRODUTOS
     // ============================================================
     function abrirGerenciamento() {
       document.getElementById('step-form').style.display = 'none';
@@ -1708,28 +1767,27 @@
       document.getElementById('novoProdutoPreco').value = '0,00';
       document.getElementById('novoProdutoNome').focus();
       
-      // Carrega os produtos na lista de gerenciamento
       carregarListaGerenciamento();
     }
 
     function voltarParaVenda() {
       document.getElementById('step-cadastro').style.display = 'none';
       document.getElementById('step-form').style.display = 'block';
-      carregarProdutos(); // Recarrega a lista de produtos
-      atualizarPlacar();
+      carregarProdutosAsync().then(produtos => aplicarProdutos(produtos));
+      atualizarPlacar(true);
     }
 
     function carregarListaGerenciamento() {
       const container = document.getElementById('listaProdutosGerencia');
       container.innerHTML = '<div class="vazio">Carregando produtos...</div>';
       
-      const url = getScriptUrl();
+      const url = SCRIPT_URL;
       const callbackName = 'gerencia_' + Date.now();
       const timeoutId = setTimeout(() => {
         delete window[callbackName];
         container.innerHTML = '<div class="vazio">❌ Erro ao carregar produtos</div>';
         showToast('❌ Tempo esgotado!', 'error');
-      }, 10000);
+      }, 8000);
 
       window[callbackName] = function(data) {
         clearTimeout(timeoutId);
@@ -1747,7 +1805,7 @@
 
       try {
         const script = document.createElement('script');
-        script.src = url + '?action=getProdutos&callback=' + callbackName;
+        script.src = url + '?action=getProdutos&callback=' + callbackName + '&t=' + Date.now();
         script.onerror = () => {
           clearTimeout(timeoutId);
           delete window[callbackName];
@@ -1788,7 +1846,6 @@
       });
       container.innerHTML = html;
 
-      // Adiciona listeners para os campos de preço
       document.querySelectorAll('.preco-input').forEach(input => {
         input.addEventListener('input', function(e) {
           let valor = this.value.replace(/[^0-9,]/g, '');
@@ -1826,12 +1883,12 @@
         produtos.splice(index, 1);
         renderizarListaGerenciamento(produtos);
         document.getElementById('contadorProdutos').textContent = `(${produtos.length})`;
-        showToast(`🗑️ "${nome}" removido da lista`, 'info', 1500);
+        showToast(`🗑️ "${nome}" removido`, 'info', 1000);
       }
     }
 
     // ============================================================
-    //  🔥 SALVAR NOVO PRODUTO
+    //  SALVAR NOVO PRODUTO
     // ============================================================
     function salvarProduto() {
       const nome = document.getElementById('novoProdutoNome').value.trim().toUpperCase();
@@ -1847,10 +1904,9 @@
         return;
       }
 
-      // Verifica se o produto já existe na lista de gerenciamento
       const existe = produtosParaSalvar.some(p => p.nome.toUpperCase() === nome);
       if (existe) {
-        showToast(`❌ "${nome}" já existe na lista!`, 'error');
+        showToast(`❌ "${nome}" já existe!`, 'error');
         return;
       }
 
@@ -1859,7 +1915,7 @@
       btn.innerHTML = '<span class="material-icons-round" style="font-size:18px;">hourglass_top</span> Salvando...';
       document.getElementById('loaderCadastro').style.display = 'block';
 
-      const url = getScriptUrl();
+      const url = SCRIPT_URL;
       const callbackName = 'cadastrar_' + Date.now();
       const timeoutId = setTimeout(() => {
         delete window[callbackName];
@@ -1867,7 +1923,7 @@
         btn.innerHTML = '<span class="material-icons-round" style="font-size:18px;">add</span> Adicionar';
         document.getElementById('loaderCadastro').style.display = 'none';
         showToast('❌ Tempo esgotado!', 'error');
-      }, 15000);
+      }, 10000);
 
       window[callbackName] = function(resultado) {
         clearTimeout(timeoutId);
@@ -1876,11 +1932,13 @@
         document.getElementById('loaderCadastro').style.display = 'none';
 
         if (resultado && resultado.success) {
-          showToast(`✅ "${nome}" cadastrado com sucesso!`, 'success');
+          showToast(`✅ "${nome}" cadastrado!`, 'success');
           document.getElementById('novoProdutoNome').value = '';
           document.getElementById('novoProdutoPreco').value = '0,00';
-          // Recarrega a lista
           carregarListaGerenciamento();
+          // Limpa cache de produtos para forçar recarga
+          cacheProdutos = null;
+          cacheProdutosTimestamp = 0;
           document.getElementById('novoProdutoNome').focus();
         } else {
           showToast('❌ Erro: ' + (resultado?.mensagem || 'Erro desconhecido'), 'error');
@@ -1917,7 +1975,7 @@
     }
 
     // ============================================================
-    //  🔥 SALVAR ALTERAÇÕES EM MASSA
+    //  SALVAR ALTERAÇÕES EM MASSA
     // ============================================================
     function salvarAlteracoesProdutos() {
       const btn = document.getElementById('btnSalvarAlteracoes');
@@ -1925,7 +1983,7 @@
       btn.innerHTML = '<span class="material-icons-round">hourglass_top</span> Salvando...';
       document.getElementById('loaderSalvar').style.display = 'block';
 
-      const url = getScriptUrl();
+      const url = SCRIPT_URL;
       const callbackName = 'salvarMassas_' + Date.now();
       const timeoutId = setTimeout(() => {
         delete window[callbackName];
@@ -1933,7 +1991,7 @@
         btn.innerHTML = '<span class="material-icons-round">save</span> Salvar Alterações';
         document.getElementById('loaderSalvar').style.display = 'none';
         showToast('❌ Tempo esgotado!', 'error');
-      }, 20000);
+      }, 15000);
 
       window[callbackName] = function(resultado) {
         clearTimeout(timeoutId);
@@ -1942,19 +2000,19 @@
         document.getElementById('loaderSalvar').style.display = 'none';
 
         if (resultado && resultado.success) {
-          showToast('✅ Todas as alterações salvas com sucesso!', 'success');
-          // Recarrega a lista para garantir consistência
+          showToast('✅ Alterações salvas!', 'success');
+          // Limpa caches
+          cacheProdutos = null;
+          cacheProdutosTimestamp = 0;
           carregarListaGerenciamento();
-          // Atualiza os produtos na tela de venda
-          carregarProdutos();
+          carregarProdutosAsync().then(produtos => aplicarProdutos(produtos));
         } else {
-          showToast('❌ Erro ao salvar: ' + (resultado?.mensagem || 'Erro desconhecido'), 'error');
+          showToast('❌ Erro: ' + (resultado?.mensagem || 'Erro desconhecido'), 'error');
         }
         delete window[callbackName];
       };
 
       try {
-        // Envia a lista completa de produtos
         const params = new URLSearchParams({
           action: 'salvarProdutosMassa',
           produtos: JSON.stringify(produtosParaSalvar),
@@ -1985,7 +2043,7 @@
     //  GERAR PIX
     // ============================================================
     function gerarPix() {
-      const url = getScriptUrl();
+      const url = SCRIPT_URL;
       const cliente = document.getElementById('cliente').value.trim();
       const valorInput = document.getElementById('valor');
       
@@ -2030,7 +2088,7 @@
         delete window[callbackName];
         document.getElementById('loader').style.display = 'none';
         document.getElementById('btnGerar').style.display = 'flex';
-        showToast('❌ Tempo esgotado! Verifique sua conexão.', 'error');
+        showToast('❌ Tempo esgotado!', 'error');
       }, 15000);
 
       window[callbackName] = function(resultado) {
@@ -2071,13 +2129,15 @@
           document.getElementById('qrContainer').classList.remove('confirmed');
 
           if (resultado.novoTotal) {
+            cacheTotal = resultado.novoTotal;
+            cacheTotalTimestamp = Date.now();
             document.getElementById('totalHoje').innerText = resultado.novoTotal;
           }
 
-          showToast('✅ Pix gerado com sucesso!', 'success', 2000);
+          showToast('✅ Pix gerado!', 'success', 1500);
           iniciarVerificacaoAutomatica();
         } else {
-          showToast('❌ Erro ao gerar Pix: ' + (resultado?.erro || 'Erro desconhecido'), 'error');
+          showToast('❌ Erro: ' + (resultado?.erro || 'Erro desconhecido'), 'error');
           document.getElementById('btnGerar').style.display = 'flex';
         }
         delete window[callbackName];
@@ -2101,7 +2161,7 @@
           clearTimeout(timeoutId);
           document.getElementById('loader').style.display = 'none';
           document.getElementById('btnGerar').style.display = 'flex';
-          showToast('❌ Erro de conexão com o Apps Script!', 'error');
+          showToast('❌ Erro de conexão!', 'error');
           delete window[callbackName];
         };
         document.body.appendChild(script);
@@ -2109,9 +2169,119 @@
         clearTimeout(timeoutId);
         document.getElementById('loader').style.display = 'none';
         document.getElementById('btnGerar').style.display = 'flex';
-        showToast('❌ Erro ao conectar com o servidor!', 'error');
+        showToast('❌ Erro ao conectar!', 'error');
         delete window[callbackName];
       }
+    }
+
+    // ============================================================
+    //  VERIFICAÇÃO AUTOMÁTICA OTIMIZADA
+    // ============================================================
+    function iniciarVerificacaoAutomatica() {
+      if (timerVerificacao) clearInterval(timerVerificacao);
+      tempoDecorrido = 0;
+      loopAtivo = true;
+
+      let tentativas = 0;
+      const MAX_TENTATIVAS = 60;
+
+      function executarVerificacao() {
+        if (!loopAtivo || vendaConfirmada || tentativas >= MAX_TENTATIVAS) {
+          if (tentativas >= MAX_TENTATIVAS && !vendaConfirmada) {
+            document.getElementById('temporizador').textContent = '⏱️ Tempo esgotado!';
+            document.getElementById('temporizador').style.color = '#ff5252';
+            loopAtivo = false;
+            showToast('⏱️ Tempo de verificação esgotado', 'warning');
+          }
+          return;
+        }
+        
+        tentativas++;
+        const restante = MAX_TENTATIVAS - tentativas;
+        document.getElementById('temporizador').textContent = 
+          '⏱️ Verificando... ' + Math.floor(restante / 12) + 'm ' + Math.floor((restante % 12) * 5) + 's';
+
+        const url = SCRIPT_URL;
+        const callbackName = 'verify_' + Date.now();
+        const timeoutId = setTimeout(() => {
+          delete window[callbackName];
+          if (loopAtivo && !vendaConfirmada) {
+            timerVerificacao = setTimeout(executarVerificacao, 5000);
+          }
+        }, 5000);
+
+        window[callbackName] = function(resultado) {
+          clearTimeout(timeoutId);
+          if (!loopAtivo || vendaConfirmada) { 
+            delete window[callbackName]; 
+            return; 
+          }
+          
+          if (resultado && resultado.encontrado && resultado.confirmado) {
+            confirmarPagamento(resultado);
+            delete window[callbackName];
+            return;
+          }
+          
+          if (loopAtivo && !vendaConfirmada) {
+            timerVerificacao = setTimeout(executarVerificacao, 5000);
+          }
+          delete window[callbackName];
+        };
+
+        try {
+          const script = document.createElement('script');
+          script.src = url + '?action=verificarPagamento&callback=' + callbackName + '&t=' + Date.now();
+          script.onerror = () => {
+            clearTimeout(timeoutId);
+            delete window[callbackName];
+            if (loopAtivo && !vendaConfirmada) {
+              timerVerificacao = setTimeout(executarVerificacao, 5000);
+            }
+          };
+          document.body.appendChild(script);
+        } catch(e) {
+          clearTimeout(timeoutId);
+          delete window[callbackName];
+          if (loopAtivo && !vendaConfirmada) {
+            timerVerificacao = setTimeout(executarVerificacao, 5000);
+          }
+        }
+      }
+
+      timerVerificacao = setTimeout(executarVerificacao, 2000);
+    }
+
+    // ============================================================
+    //  CONFIRMAR PAGAMENTO
+    // ============================================================
+    function confirmarPagamento(resultado) {
+      if (vendaConfirmada) return;
+      vendaConfirmada = true;
+      loopAtivo = false;
+      if (timerVerificacao) { clearTimeout(timerVerificacao); timerVerificacao = null; }
+
+      const container = document.getElementById('checkWritingContainer');
+      container.classList.add('visivel');
+      const path = container.querySelector('.check-path');
+      path.style.animation = 'none';
+      path.offsetHeight;
+      path.style.animation = 'drawCheck 1.2s ease-in-out forwards';
+
+      document.getElementById('statusPagamento').style.display = 'none';
+      document.getElementById('temporizador').textContent = '✅ Pagamento confirmado!';
+      document.getElementById('temporizador').style.color = '#00e676';
+      document.getElementById('qrContainer').classList.add('confirmed');
+
+      const badge = document.getElementById('statusBadge');
+      badge.innerHTML = '✅ PAGO';
+      badge.className = 'badge success';
+      
+      // Atualiza placar com força
+      cacheTotal = null;
+      atualizarPlacar(true);
+      
+      showToast('🎉 Pagamento confirmado!', 'success', 3000);
     }
 
     // ============================================================
@@ -2140,109 +2310,6 @@
       const total = produtos.reduce((acc, p) => acc + p.valorTotal, 0);
       html += `<div class="total-nota">Total: R$ ${total.toFixed(2).replace('.', ',')}</div>`;
       container.innerHTML = html;
-    }
-
-    // ============================================================
-    //  VERIFICAÇÃO AUTOMÁTICA
-    // ============================================================
-    function iniciarVerificacaoAutomatica() {
-      if (timerVerificacao) clearInterval(timerVerificacao);
-      tempoDecorrido = 0;
-      loopAtivo = true;
-
-      const timerTempo = setInterval(() => {
-        if (!loopAtivo) { clearInterval(timerTempo); return; }
-        tempoDecorrido++;
-        const restante = maxTempo - tempoDecorrido;
-        if (restante <= 0) {
-          clearInterval(timerTempo);
-          if (!vendaConfirmada) {
-            document.getElementById('temporizador').textContent = '⏱️ Tempo esgotado!';
-            document.getElementById('temporizador').style.color = '#ff5252';
-            loopAtivo = false;
-            showToast('⏱️ Tempo de verificação esgotado', 'warning');
-          }
-        } else {
-          document.getElementById('temporizador').textContent =
-            '⏱️ Verificando... ' + Math.floor(restante / 60) + 'm ' + (restante % 60) + 's';
-        }
-      }, 1000);
-
-      function executarVerificacao() {
-        if (!loopAtivo || vendaConfirmada) return;
-        const url = getScriptUrl();
-        const callbackName = 'verify_' + Date.now();
-        const timeoutId = setTimeout(() => {
-          delete window[callbackName];
-          if (loopAtivo && !vendaConfirmada && tempoDecorrido < maxTempo) {
-            timerVerificacao = setTimeout(executarVerificacao, 5000);
-          }
-        }, 8000);
-
-        window[callbackName] = function(resultado) {
-          clearTimeout(timeoutId);
-          if (!loopAtivo || vendaConfirmada) { delete window[callbackName]; return; }
-          if (resultado && resultado.encontrado && resultado.confirmado) {
-            confirmarPagamento(resultado);
-            delete window[callbackName];
-            return;
-          }
-          if (loopAtivo && !vendaConfirmada && tempoDecorrido < maxTempo) {
-            timerVerificacao = setTimeout(executarVerificacao, 5000);
-          }
-          delete window[callbackName];
-        };
-
-        try {
-          const script = document.createElement('script');
-          script.src = url + '?action=verificarPagamento&callback=' + callbackName;
-          script.onerror = () => {
-            clearTimeout(timeoutId);
-            delete window[callbackName];
-            if (loopAtivo && !vendaConfirmada && tempoDecorrido < maxTempo) {
-              timerVerificacao = setTimeout(executarVerificacao, 5000);
-            }
-          };
-          document.body.appendChild(script);
-        } catch(e) {
-          clearTimeout(timeoutId);
-          delete window[callbackName];
-          if (loopAtivo && !vendaConfirmada && tempoDecorrido < maxTempo) {
-            timerVerificacao = setTimeout(executarVerificacao, 5000);
-          }
-        }
-      }
-
-      timerVerificacao = setTimeout(executarVerificacao, 3000);
-    }
-
-    // ============================================================
-    //  CONFIRMAR PAGAMENTO
-    // ============================================================
-    function confirmarPagamento(resultado) {
-      if (vendaConfirmada) return;
-      vendaConfirmada = true;
-      loopAtivo = false;
-      if (timerVerificacao) { clearTimeout(timerVerificacao); timerVerificacao = null; }
-
-      const container = document.getElementById('checkWritingContainer');
-      container.classList.add('visivel');
-      const path = container.querySelector('.check-path');
-      path.style.animation = 'none';
-      path.offsetHeight;
-      path.style.animation = 'drawCheck 1.2s ease-in-out forwards';
-
-      document.getElementById('statusPagamento').style.display = 'none';
-      document.getElementById('temporizador').textContent = '✅ Pagamento confirmado!';
-      document.getElementById('temporizador').style.color = '#00e676';
-      document.getElementById('qrContainer').classList.add('confirmed');
-
-      const badge = document.getElementById('statusBadge');
-      badge.innerHTML = '✅ PAGO';
-      badge.className = 'badge success';
-      atualizarPlacar();
-      
-      showToast('🎉 Pagamento confirmado com sucesso!', 'success', 3000);
     }
 
     // ============================================================
@@ -2275,21 +2342,23 @@
       document.getElementById('btnGerar').style.display = 'none';
       document.getElementById('loader').style.display = 'block';
 
-      const url = getScriptUrl();
+      const url = SCRIPT_URL;
       const callbackName = 'cancel_' + Date.now();
       const timeoutId = setTimeout(() => {
         delete window[callbackName];
         document.getElementById('loader').style.display = 'none';
         document.getElementById('btnGerar').style.display = 'flex';
-        showToast('❌ Tempo esgotado ao cancelar!', 'error');
+        showToast('❌ Tempo esgotado!', 'error');
       }, 10000);
 
       window[callbackName] = function(resultado) {
         clearTimeout(timeoutId);
         document.getElementById('loader').style.display = 'none';
         if (resultado && resultado.success) {
-          showToast('✅ Venda cancelada com sucesso!', 'success');
+          showToast('✅ Venda cancelada!', 'success');
           if (resultado.novoTotal) {
+            cacheTotal = resultado.novoTotal;
+            cacheTotalTimestamp = Date.now();
             document.getElementById('totalHoje').innerText = resultado.novoTotal;
           }
           novaVenda();
@@ -2370,7 +2439,7 @@
       const texto = encodeURIComponent(msg);
       const url = `https://api.whatsapp.com/send?phone=${numeroCompleto}&text=${texto}`;
       window.open(url, '_blank');
-      showToast('📱 Abrindo WhatsApp...', 'info', 2000);
+      showToast('📱 Abrindo WhatsApp...', 'info', 1500);
     }
 
     // ============================================================
@@ -2484,7 +2553,7 @@
         document.body.removeChild(tempDiv);
         btn.disabled = false;
         btn.innerHTML = '<span class="material-icons-round">picture_as_pdf</span> Recibo PDF';
-        showToast('📄 PDF gerado com sucesso!', 'success', 2000);
+        showToast('📄 PDF gerado!', 'success', 1500);
       }).catch((err) => {
         console.error('Erro ao gerar PDF:', err);
         showToast('Erro ao gerar o recibo', 'error');
@@ -2502,7 +2571,7 @@
       c.select();
       c.setSelectionRange(0, 99999);
       document.execCommand("copy");
-      showToast('✅ Código Pix copiado!', 'success', 2000);
+      showToast('✅ Código Pix copiado!', 'success', 1500);
     }
 
     function novaVenda() {
@@ -2539,12 +2608,34 @@
       document.getElementById('temporizador').textContent = '⏱️ Verificando automaticamente...';
       document.getElementById('temporizador').style.color = '#888';
       resetDataField();
-      atualizarPlacar();
-      verificarConfiguracoes();
-      carregarProdutos();
+      atualizarPlacar(true);
+      verificarConfiguracoes(true);
+      carregarProdutosAsync().then(produtos => aplicarProdutos(produtos));
       
-      showToast('🔄 Nova venda iniciada', 'info', 1500);
+      showToast('🔄 Nova venda iniciada', 'info', 1000);
     }
+
+    // ============================================================
+    //  PWA - INSTALAÇÃO
+    // ============================================================
+    let deferredPrompt;
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredPrompt = e;
+      const btn = document.getElementById('installBtn');
+      btn.style.display = 'flex';
+      btn.addEventListener('click', async () => {
+        btn.style.display = 'none';
+        if (deferredPrompt) {
+          await deferredPrompt.prompt();
+          const result = await deferredPrompt.userChoice;
+          if (result.outcome === 'accepted') {
+            showToast('App instalado!', 'success');
+          }
+          deferredPrompt = null;
+        }
+      });
+    });
   </script>
 </body>
 </html>
