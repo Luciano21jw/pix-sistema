@@ -92,7 +92,6 @@
     .toast.error { border-color: var(--danger); color: var(--danger); }
     .toast.warning { border-color: var(--warning); color: var(--warning); }
     .toast.info { border-color: var(--brand); color: var(--brand-light); }
-
     .toast .material-icons-round { font-size: 22px; }
 
     @keyframes toastIn {
@@ -104,7 +103,7 @@
       to { opacity: 0; transform: translateY(20px) scale(0.95); }
     }
 
-    /* ===== MODAL DE CONFIRMAÇÃO PERSONALIZADO ===== */
+    /* ===== MODAL DE CONFIRMAÇÃO ===== */
     #confirmModal {
       display: none;
       position: fixed;
@@ -133,11 +132,7 @@
       from { opacity: 0; transform: scale(0.9) translateY(20px); }
       to { opacity: 1; transform: scale(1) translateY(0); }
     }
-    #confirmModal .modal-icon {
-      font-size: 48px;
-      margin-bottom: 8px;
-      display: block;
-    }
+    #confirmModal .modal-icon { font-size: 48px; margin-bottom: 8px; display: block; }
     #confirmModal .modal-title {
       font-size: 1.2rem;
       font-weight: 700;
@@ -177,6 +172,7 @@
     #confirmModal .modal-buttons .btn-cancel-modal:hover { background: rgba(255,255,255,0.12); }
 
     @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    @keyframes fadeInItem { from { opacity: 0; transform: translateX(-8px); } to { opacity: 1; transform: translateX(0); } }
 
     /* ===== SCOREBOARD ===== */
     .scoreboard {
@@ -319,7 +315,7 @@
     }
     .row-inputs select { flex: 1; }
 
-    .btn-add, .btn-remove {
+    .btn-add, .btn-remove, .btn-cadastrar-produto {
       width: 52px;
       height: 52px;
       border-radius: var(--radius-sm);
@@ -347,7 +343,13 @@
       border: 1px solid rgba(255,82,82,0.2);
     }
     .btn-remove:hover { background: rgba(255,82,82,0.25); transform: scale(1.05); }
-    .btn-add svg, .btn-remove svg { width: 24px; height: 24px; fill: currentColor; }
+    .btn-cadastrar-produto {
+      background: var(--warning);
+      color: #000;
+      box-shadow: 0 4px 12px rgba(255,193,7,0.3);
+    }
+    .btn-cadastrar-produto:hover { transform: scale(1.05) translateY(-2px); box-shadow: 0 8px 20px rgba(255,193,7,0.4); }
+    .btn-add svg, .btn-remove svg, .btn-cadastrar-produto svg { width: 24px; height: 24px; fill: currentColor; }
 
     .produtos-lista {
       background: rgba(0,0,0,0.3);
@@ -476,6 +478,20 @@
     }
     .btn-pdf:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(255,87,34,0.4); }
 
+    .btn-cadastrar {
+      background: linear-gradient(135deg, var(--warning), #e6a800);
+      color: #000;
+      box-shadow: 0 4px 16px rgba(255,193,7,0.3);
+    }
+    .btn-cadastrar:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(255,193,7,0.4); }
+
+    .btn-voltar {
+      background: rgba(255,255,255,0.06);
+      color: var(--text-secondary);
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+    .btn-voltar:hover { background: rgba(255,255,255,0.12); }
+
     .footer-actions {
       display: flex;
       gap: 12px;
@@ -519,6 +535,13 @@
       width: 100%;
     }
     @keyframes fadeSlide { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+    #step-cadastro {
+      display: none;
+      animation: fadeSlide 0.4s ease;
+      flex-direction: column;
+      width: 100%;
+    }
 
     #step-pix .client-name {
       color: var(--text-primary);
@@ -708,7 +731,6 @@
       50% { opacity: 1; transform: translate(-50%,-50%) scale(1.2); }
       100% { opacity: 0.4; transform: translate(-50%,-50%) scale(1); }
     }
-    @keyframes fadeInItem { from { opacity: 0; transform: translateX(-8px); } to { opacity: 1; transform: translateX(0); } }
 
     #acoesRecibo {
       width: 100%;
@@ -743,9 +765,7 @@
       transform: scale(1.08);
       box-shadow: 0 8px 24px rgba(37,211,102,0.5);
     }
-    .btn-whatsapp-circle:active {
-      transform: scale(0.95);
-    }
+    .btn-whatsapp-circle:active { transform: scale(0.95); }
     .btn-whatsapp-circle .telefone-icon {
       color: #ffffff !important;
       font-size: 28px;
@@ -856,7 +876,7 @@
   <!-- CONTAINER PRINCIPAL -->
   <div class="container">
 
-    <!-- TELA 1: FORMULÁRIO -->
+    <!-- TELA 1: FORMULÁRIO DE VENDA -->
     <div id="step-form">
       <h2><span class="material-icons-round">point_of_sale</span> Nova Venda</h2>
 
@@ -878,6 +898,9 @@
           </select>
           <button class="btn-add" onclick="adicionarProduto()" aria-label="Adicionar produto">
             <svg viewBox="0 0 24 24"><path d="M19 13H13V19H11V13H5V11H11V5H13V11H19V13Z"/></svg>
+          </button>
+          <button class="btn-cadastrar-produto" onclick="abrirCadastro()" aria-label="Cadastrar produto" title="Cadastrar novo produto">
+            <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm5 11h-4v4h-2v-4H7v-2h4V7h2v4h4v2z"/></svg>
           </button>
         </div>
       </div>
@@ -907,7 +930,6 @@
         </label>
         <input type="text" id="valor" class="money-input" inputmode="decimal" value="0,00" style="cursor: text;">
         
-        <!-- Área de desconto que aparece automaticamente -->
         <div id="descontoInfo">
           <div class="desconto-row">
             <span class="desconto-label">
@@ -939,6 +961,10 @@
 
       <button class="btn-primary" id="btnGerar" onclick="gerarPix()">
         Gerar Pix <span class="material-icons-round">arrow_forward</span>
+      </button>
+
+      <button class="btn-outline" onclick="abrirCadastro()" style="margin-top:8px;">
+        <span class="material-icons-round">add_box</span> Cadastrar Produto
       </button>
 
       <div id="loader">
@@ -1007,6 +1033,34 @@
         <span class="material-icons-round">cancel</span> Cancelar Venda
       </button>
     </div>
+
+    <!-- TELA 3: CADASTRO DE PRODUTO -->
+    <div id="step-cadastro" style="display:none;">
+      <h2><span class="material-icons-round">add_box</span> Cadastrar Produto</h2>
+
+      <div class="input-group">
+        <label><span class="material-icons-round">inventory_2</span> Nome do Produto</label>
+        <input type="text" id="novoProdutoNome" placeholder="Ex: Queijo 800g" style="text-transform: uppercase;">
+      </div>
+
+      <div class="input-group">
+        <label><span class="material-icons-round">attach_money</span> Preço</label>
+        <input type="text" id="novoProdutoPreco" class="money-input" inputmode="decimal" placeholder="0,00" value="0,00" style="font-size:1.5rem;">
+      </div>
+
+      <button class="btn-cadastrar" onclick="salvarProduto()" id="btnSalvarProduto">
+        <span class="material-icons-round">save</span> Salvar Produto
+      </button>
+
+      <button class="btn-voltar" onclick="voltarParaVenda()" style="margin-top:8px;">
+        <span class="material-icons-round">arrow_back</span> Voltar
+      </button>
+
+      <div id="loaderCadastro" style="display:none; margin:20px 0;">
+        <div class="spinner"></div>
+        <p style="color:var(--text-secondary); font-size:0.9rem;">Cadastrando produto...</p>
+      </div>
+    </div>
   </div>
 
   <!-- BOTÃO INSTALAR PWA -->
@@ -1071,7 +1125,7 @@
     // ============================================================
     //  CONFIGURAÇÃO
     // ============================================================
-    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzFOxtHAq1pMsekuloCy6XD7LYSajR_QfrC-TI5v906-eEAtH-gi0PpYLRunyzjjrp_JQ/exec';
+    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxqZAblQo2PO_PLg2mYQXrv7QeCpJsbM443Uewoh1rnsx9O-hTAmKTfvKJZzej-vQOpbg/exec';
     const DDI = '55';
 
     // ============================================================
@@ -1137,8 +1191,8 @@
       verificarConfiguracoes();
       atualizarPlacar();
       
-      // LISTENER PARA O CAMPO DE VALOR EDITÁVEL
       configurarCampoValor();
+      configurarCampoPrecoCadastro();
     });
 
     function resetDataField() {
@@ -1152,29 +1206,21 @@
     function getScriptUrl() { return SCRIPT_URL; }
 
     // ============================================================
-    //  CONFIGURAR CAMPO DE VALOR COM DESCONTO
+    //  CONFIGURAR CAMPOS DE VALOR
     // ============================================================
     function configurarCampoValor() {
       const valorInput = document.getElementById('valor');
       
-      // Ao digitar
       valorInput.addEventListener('input', function(e) {
-        // Permite apenas números e vírgula
         let valor = this.value.replace(/[^0-9,]/g, '');
-        
-        // Se tiver mais de uma vírgula, mantém só a primeira
         const partes = valor.split(',');
         if (partes.length > 2) {
           valor = partes[0] + ',' + partes.slice(1).join('');
         }
-        
         this.value = valor;
-        
-        // Calcula o desconto em tempo real
         calcularDesconto();
       });
       
-      // Ao perder o foco, formata o valor
       valorInput.addEventListener('blur', function() {
         let valor = this.value.replace(',', '.');
         const num = parseFloat(valor);
@@ -1182,10 +1228,32 @@
           this.value = num.toFixed(2).replace('.', ',');
           calcularDesconto();
         } else if (this.value.trim() === '' || this.value === '0' || this.value === '0,00') {
-          // Se estiver vazio ou zero, restaura o total original
           const totalOriginal = calcularTotalOriginal();
           this.value = totalOriginal.toFixed(2).replace('.', ',');
           calcularDesconto();
+        }
+      });
+    }
+
+    function configurarCampoPrecoCadastro() {
+      const precoInput = document.getElementById('novoProdutoPreco');
+      
+      precoInput.addEventListener('input', function(e) {
+        let valor = this.value.replace(/[^0-9,]/g, '');
+        const partes = valor.split(',');
+        if (partes.length > 2) {
+          valor = partes[0] + ',' + partes.slice(1).join('');
+        }
+        this.value = valor;
+      });
+      
+      precoInput.addEventListener('blur', function() {
+        let valor = this.value.replace(',', '.');
+        const num = parseFloat(valor);
+        if (!isNaN(num) && num > 0) {
+          this.value = num.toFixed(2).replace('.', ',');
+        } else {
+          this.value = '0,00';
         }
       });
     }
@@ -1213,28 +1281,23 @@
         return;
       }
       
-      // Pega o valor digitado
       const valorDigitado = parseFloat(valorInput.value.replace(',', '.')) || 0;
       
-      // Se o valor digitado for maior que o original, corrige
       if (valorDigitado >= totalOriginal) {
         valorInput.value = totalOriginal.toFixed(2).replace('.', ',');
         descontoInfo.style.display = 'none';
         return;
       }
       
-      // Calcula o desconto
       const desconto = totalOriginal - valorDigitado;
       const descontoPercentual = totalOriginal > 0 ? (desconto / totalOriginal) * 100 : 0;
       
-      // Mostra a área de desconto
       if (desconto > 0.01) {
         descontoInfo.style.display = 'block';
         document.getElementById('descontoValor').textContent = `- R$ ${desconto.toFixed(2).replace('.', ',')}`;
         document.getElementById('valorOriginal').textContent = `R$ ${totalOriginal.toFixed(2).replace('.', ',')}`;
         document.getElementById('descontoPercentual').textContent = `${descontoPercentual.toFixed(1)}%`;
         
-        // Muda a cor se o desconto for grande (> 20%)
         const descontoValor = document.getElementById('descontoValor');
         if (descontoPercentual > 20) {
           descontoValor.className = 'desconto-value negative';
@@ -1245,7 +1308,6 @@
         descontoInfo.style.display = 'none';
       }
       
-      // Atualiza os valores dos produtos proporcionalmente
       if (produtosSelecionados.length > 0 && totalOriginal > 0 && valorDigitado > 0) {
         const fator = valorDigitado / totalOriginal;
         produtosSelecionados.forEach(p => {
@@ -1253,11 +1315,6 @@
         });
         atualizarLista();
       }
-    }
-
-    function getValorComDesconto() {
-      const valorInput = document.getElementById('valor');
-      return parseFloat(valorInput.value.replace(',', '.')) || 0;
     }
 
     // ============================================================
@@ -1448,13 +1505,11 @@
       
       atualizarLista();
       
-      // Atualiza o valor total e mantém o desconto se existir
       const totalOriginal = calcularTotalOriginal();
       const valorInput = document.getElementById('valor');
       const valorAtual = parseFloat(valorInput.value.replace(',', '.')) || totalOriginal;
       
       if (valorAtual < totalOriginal && valorOriginalTotal > 0) {
-        // Mantém o mesmo percentual de desconto
         const descontoPercentual = 1 - (valorAtual / valorOriginalTotal);
         const novoValor = totalOriginal * (1 - descontoPercentual);
         valorInput.value = novoValor.toFixed(2).replace('.', ',');
@@ -1491,7 +1546,6 @@
       
       atualizarLista();
       
-      // Atualiza o valor total
       const totalOriginal = calcularTotalOriginal();
       const valorInput = document.getElementById('valor');
       const valorAtual = parseFloat(valorInput.value.replace(',', '.')) || totalOriginal;
@@ -1544,6 +1598,97 @@
     }
 
     // ============================================================
+    //  🔥 CADASTRAR PRODUTO
+    // ============================================================
+    function abrirCadastro() {
+      document.getElementById('step-form').style.display = 'none';
+      document.getElementById('step-pix').style.display = 'none';
+      document.getElementById('step-cadastro').style.display = 'flex';
+      document.getElementById('novoProdutoNome').value = '';
+      document.getElementById('novoProdutoPreco').value = '0,00';
+      document.getElementById('novoProdutoNome').focus();
+    }
+
+    function voltarParaVenda() {
+      document.getElementById('step-cadastro').style.display = 'none';
+      document.getElementById('step-form').style.display = 'block';
+      carregarProdutos(); // Recarrega a lista de produtos
+    }
+
+    function salvarProduto() {
+      const nome = document.getElementById('novoProdutoNome').value.trim().toUpperCase();
+      const preco = document.getElementById('novoProdutoPreco').value.replace(',', '.');
+      
+      if (!nome) {
+        showToast('Digite o nome do produto!', 'warning');
+        return;
+      }
+      
+      if (parseFloat(preco) <= 0) {
+        showToast('Digite um preço válido!', 'warning');
+        return;
+      }
+
+      const btn = document.getElementById('btnSalvarProduto');
+      btn.disabled = true;
+      btn.innerHTML = '<span class="material-icons-round">hourglass_top</span> Salvando...';
+      document.getElementById('loaderCadastro').style.display = 'block';
+
+      const url = getScriptUrl();
+      const callbackName = 'cadastrar_' + Date.now();
+      const timeoutId = setTimeout(() => {
+        delete window[callbackName];
+        btn.disabled = false;
+        btn.innerHTML = '<span class="material-icons-round">save</span> Salvar Produto';
+        document.getElementById('loaderCadastro').style.display = 'none';
+        showToast('❌ Tempo esgotado!', 'error');
+      }, 15000);
+
+      window[callbackName] = function(resultado) {
+        clearTimeout(timeoutId);
+        btn.disabled = false;
+        btn.innerHTML = '<span class="material-icons-round">save</span> Salvar Produto';
+        document.getElementById('loaderCadastro').style.display = 'none';
+
+        if (resultado && resultado.success) {
+          showToast('✅ Produto cadastrado com sucesso!', 'success');
+          // Volta para a tela de venda e recarrega os produtos
+          voltarParaVenda();
+        } else {
+          showToast('❌ Erro: ' + (resultado?.mensagem || 'Erro desconhecido'), 'error');
+        }
+        delete window[callbackName];
+      };
+
+      try {
+        const params = new URLSearchParams({
+          action: 'cadastrarProduto',
+          nome: nome,
+          preco: preco,
+          callback: callbackName
+        });
+        const script = document.createElement('script');
+        script.src = url + '?' + params.toString();
+        script.onerror = () => {
+          clearTimeout(timeoutId);
+          delete window[callbackName];
+          btn.disabled = false;
+          btn.innerHTML = '<span class="material-icons-round">save</span> Salvar Produto';
+          document.getElementById('loaderCadastro').style.display = 'none';
+          showToast('❌ Erro de conexão!', 'error');
+        };
+        document.body.appendChild(script);
+      } catch(e) {
+        clearTimeout(timeoutId);
+        delete window[callbackName];
+        btn.disabled = false;
+        btn.innerHTML = '<span class="material-icons-round">save</span> Salvar Produto';
+        document.getElementById('loaderCadastro').style.display = 'none';
+        showToast('❌ Erro ao conectar!', 'error');
+      }
+    }
+
+    // ============================================================
     //  GERAR PIX
     // ============================================================
     function gerarPix() {
@@ -1551,9 +1696,12 @@
       const cliente = document.getElementById('cliente').value.trim();
       const valorInput = document.getElementById('valor');
       
-      // Usa o valor com desconto que está no campo
       const valorComDesconto = valorInput.value.replace(',', '.');
       const valorOriginal = calcularTotalOriginal().toFixed(2).replace('.', ',');
+      
+      const totalOriginal = calcularTotalOriginal();
+      const valorFinal = parseFloat(valorComDesconto);
+      const descontoCalculado = totalOriginal - valorFinal;
       
       const dados = {
         data: document.getElementById('dataVenda').value,
@@ -1567,7 +1715,7 @@
           valorUnitario: p.valorUnitario,
           valorTotal: p.valorTotal
         }))),
-        desconto: (calcularTotalOriginal() - parseFloat(valorComDesconto)).toFixed(2).replace('.', ','),
+        desconto: descontoCalculado.toFixed(2).replace('.', ','),
         valorOriginal: valorOriginal
       };
 
@@ -1597,15 +1745,18 @@
         document.getElementById('loader').style.display = 'none';
         if (resultado && resultado.success) {
           const pixCode = resultado.pixCode;
-          document.getElementById('displayValor').innerText = resultado.valor;
-          const nomeCliente = resultado.cliente && resultado.cliente.trim() !== '' ? resultado.cliente : 'Cliente não informado';
+          
+          const valorExibir = valorComDesconto.replace('.', ',');
+          document.getElementById('displayValor').innerText = valorExibir;
+          
+          const nomeCliente = cliente && cliente.trim() !== '' ? cliente : 'Cliente não informado';
           document.getElementById('displayCliente').innerText = nomeCliente;
           document.getElementById('pixCodeText').value = pixCode;
           window.pixCodeAtual = pixCode;
           window.paymentIdAtual = resultado.paymentId;
 
           window.dadosVenda = {
-            valor: resultado.valor,
+            valor: valorExibir,
             cliente: nomeCliente,
             descricao: dados.descricao,
             data: dados.data,
@@ -2083,6 +2234,7 @@
       document.getElementById('btnGerar').style.display = 'flex';
       document.getElementById('step-pix').style.display = 'none';
       document.getElementById('step-form').style.display = 'block';
+      document.getElementById('step-cadastro').style.display = 'none';
       document.getElementById('qrContainer').classList.remove('confirmed');
       const badge = document.getElementById('statusBadge');
       badge.innerHTML = '🔍';
@@ -2096,6 +2248,7 @@
       resetDataField();
       atualizarPlacar();
       verificarConfiguracoes();
+      carregarProdutos();
       
       showToast('🔄 Nova venda iniciada', 'info', 1500);
     }
