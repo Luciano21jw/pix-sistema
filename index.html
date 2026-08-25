@@ -178,7 +178,7 @@
 
     @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-    /* ===== SCOREBOARD (AUMENTADO) ===== */
+    /* ===== SCOREBOARD ===== */
     .scoreboard {
       background: rgba(50,188,173,0.08);
       backdrop-filter: blur(8px);
@@ -187,8 +187,8 @@
       padding: 12px 24px;
       border-radius: 50px;
       margin-bottom: 20px;
-      font-weight: 800; /* Peso da fonte igual ao título (800) */
-      font-size: 1.4rem; /* Fonte AUMENTADA (antes era 0.9rem) */
+      font-weight: 800;
+      font-size: 1.4rem;
       display: flex;
       align-items: center;
       gap: 10px;
@@ -299,8 +299,18 @@
       background: rgba(50,188,173,0.05);
       border-color: rgba(50,188,173,0.2);
       padding: 12px;
+      cursor: text;
+      transition: all 0.3s ease;
     }
-    .money-input:focus { border-color: var(--brand); }
+    .money-input:hover {
+      background: rgba(50,188,173,0.08);
+      border-color: rgba(50,188,173,0.4);
+    }
+    .money-input:focus {
+      background: rgba(50,188,173,0.12);
+      border-color: var(--brand);
+      box-shadow: 0 0 0 4px rgba(50,188,173,0.15);
+    }
 
     .row-inputs {
       display: flex;
@@ -373,6 +383,51 @@
       margin-top: 6px;
     }
     .lista-vazia { color: var(--text-muted); text-align: center; padding: 16px 0; font-size: 0.85rem; }
+
+    /* ===== ÁREA DE DESCONTO ===== */
+    #descontoInfo {
+      display: none;
+      margin-top: 10px;
+      padding: 10px 14px;
+      background: rgba(0,230,118,0.06);
+      border-radius: 10px;
+      border: 1px solid rgba(0,230,118,0.12);
+      animation: fadeIn 0.3s ease;
+    }
+    #descontoInfo .desconto-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 2px 0;
+    }
+    #descontoInfo .desconto-label {
+      color: var(--text-secondary);
+      font-size: 0.85rem;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    #descontoInfo .desconto-label .material-icons-round { font-size: 16px; }
+    #descontoInfo .desconto-value {
+      font-weight: 700;
+      font-size: 1rem;
+    }
+    #descontoInfo .desconto-value.positive { color: var(--success); }
+    #descontoInfo .desconto-value.negative { color: var(--danger); }
+    #descontoInfo .desconto-divider {
+      border-top: 1px solid rgba(255,255,255,0.05);
+      margin: 4px 0;
+    }
+    #descontoInfo .valor-original {
+      color: var(--text-muted);
+      font-size: 0.85rem;
+      text-decoration: line-through;
+    }
+    #descontoInfo .desconto-percentual {
+      color: var(--warning);
+      font-weight: 600;
+      font-size: 0.9rem;
+    }
 
     button {
       width: 100%;
@@ -653,7 +708,6 @@
       50% { opacity: 1; transform: translate(-50%,-50%) scale(1.2); }
       100% { opacity: 0.4; transform: translate(-50%,-50%) scale(1); }
     }
-    @keyframes fadeIn { from { opacity: 0; transform: scale(0.96); } to { opacity: 1; transform: scale(1); } }
     @keyframes fadeInItem { from { opacity: 0; transform: translateX(-8px); } to { opacity: 1; transform: translateX(0); } }
 
     #acoesRecibo {
@@ -844,9 +898,33 @@
         <div class="lista-vazia">Nenhum produto adicionado</div>
       </div>
 
+      <!-- CAMPO DE VALOR EDITÁVEL COM DESCONTO -->
       <div class="input-group">
-        <label><span class="material-icons-round">attach_money</span> Valor Total</label>
-        <input type="text" id="valor" class="money-input" inputmode="numeric" value="0,00" readonly>
+        <label>
+          <span class="material-icons-round">attach_money</span> 
+          Valor Total 
+          <span style="color: var(--text-muted); font-weight: 400; font-size: 0.7rem;">(clique para editar)</span>
+        </label>
+        <input type="text" id="valor" class="money-input" inputmode="decimal" value="0,00" style="cursor: text;">
+        
+        <!-- Área de desconto que aparece automaticamente -->
+        <div id="descontoInfo">
+          <div class="desconto-row">
+            <span class="desconto-label">
+              <span class="material-icons-round">local_offer</span> Desconto:
+            </span>
+            <span class="desconto-value positive" id="descontoValor">- R$ 0,00</span>
+          </div>
+          <div class="desconto-divider"></div>
+          <div class="desconto-row">
+            <span class="desconto-label">Valor original:</span>
+            <span class="valor-original" id="valorOriginal">R$ 0,00</span>
+          </div>
+          <div class="desconto-row">
+            <span class="desconto-label">Percentual:</span>
+            <span class="desconto-percentual" id="descontoPercentual">0%</span>
+          </div>
+        </div>
       </div>
 
       <div class="input-group">
@@ -993,11 +1071,11 @@
     // ============================================================
     //  CONFIGURAÇÃO
     // ============================================================
-    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzgSMN74JrxceIXNx_JrTyRK7GaUAXHWPfov5M1PJcrJvztxFOz3dYh7k2iJdFKYNG92w/exec';
+    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzFOxtHAq1pMsekuloCy6XD7LYSajR_QfrC-TI5v906-eEAtH-gi0PpYLRunyzjjrp_JQ/exec';
     const DDI = '55';
 
     // ============================================================
-    //  PRODUTOS DE FALLBACK (usados se a API falhar)
+    //  PRODUTOS DE FALLBACK
     // ============================================================
     const PRODUTOS_FALLBACK = [
       { nome: 'Produto A', valor: '10,00' },
@@ -1017,6 +1095,7 @@
     let tempoDecorrido = 0;
     const maxTempo = 300;
     let loopAtivo = false;
+    let valorOriginalTotal = 0;
 
     // ============================================================
     //  PWA - INSTALAÇÃO
@@ -1057,6 +1136,9 @@
       carregarProdutos();
       verificarConfiguracoes();
       atualizarPlacar();
+      
+      // LISTENER PARA O CAMPO DE VALOR EDITÁVEL
+      configurarCampoValor();
     });
 
     function resetDataField() {
@@ -1070,7 +1152,116 @@
     function getScriptUrl() { return SCRIPT_URL; }
 
     // ============================================================
-    //  CARREGAR PRODUTOS - COM TIMEOUT MAIOR
+    //  CONFIGURAR CAMPO DE VALOR COM DESCONTO
+    // ============================================================
+    function configurarCampoValor() {
+      const valorInput = document.getElementById('valor');
+      
+      // Ao digitar
+      valorInput.addEventListener('input', function(e) {
+        // Permite apenas números e vírgula
+        let valor = this.value.replace(/[^0-9,]/g, '');
+        
+        // Se tiver mais de uma vírgula, mantém só a primeira
+        const partes = valor.split(',');
+        if (partes.length > 2) {
+          valor = partes[0] + ',' + partes.slice(1).join('');
+        }
+        
+        this.value = valor;
+        
+        // Calcula o desconto em tempo real
+        calcularDesconto();
+      });
+      
+      // Ao perder o foco, formata o valor
+      valorInput.addEventListener('blur', function() {
+        let valor = this.value.replace(',', '.');
+        const num = parseFloat(valor);
+        if (!isNaN(num) && num > 0) {
+          this.value = num.toFixed(2).replace('.', ',');
+          calcularDesconto();
+        } else if (this.value.trim() === '' || this.value === '0' || this.value === '0,00') {
+          // Se estiver vazio ou zero, restaura o total original
+          const totalOriginal = calcularTotalOriginal();
+          this.value = totalOriginal.toFixed(2).replace('.', ',');
+          calcularDesconto();
+        }
+      });
+    }
+
+    // ============================================================
+    //  FUNÇÕES DE CÁLCULO
+    // ============================================================
+    function calcularTotalOriginal() {
+      let total = 0;
+      produtosSelecionados.forEach(p => { 
+        total += p.valorUnitario * p.qtd; 
+      });
+      return total;
+    }
+
+    function calcularDesconto() {
+      const valorInput = document.getElementById('valor');
+      const totalOriginal = calcularTotalOriginal();
+      valorOriginalTotal = totalOriginal;
+      
+      const descontoInfo = document.getElementById('descontoInfo');
+      
+      if (totalOriginal === 0) {
+        descontoInfo.style.display = 'none';
+        return;
+      }
+      
+      // Pega o valor digitado
+      const valorDigitado = parseFloat(valorInput.value.replace(',', '.')) || 0;
+      
+      // Se o valor digitado for maior que o original, corrige
+      if (valorDigitado >= totalOriginal) {
+        valorInput.value = totalOriginal.toFixed(2).replace('.', ',');
+        descontoInfo.style.display = 'none';
+        return;
+      }
+      
+      // Calcula o desconto
+      const desconto = totalOriginal - valorDigitado;
+      const descontoPercentual = totalOriginal > 0 ? (desconto / totalOriginal) * 100 : 0;
+      
+      // Mostra a área de desconto
+      if (desconto > 0.01) {
+        descontoInfo.style.display = 'block';
+        document.getElementById('descontoValor').textContent = `- R$ ${desconto.toFixed(2).replace('.', ',')}`;
+        document.getElementById('valorOriginal').textContent = `R$ ${totalOriginal.toFixed(2).replace('.', ',')}`;
+        document.getElementById('descontoPercentual').textContent = `${descontoPercentual.toFixed(1)}%`;
+        
+        // Muda a cor se o desconto for grande (> 20%)
+        const descontoValor = document.getElementById('descontoValor');
+        if (descontoPercentual > 20) {
+          descontoValor.className = 'desconto-value negative';
+        } else {
+          descontoValor.className = 'desconto-value positive';
+        }
+      } else {
+        descontoInfo.style.display = 'none';
+      }
+      
+      // Atualiza os valores dos produtos proporcionalmente
+      if (produtosSelecionados.length > 0 && totalOriginal > 0 && valorDigitado > 0) {
+        const fator = valorDigitado / totalOriginal;
+        produtosSelecionados.forEach(p => {
+          p.valorTotal = p.valorUnitario * p.qtd * fator;
+        });
+        atualizarLista();
+      }
+    }
+
+    function getValorComDesconto() {
+      const valorInput = document.getElementById('valor');
+      return parseFloat(valorInput.value.replace(',', '.')) || 0;
+    }
+
+    // ============================================================
+    //  CARREGAR PRODUTOS
     // ============================================================
     function carregarProdutos() {
       const selectAdd = document.getElementById('produtoAdd');
@@ -1082,7 +1273,6 @@
       const url = getScriptUrl();
       const callbackName = 'produtos_' + Date.now();
       
-      // TIMEOUT DE 10 SEGUNDOS (era 3)
       const timeoutId = setTimeout(() => {
         delete window[callbackName];
         usarFallbackProdutos();
@@ -1242,6 +1432,7 @@
         return;
       }
       const valorUnitario = parseFloat(valorStr.replace(',', '.'));
+      
       const existente = produtosSelecionados.find(p => p.nome === nome);
       if (existente) {
         existente.qtd += 1;
@@ -1254,8 +1445,24 @@
           valorTotal: valorUnitario
         });
       }
+      
       atualizarLista();
-      atualizarTotal();
+      
+      // Atualiza o valor total e mantém o desconto se existir
+      const totalOriginal = calcularTotalOriginal();
+      const valorInput = document.getElementById('valor');
+      const valorAtual = parseFloat(valorInput.value.replace(',', '.')) || totalOriginal;
+      
+      if (valorAtual < totalOriginal && valorOriginalTotal > 0) {
+        // Mantém o mesmo percentual de desconto
+        const descontoPercentual = 1 - (valorAtual / valorOriginalTotal);
+        const novoValor = totalOriginal * (1 - descontoPercentual);
+        valorInput.value = novoValor.toFixed(2).replace('.', ',');
+      } else {
+        valorInput.value = totalOriginal.toFixed(2).replace('.', ',');
+      }
+      
+      calcularDesconto();
       atualizarDropdownRemover();
       showToast(`${nome} adicionado!`, 'success', 1500);
     }
@@ -1281,8 +1488,23 @@
         produtosSelecionados.splice(index, 1);
         showToast(`${nome} removido`, 'info', 1500);
       }
+      
       atualizarLista();
-      atualizarTotal();
+      
+      // Atualiza o valor total
+      const totalOriginal = calcularTotalOriginal();
+      const valorInput = document.getElementById('valor');
+      const valorAtual = parseFloat(valorInput.value.replace(',', '.')) || totalOriginal;
+      
+      if (valorAtual < totalOriginal && valorOriginalTotal > 0) {
+        const descontoPercentual = 1 - (valorAtual / valorOriginalTotal);
+        const novoValor = totalOriginal * (1 - descontoPercentual);
+        valorInput.value = novoValor.toFixed(2).replace('.', ',');
+      } else {
+        valorInput.value = totalOriginal.toFixed(2).replace('.', ',');
+      }
+      
+      calcularDesconto();
       atualizarDropdownRemover();
     }
 
@@ -1316,23 +1538,9 @@
           </div>
         `;
       });
-      html += `<div class="total-produtos">Total: R$ ${calcularTotal()}</div>`;
+      const total = produtosSelecionados.reduce((acc, p) => acc + p.valorTotal, 0);
+      html += `<div class="total-produtos">Total: R$ ${total.toFixed(2).replace('.', ',')}</div>`;
       container.innerHTML = html;
-    }
-
-    function calcularTotal() {
-      let total = 0;
-      produtosSelecionados.forEach(p => { total += p.valorTotal; });
-      return total.toFixed(2).replace('.', ',');
-    }
-
-    function atualizarTotal() {
-      const total = calcularTotal();
-      document.getElementById('valor').value = total;
-      if (produtosSelecionados.length > 0) {
-        const desc = produtosSelecionados.map(p => p.qtd + 'x ' + p.nome).join(', ');
-        document.getElementById('descricao').value = desc;
-      }
     }
 
     // ============================================================
@@ -1341,20 +1549,34 @@
     function gerarPix() {
       const url = getScriptUrl();
       const cliente = document.getElementById('cliente').value.trim();
+      const valorInput = document.getElementById('valor');
+      
+      // Usa o valor com desconto que está no campo
+      const valorComDesconto = valorInput.value.replace(',', '.');
+      const valorOriginal = calcularTotalOriginal().toFixed(2).replace('.', ',');
+      
       const dados = {
         data: document.getElementById('dataVenda').value,
-        valor: document.getElementById('valor').value,
+        valor: valorComDesconto,
         cliente: cliente,
         descricao: document.getElementById('descricao').value ||
-          produtosSelecionados.map(p => p.qtd + 'x ' + p.nome).join(', ')
+          produtosSelecionados.map(p => p.qtd + 'x ' + p.nome).join(', '),
+        produtos: JSON.stringify(produtosSelecionados.map(p => ({ 
+          nome: p.nome, 
+          qtd: p.qtd, 
+          valorUnitario: p.valorUnitario,
+          valorTotal: p.valorTotal
+        }))),
+        desconto: (calcularTotalOriginal() - parseFloat(valorComDesconto)).toFixed(2).replace('.', ','),
+        valorOriginal: valorOriginal
       };
 
       if (produtosSelecionados.length === 0) {
         showToast('Adicione pelo menos um produto!', 'warning');
         return;
       }
-      if (dados.valor === "0,00") {
-        showToast('Valor total é zero!', 'warning');
+      if (parseFloat(valorComDesconto) <= 0) {
+        showToast('Valor total inválido!', 'warning');
         return;
       }
 
@@ -1387,7 +1609,8 @@
             cliente: nomeCliente,
             descricao: dados.descricao,
             data: dados.data,
-            produtos: produtosSelecionados.map(p => ({ ...p }))
+            produtos: produtosSelecionados.map(p => ({ ...p })),
+            desconto: dados.desconto
           };
 
           atualizarProdutosNota();
@@ -1423,6 +1646,9 @@
           valor: dados.valor,
           cliente: dados.cliente,
           descricao: dados.descricao,
+          produtos: dados.produtos,
+          desconto: dados.desconto,
+          valorOriginal: dados.valorOriginal,
           callback: callbackName
         });
         const script = document.createElement('script');
@@ -1691,6 +1917,9 @@
         });
         msg += `\n`;
       }
+      if (dados.desconto && parseFloat(dados.desconto.replace(',', '.')) > 0) {
+        msg += `💸 *Desconto:* R$ ${dados.desconto}\n\n`;
+      }
       msg += `🔑 *Pagamento via Pix confirmado!* ✅\n\n`;
       msg += `_Este é um comprovante automático._`;
 
@@ -1713,8 +1942,12 @@
         cliente: document.getElementById('displayCliente').innerText,
         descricao: 'Venda Pix',
         data: new Date().toLocaleDateString('pt-BR'),
-        produtos: []
+        produtos: [],
+        desconto: '0,00'
       };
+
+      const totalOriginal = dados.produtos.reduce((acc, p) => acc + (p.valorUnitario * p.qtd), 0);
+      const descontoNum = parseFloat(dados.desconto?.replace(',', '.') || 0);
 
       const reciboHTML = `
         <div style="font-family: 'Inter', Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 30px; background: #ffffff; color: #000000; border: 1px solid #ccc;">
@@ -1729,6 +1962,7 @@
             </div>
             <div>
               <p style="margin: 4px 0;"><strong>Valor:</strong> <span style="font-size: 22px; font-weight: 800;">R$ ${dados.valor || '0,00'}</span></p>
+              ${descontoNum > 0 ? `<p style="margin: 4px 0; color: #ff5252;"><strong>Desconto:</strong> - R$ ${dados.desconto}</p>` : ''}
             </div>
           </div>
           <div style="background: #f5f5f5; border-radius: 4px; padding: 12px; margin-bottom: 16px;">
@@ -1761,6 +1995,12 @@
               <div style="text-align: right; font-weight: 800; font-size: 18px; padding-top: 8px; margin-top: 8px; border-top: 2px solid #333;">
                 Total: R$ ${dados.produtos.reduce((acc, p) => acc + p.valorTotal, 0).toFixed(2).replace('.', ',')}
               </div>
+              ${descontoNum > 0 ? `
+                <div style="text-align: right; font-size: 14px; color: #666; margin-top: 4px;">
+                  <span style="text-decoration: line-through;">R$ ${totalOriginal.toFixed(2).replace('.', ',')}</span>
+                  <span style="color: #ff5252;"> (-${(descontoNum / totalOriginal * 100).toFixed(1)}%)</span>
+                </div>
+              ` : ''}
             ` : ''}
           </div>
           <div style="text-align: center; font-size: 12px; color: #888; border-top: 1px solid #ccc; padding-top: 16px; margin-top: 16px;">
@@ -1830,6 +2070,7 @@
       document.getElementById('descricao').value = '';
       document.getElementById('produtoAdd').selectedIndex = 0;
       document.getElementById('produtoRemove').selectedIndex = 0;
+      document.getElementById('descontoInfo').style.display = 'none';
       atualizarLista();
       atualizarDropdownRemover();
 
