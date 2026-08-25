@@ -492,6 +492,13 @@
     }
     .btn-voltar:hover { background: rgba(255,255,255,0.12); }
 
+    .btn-salvar-produtos {
+      background: linear-gradient(135deg, var(--success), #00c853);
+      color: #000;
+      box-shadow: 0 4px 16px rgba(0,230,118,0.3);
+    }
+    .btn-salvar-produtos:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(0,230,118,0.4); }
+
     .footer-actions {
       display: flex;
       gap: 12px;
@@ -781,6 +788,79 @@
       max-width: 340px;
     }
 
+    /* ===== LISTA DE PRODUTOS GERENCIÁVEL ===== */
+    .produto-gerencia-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 8px;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      gap: 10px;
+      animation: fadeInItem 0.2s ease;
+    }
+    .produto-gerencia-item .nome-produto {
+      flex: 1;
+      font-weight: 600;
+      color: var(--text-primary);
+      font-size: 0.9rem;
+    }
+    .produto-gerencia-item .preco-produto {
+      width: 100px;
+    }
+    .produto-gerencia-item .preco-produto input {
+      padding: 8px 10px;
+      font-size: 0.9rem;
+      text-align: center;
+      background: var(--bg-input);
+      border: 1.5px solid rgba(255,255,255,0.06);
+      color: var(--brand-light);
+      border-radius: var(--radius-sm);
+      font-weight: 600;
+      width: 100%;
+      transition: var(--transition);
+    }
+    .produto-gerencia-item .preco-produto input:focus {
+      border-color: var(--brand);
+      box-shadow: 0 0 0 3px rgba(50,188,173,0.15);
+      outline: none;
+    }
+    .produto-gerencia-item .btn-remover-produto {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: rgba(255,82,82,0.12);
+      color: var(--danger);
+      border: 1px solid rgba(255,82,82,0.15);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: var(--transition);
+      flex-shrink: 0;
+      font-size: 0.9rem;
+      margin-top: 0;
+    }
+    .produto-gerencia-item .btn-remover-produto:hover {
+      background: rgba(255,82,82,0.25);
+      transform: scale(1.05);
+    }
+
+    .lista-produtos-gerencia {
+      max-height: 350px;
+      overflow-y: auto;
+      margin: 8px 0 16px;
+      border: 1px solid rgba(255,255,255,0.04);
+      border-radius: var(--radius-sm);
+      padding: 4px 8px;
+      background: rgba(0,0,0,0.2);
+    }
+    .lista-produtos-gerencia .vazio {
+      color: var(--text-muted);
+      text-align: center;
+      padding: 30px 0;
+      font-size: 0.9rem;
+    }
+
     @media (max-width: 480px) {
       body { padding: 12px; }
       .container { padding: 18px; }
@@ -789,6 +869,8 @@
       h2 { font-size: 1.3rem; }
       .money-input { font-size: 1.5rem; }
       .scoreboard { font-size: 1.2rem; padding: 10px 18px; }
+      .produto-gerencia-item { flex-wrap: wrap; }
+      .produto-gerencia-item .preco-produto { width: 80px; }
     }
 
     .hidden { display: none !important; }
@@ -899,7 +981,7 @@
           <button class="btn-add" onclick="adicionarProduto()" aria-label="Adicionar produto">
             <svg viewBox="0 0 24 24"><path d="M19 13H13V19H11V13H5V11H11V5H13V11H19V13Z"/></svg>
           </button>
-          <button class="btn-cadastrar-produto" onclick="abrirCadastro()" aria-label="Cadastrar produto" title="Cadastrar novo produto">
+          <button class="btn-cadastrar-produto" onclick="abrirGerenciamento()" aria-label="Gerenciar produtos" title="Gerenciar produtos">
             <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm5 11h-4v4h-2v-4H7v-2h4V7h2v4h4v2z"/></svg>
           </button>
         </div>
@@ -963,8 +1045,8 @@
         Gerar Pix <span class="material-icons-round">arrow_forward</span>
       </button>
 
-      <button class="btn-outline" onclick="abrirCadastro()" style="margin-top:8px;">
-        <span class="material-icons-round">add_box</span> Cadastrar Produto
+      <button class="btn-outline" onclick="abrirGerenciamento()" style="margin-top:8px;">
+        <span class="material-icons-round">settings</span> Gerenciar Produtos
       </button>
 
       <div id="loader">
@@ -1034,31 +1116,46 @@
       </button>
     </div>
 
-    <!-- TELA 3: CADASTRO DE PRODUTO -->
+    <!-- TELA 3: GERENCIAMENTO DE PRODUTOS -->
     <div id="step-cadastro" style="display:none;">
-      <h2><span class="material-icons-round">add_box</span> Cadastrar Produto</h2>
+      <h2><span class="material-icons-round">settings</span> Gerenciar Produtos</h2>
 
-      <div class="input-group">
-        <label><span class="material-icons-round">inventory_2</span> Nome do Produto</label>
-        <input type="text" id="novoProdutoNome" placeholder="Ex: Queijo 800g" style="text-transform: uppercase;">
+      <!-- NOVO PRODUTO -->
+      <div style="background: rgba(255,193,7,0.05); border: 1px solid rgba(255,193,7,0.12); border-radius: var(--radius-sm); padding: 14px; margin-bottom: 16px;">
+        <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+          <input type="text" id="novoProdutoNome" placeholder="Novo produto..." style="flex: 2; min-width: 120px; padding: 10px 12px; font-size: 0.9rem; margin-top: 0; text-transform: uppercase;">
+          <input type="text" id="novoProdutoPreco" class="money-input" inputmode="decimal" placeholder="0,00" value="0,00" style="flex: 1; min-width: 80px; padding: 10px 12px; font-size: 1.2rem; margin-top: 0;">
+          <button class="btn-cadastrar" onclick="salvarProduto()" id="btnSalvarProduto" style="flex: 1; min-width: 80px; padding: 10px; margin-top: 0; font-size: 0.85rem;">
+            <span class="material-icons-round" style="font-size: 18px;">add</span> Adicionar
+          </button>
+        </div>
+        <div id="loaderCadastro" style="display:none; margin:8px 0 0;">
+          <div class="spinner" style="width:24px; height:24px; margin:0 auto;"></div>
+          <p style="color:var(--text-secondary); font-size:0.8rem; text-align:center;">Cadastrando...</p>
+        </div>
       </div>
 
-      <div class="input-group">
-        <label><span class="material-icons-round">attach_money</span> Preço</label>
-        <input type="text" id="novoProdutoPreco" class="money-input" inputmode="decimal" placeholder="0,00" value="0,00" style="font-size:1.5rem;">
+      <!-- LISTA DE PRODUTOS -->
+      <label style="font-size:0.8rem; font-weight:500; color:var(--text-secondary); display:flex; align-items:center; gap:6px; margin-bottom:6px;">
+        <span class="material-icons-round" style="font-size:16px;">inventory</span> Produtos cadastrados
+        <span style="margin-left:auto; color:var(--text-muted); font-size:0.7rem;" id="contadorProdutos">(0)</span>
+      </label>
+      <div class="lista-produtos-gerencia" id="listaProdutosGerencia">
+        <div class="vazio">Carregando produtos...</div>
       </div>
 
-      <button class="btn-cadastrar" onclick="salvarProduto()" id="btnSalvarProduto">
-        <span class="material-icons-round">save</span> Salvar Produto
+      <!-- BOTÕES -->
+      <button class="btn-salvar-produtos" onclick="salvarAlteracoesProdutos()" id="btnSalvarAlteracoes">
+        <span class="material-icons-round">save</span> Salvar Alterações
       </button>
 
       <button class="btn-voltar" onclick="voltarParaVenda()" style="margin-top:8px;">
         <span class="material-icons-round">arrow_back</span> Voltar
       </button>
 
-      <div id="loaderCadastro" style="display:none; margin:20px 0;">
+      <div id="loaderSalvar" style="display:none; margin:16px 0;">
         <div class="spinner"></div>
-        <p style="color:var(--text-secondary); font-size:0.9rem;">Cadastrando produto...</p>
+        <p style="color:var(--text-secondary); font-size:0.9rem; text-align:center;">Salvando alterações...</p>
       </div>
     </div>
   </div>
@@ -1125,7 +1222,7 @@
     // ============================================================
     //  CONFIGURAÇÃO
     // ============================================================
-    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxqZAblQo2PO_PLg2mYQXrv7QeCpJsbM443Uewoh1rnsx9O-hTAmKTfvKJZzej-vQOpbg/exec';
+    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwg5wzqsoksDF6WKYsPnf10s2tU9_rkJR_PbO6Wr2ZLJwjZ6lPVh2zkJMIl-_eBa88T5g/exec';
     const DDI = '55';
 
     // ============================================================
@@ -1150,6 +1247,7 @@
     const maxTempo = 300;
     let loopAtivo = false;
     let valorOriginalTotal = 0;
+    let produtosParaSalvar = [];
 
     // ============================================================
     //  PWA - INSTALAÇÃO
@@ -1478,7 +1576,7 @@
     }
 
     // ============================================================
-    //  MANIPULAR PRODUTOS
+    //  MANIPULAR PRODUTOS NA VENDA
     // ============================================================
     function adicionarProduto() {
       const select = document.getElementById('produtoAdd');
@@ -1598,23 +1696,141 @@
     }
 
     // ============================================================
-    //  🔥 CADASTRAR PRODUTO
+    //  🔥 GERENCIAMENTO DE PRODUTOS
     // ============================================================
-    function abrirCadastro() {
+    function abrirGerenciamento() {
       document.getElementById('step-form').style.display = 'none';
       document.getElementById('step-pix').style.display = 'none';
       document.getElementById('step-cadastro').style.display = 'flex';
       document.getElementById('novoProdutoNome').value = '';
       document.getElementById('novoProdutoPreco').value = '0,00';
       document.getElementById('novoProdutoNome').focus();
+      
+      // Carrega os produtos na lista de gerenciamento
+      carregarListaGerenciamento();
     }
 
     function voltarParaVenda() {
       document.getElementById('step-cadastro').style.display = 'none';
       document.getElementById('step-form').style.display = 'block';
       carregarProdutos(); // Recarrega a lista de produtos
+      atualizarPlacar();
     }
 
+    function carregarListaGerenciamento() {
+      const container = document.getElementById('listaProdutosGerencia');
+      container.innerHTML = '<div class="vazio">Carregando produtos...</div>';
+      
+      const url = getScriptUrl();
+      const callbackName = 'gerencia_' + Date.now();
+      const timeoutId = setTimeout(() => {
+        delete window[callbackName];
+        container.innerHTML = '<div class="vazio">❌ Erro ao carregar produtos</div>';
+        showToast('❌ Tempo esgotado!', 'error');
+      }, 10000);
+
+      window[callbackName] = function(data) {
+        clearTimeout(timeoutId);
+        if (data && !data.erro && Array.isArray(data) && data.length > 0) {
+          produtosParaSalvar = data.map(p => ({ ...p }));
+          renderizarListaGerenciamento(data);
+          document.getElementById('contadorProdutos').textContent = `(${data.length})`;
+        } else {
+          container.innerHTML = '<div class="vazio">⚠️ Nenhum produto cadastrado</div>';
+          produtosParaSalvar = [];
+          document.getElementById('contadorProdutos').textContent = '(0)';
+        }
+        delete window[callbackName];
+      };
+
+      try {
+        const script = document.createElement('script');
+        script.src = url + '?action=getProdutos&callback=' + callbackName;
+        script.onerror = () => {
+          clearTimeout(timeoutId);
+          delete window[callbackName];
+          container.innerHTML = '<div class="vazio">❌ Erro de conexão</div>';
+          showToast('❌ Erro de conexão!', 'error');
+        };
+        document.body.appendChild(script);
+      } catch(e) {
+        clearTimeout(timeoutId);
+        delete window[callbackName];
+        container.innerHTML = '<div class="vazio">❌ Erro ao conectar</div>';
+        showToast('❌ Erro ao conectar!', 'error');
+      }
+    }
+
+    function renderizarListaGerenciamento(produtos) {
+      const container = document.getElementById('listaProdutosGerencia');
+      
+      if (!produtos || produtos.length === 0) {
+        container.innerHTML = '<div class="vazio">Nenhum produto cadastrado</div>';
+        return;
+      }
+
+      let html = '';
+      produtos.forEach((p, index) => {
+        html += `
+          <div class="produto-gerencia-item" data-index="${index}">
+            <span class="nome-produto">${p.nome}</span>
+            <div class="preco-produto">
+              <input type="text" class="preco-input" value="${p.valor}" data-index="${index}" 
+                     inputmode="decimal" placeholder="0,00">
+            </div>
+            <button class="btn-remover-produto" onclick="removerProdutoGerencia(${index})" title="Remover produto">
+              ✕
+            </button>
+          </div>
+        `;
+      });
+      container.innerHTML = html;
+
+      // Adiciona listeners para os campos de preço
+      document.querySelectorAll('.preco-input').forEach(input => {
+        input.addEventListener('input', function(e) {
+          let valor = this.value.replace(/[^0-9,]/g, '');
+          const partes = valor.split(',');
+          if (partes.length > 2) {
+            valor = partes[0] + ',' + partes.slice(1).join('');
+          }
+          this.value = valor;
+          const index = parseInt(this.dataset.index);
+          if (!isNaN(index) && produtosParaSalvar[index]) {
+            produtosParaSalvar[index].valor = valor || '0,00';
+          }
+        });
+
+        input.addEventListener('blur', function() {
+          let valor = this.value.replace(',', '.');
+          const num = parseFloat(valor);
+          if (!isNaN(num) && num > 0) {
+            this.value = num.toFixed(2).replace('.', ',');
+          } else {
+            this.value = '0,00';
+          }
+          const index = parseInt(this.dataset.index);
+          if (!isNaN(index) && produtosParaSalvar[index]) {
+            produtosParaSalvar[index].valor = this.value;
+          }
+        });
+      });
+    }
+
+    function removerProdutoGerencia(index) {
+      const produtos = produtosParaSalvar;
+      if (index >= 0 && index < produtos.length) {
+        const nome = produtos[index].nome;
+        produtos.splice(index, 1);
+        renderizarListaGerenciamento(produtos);
+        document.getElementById('contadorProdutos').textContent = `(${produtos.length})`;
+        showToast(`🗑️ "${nome}" removido da lista`, 'info', 1500);
+      }
+    }
+
+    // ============================================================
+    //  🔥 SALVAR NOVO PRODUTO
+    // ============================================================
     function salvarProduto() {
       const nome = document.getElementById('novoProdutoNome').value.trim().toUpperCase();
       const preco = document.getElementById('novoProdutoPreco').value.replace(',', '.');
@@ -1629,9 +1845,16 @@
         return;
       }
 
+      // Verifica se o produto já existe na lista de gerenciamento
+      const existe = produtosParaSalvar.some(p => p.nome.toUpperCase() === nome);
+      if (existe) {
+        showToast(`❌ "${nome}" já existe na lista!`, 'error');
+        return;
+      }
+
       const btn = document.getElementById('btnSalvarProduto');
       btn.disabled = true;
-      btn.innerHTML = '<span class="material-icons-round">hourglass_top</span> Salvando...';
+      btn.innerHTML = '<span class="material-icons-round" style="font-size:18px;">hourglass_top</span> Salvando...';
       document.getElementById('loaderCadastro').style.display = 'block';
 
       const url = getScriptUrl();
@@ -1639,7 +1862,7 @@
       const timeoutId = setTimeout(() => {
         delete window[callbackName];
         btn.disabled = false;
-        btn.innerHTML = '<span class="material-icons-round">save</span> Salvar Produto';
+        btn.innerHTML = '<span class="material-icons-round" style="font-size:18px;">add</span> Adicionar';
         document.getElementById('loaderCadastro').style.display = 'none';
         showToast('❌ Tempo esgotado!', 'error');
       }, 15000);
@@ -1647,13 +1870,16 @@
       window[callbackName] = function(resultado) {
         clearTimeout(timeoutId);
         btn.disabled = false;
-        btn.innerHTML = '<span class="material-icons-round">save</span> Salvar Produto';
+        btn.innerHTML = '<span class="material-icons-round" style="font-size:18px;">add</span> Adicionar';
         document.getElementById('loaderCadastro').style.display = 'none';
 
         if (resultado && resultado.success) {
-          showToast('✅ Produto cadastrado com sucesso!', 'success');
-          // Volta para a tela de venda e recarrega os produtos
-          voltarParaVenda();
+          showToast(`✅ "${nome}" cadastrado com sucesso!`, 'success');
+          document.getElementById('novoProdutoNome').value = '';
+          document.getElementById('novoProdutoPreco').value = '0,00';
+          // Recarrega a lista
+          carregarListaGerenciamento();
+          document.getElementById('novoProdutoNome').focus();
         } else {
           showToast('❌ Erro: ' + (resultado?.mensagem || 'Erro desconhecido'), 'error');
         }
@@ -1673,7 +1899,7 @@
           clearTimeout(timeoutId);
           delete window[callbackName];
           btn.disabled = false;
-          btn.innerHTML = '<span class="material-icons-round">save</span> Salvar Produto';
+          btn.innerHTML = '<span class="material-icons-round" style="font-size:18px;">add</span> Adicionar';
           document.getElementById('loaderCadastro').style.display = 'none';
           showToast('❌ Erro de conexão!', 'error');
         };
@@ -1682,8 +1908,73 @@
         clearTimeout(timeoutId);
         delete window[callbackName];
         btn.disabled = false;
-        btn.innerHTML = '<span class="material-icons-round">save</span> Salvar Produto';
+        btn.innerHTML = '<span class="material-icons-round" style="font-size:18px;">add</span> Adicionar';
         document.getElementById('loaderCadastro').style.display = 'none';
+        showToast('❌ Erro ao conectar!', 'error');
+      }
+    }
+
+    // ============================================================
+    //  🔥 SALVAR ALTERAÇÕES EM MASSA
+    // ============================================================
+    function salvarAlteracoesProdutos() {
+      const btn = document.getElementById('btnSalvarAlteracoes');
+      btn.disabled = true;
+      btn.innerHTML = '<span class="material-icons-round">hourglass_top</span> Salvando...';
+      document.getElementById('loaderSalvar').style.display = 'block';
+
+      const url = getScriptUrl();
+      const callbackName = 'salvarMassas_' + Date.now();
+      const timeoutId = setTimeout(() => {
+        delete window[callbackName];
+        btn.disabled = false;
+        btn.innerHTML = '<span class="material-icons-round">save</span> Salvar Alterações';
+        document.getElementById('loaderSalvar').style.display = 'none';
+        showToast('❌ Tempo esgotado!', 'error');
+      }, 20000);
+
+      window[callbackName] = function(resultado) {
+        clearTimeout(timeoutId);
+        btn.disabled = false;
+        btn.innerHTML = '<span class="material-icons-round">save</span> Salvar Alterações';
+        document.getElementById('loaderSalvar').style.display = 'none';
+
+        if (resultado && resultado.success) {
+          showToast('✅ Todas as alterações salvas com sucesso!', 'success');
+          // Recarrega a lista para garantir consistência
+          carregarListaGerenciamento();
+          // Atualiza os produtos na tela de venda
+          carregarProdutos();
+        } else {
+          showToast('❌ Erro ao salvar: ' + (resultado?.mensagem || 'Erro desconhecido'), 'error');
+        }
+        delete window[callbackName];
+      };
+
+      try {
+        // Envia a lista completa de produtos
+        const params = new URLSearchParams({
+          action: 'salvarProdutosMassa',
+          produtos: JSON.stringify(produtosParaSalvar),
+          callback: callbackName
+        });
+        const script = document.createElement('script');
+        script.src = url + '?' + params.toString();
+        script.onerror = () => {
+          clearTimeout(timeoutId);
+          delete window[callbackName];
+          btn.disabled = false;
+          btn.innerHTML = '<span class="material-icons-round">save</span> Salvar Alterações';
+          document.getElementById('loaderSalvar').style.display = 'none';
+          showToast('❌ Erro de conexão!', 'error');
+        };
+        document.body.appendChild(script);
+      } catch(e) {
+        clearTimeout(timeoutId);
+        delete window[callbackName];
+        btn.disabled = false;
+        btn.innerHTML = '<span class="material-icons-round">save</span> Salvar Alterações';
+        document.getElementById('loaderSalvar').style.display = 'none';
         showToast('❌ Erro ao conectar!', 'error');
       }
     }
