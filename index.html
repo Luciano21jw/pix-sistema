@@ -178,7 +178,7 @@
 
     @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-    /* ===== SCOREBOARD ===== */
+    /* ===== SCOREBOARD (AUMENTADO) ===== */
     .scoreboard {
       background: rgba(50,188,173,0.08);
       backdrop-filter: blur(8px);
@@ -187,8 +187,8 @@
       padding: 12px 24px;
       border-radius: 50px;
       margin-bottom: 20px;
-      font-weight: 800;
-      font-size: 1.4rem;
+      font-weight: 800; /* Peso da fonte igual ao título (800) */
+      font-size: 1.4rem; /* Fonte AUMENTADA (antes era 0.9rem) */
       display: flex;
       align-items: center;
       gap: 10px;
@@ -196,7 +196,6 @@
       max-width: 440px;
       justify-content: center;
       box-shadow: 0 2px 12px rgba(0,0,0,0.3);
-      flex-wrap: wrap;
     }
     .scoreboard .material-icons-round { font-size: 26px; }
     .scoreboard .badge {
@@ -208,26 +207,6 @@
       font-weight: 700;
     }
     .scoreboard .badge.success { background: rgba(0,230,118,0.2); color: var(--success); }
-    .scoreboard .btn-gerenciar {
-      background: rgba(50,188,173,0.2);
-      border: 1px solid rgba(50,188,173,0.3);
-      color: var(--brand-light);
-      padding: 6px 16px;
-      border-radius: 30px;
-      font-size: 0.8rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: var(--transition);
-      font-family: inherit;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-    .scoreboard .btn-gerenciar:hover {
-      background: rgba(50,188,173,0.3);
-      transform: scale(1.02);
-    }
-    .scoreboard .btn-gerenciar .material-icons-round { font-size: 18px; }
 
     .container {
       background: var(--bg-secondary);
@@ -330,7 +309,7 @@
     }
     .row-inputs select { flex: 1; }
 
-    .btn-add, .btn-remove, .btn-refresh {
+    .btn-add, .btn-remove {
       width: 52px;
       height: 52px;
       border-radius: var(--radius-sm);
@@ -358,12 +337,6 @@
       border: 1px solid rgba(255,82,82,0.2);
     }
     .btn-remove:hover { background: rgba(255,82,82,0.25); transform: scale(1.05); }
-    .btn-refresh {
-      background: rgba(50,188,173,0.08);
-      border: 1px solid rgba(50,188,173,0.15);
-      color: var(--brand-light);
-    }
-    .btn-refresh:hover { background: rgba(50,188,173,0.2); transform: scale(1.05); }
     .btn-add svg, .btn-remove svg { width: 24px; height: 24px; fill: currentColor; }
 
     .produtos-lista {
@@ -400,59 +373,6 @@
       margin-top: 6px;
     }
     .lista-vazia { color: var(--text-muted); text-align: center; padding: 16px 0; font-size: 0.85rem; }
-
-    /* ===== VALOR EDITÁVEL COM DESCONTO EM VERMELHO ===== */
-    .valor-editable-area {
-      background: rgba(0,0,0,0.2);
-      border-radius: var(--radius-sm);
-      padding: 16px;
-      margin: 12px 0 16px;
-      border: 1px solid rgba(255,255,255,0.06);
-    }
-    .valor-editable-area .input-group {
-      margin-bottom: 4px;
-    }
-    
-    /* DESCONTO EM VERMELHO ABAIXO DO VALOR */
-    .desconto-display {
-      text-align: center;
-      padding: 6px 4px;
-      min-height: 32px;
-      font-size: 1.1rem;
-      font-weight: 700;
-      color: var(--danger);
-      transition: all 0.3s ease;
-    }
-    .desconto-display.ativo {
-      animation: pulseRed 1s ease-in-out infinite;
-    }
-    @keyframes pulseRed {
-      0%, 100% { opacity: 1; transform: scale(1); }
-      50% { opacity: 0.7; transform: scale(1.02); }
-    }
-    
-    /* VALOR FINAL ABAIXO DO DESCONTO */
-    .valor-final-area {
-      text-align: right;
-      padding: 8px 4px 0;
-      border-top: 2px solid rgba(50,188,173,0.15);
-      margin-top: 4px;
-    }
-    .valor-final-area .linha-final {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    .valor-final-area .label-final {
-      font-size: 0.85rem;
-      color: var(--text-secondary);
-      font-weight: 500;
-    }
-    .valor-final-area .valor-final {
-      font-size: 1.5rem;
-      font-weight: 900;
-      color: var(--brand-light);
-    }
 
     button {
       width: 100%;
@@ -500,23 +420,6 @@
       box-shadow: 0 4px 16px rgba(255,87,34,0.3);
     }
     .btn-pdf:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(255,87,34,0.4); }
-
-    .btn-success {
-      background: var(--success);
-      color: #000;
-      box-shadow: 0 4px 16px rgba(0,230,118,0.3);
-    }
-    .btn-success:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(0,230,118,0.4); }
-
-    .btn-test {
-      background: rgba(50,188,173,0.1);
-      border: 1px solid rgba(50,188,173,0.2);
-      color: var(--brand-light);
-      margin-top: 4px;
-      font-size: 0.85rem;
-      padding: 10px;
-    }
-    .btn-test:hover { background: rgba(50,188,173,0.2); }
 
     .footer-actions {
       display: flex;
@@ -694,20 +597,6 @@
       border-top: 2px solid rgba(50,188,173,0.2);
       margin-top: 4px;
     }
-    .produtos-nota .desconto-nota {
-      text-align: right;
-      color: var(--danger);
-      font-size: 0.9rem;
-      margin-top: 2px;
-      font-weight: 700;
-    }
-    .produtos-nota .total-final-nota {
-      text-align: right;
-      font-weight: 900;
-      font-size: 1.3rem;
-      color: var(--brand-light);
-      padding-top: 4px;
-    }
 
     .check-writing-container {
       display: none;
@@ -826,8 +715,6 @@
       h2 { font-size: 1.3rem; }
       .money-input { font-size: 1.5rem; }
       .scoreboard { font-size: 1.2rem; padding: 10px 18px; }
-      .valor-final-area .valor-final { font-size: 1.3rem; }
-      .desconto-display { font-size: 0.95rem; }
     }
 
     .hidden { display: none !important; }
@@ -879,147 +766,6 @@
     }
     #installBtn:hover { transform: translateX(-50%) translateY(-3px) scale(1.02); box-shadow: 0 12px 40px rgba(50,188,173,0.5); }
     #installBtn .material-icons-round { font-size: 22px; }
-
-    /* ===== MODAL GERENCIAR PRODUTOS ===== */
-    #gerenciarModal {
-      display: none;
-      position: fixed;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      background: rgba(0,0,0,0.8);
-      backdrop-filter: blur(12px);
-      z-index: 999997;
-      align-items: center;
-      justify-content: center;
-      animation: fadeIn 0.3s ease;
-      padding: 16px;
-    }
-    #gerenciarModal.ativo { display: flex; }
-    #gerenciarModal .modal-box {
-      background: var(--bg-secondary);
-      padding: 24px;
-      border-radius: var(--radius);
-      max-width: 500px;
-      width: 100%;
-      max-height: 90vh;
-      overflow-y: auto;
-      border: 1px solid rgba(255,255,255,0.06);
-      box-shadow: 0 24px 64px rgba(0,0,0,0.8);
-      animation: modalPop 0.3s ease;
-    }
-    #gerenciarModal .modal-box h3 {
-      color: var(--brand-light);
-      font-size: 1.4rem;
-      font-weight: 700;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 10px;
-      margin-bottom: 20px;
-    }
-    #gerenciarModal .modal-box .form-row {
-      display: flex;
-      gap: 10px;
-      margin-bottom: 12px;
-    }
-    #gerenciarModal .modal-box .form-row input {
-      flex: 1;
-      padding: 12px 14px;
-      margin: 0;
-    }
-    #gerenciarModal .modal-box .form-row button {
-      width: auto;
-      padding: 12px 20px;
-      margin: 0;
-      flex-shrink: 0;
-    }
-    #gerenciarModal .modal-box .lista-produtos-gerenciar {
-      max-height: 300px;
-      overflow-y: auto;
-      margin: 12px 0 16px;
-      border: 1px solid rgba(255,255,255,0.06);
-      border-radius: var(--radius-sm);
-      padding: 4px;
-    }
-    #gerenciarModal .modal-box .produto-gerenciar-item {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 10px 12px;
-      border-bottom: 1px solid rgba(255,255,255,0.04);
-      animation: fadeInItem 0.2s ease;
-    }
-    #gerenciarModal .modal-box .produto-gerenciar-item:last-child { border-bottom: none; }
-    #gerenciarModal .modal-box .produto-gerenciar-item .info {
-      display: flex;
-      gap: 12px;
-      align-items: center;
-    }
-    #gerenciarModal .modal-box .produto-gerenciar-item .info .nome {
-      font-weight: 500;
-      color: var(--text-primary);
-    }
-    #gerenciarModal .modal-box .produto-gerenciar-item .info .preco {
-      color: var(--brand-light);
-      font-weight: 600;
-    }
-    #gerenciarModal .modal-box .produto-gerenciar-item .acoes {
-      display: flex;
-      gap: 6px;
-    }
-    #gerenciarModal .modal-box .produto-gerenciar-item .acoes button {
-      width: auto;
-      padding: 6px 12px;
-      margin: 0;
-      font-size: 0.75rem;
-      border-radius: 6px;
-    }
-    #gerenciarModal .modal-box .produto-gerenciar-item .acoes .btn-editar {
-      background: rgba(50,188,173,0.15);
-      color: var(--brand-light);
-      border: 1px solid rgba(50,188,173,0.2);
-    }
-    #gerenciarModal .modal-box .produto-gerenciar-item .acoes .btn-editar:hover {
-      background: rgba(50,188,173,0.25);
-    }
-    #gerenciarModal .modal-box .produto-gerenciar-item .acoes .btn-excluir {
-      background: rgba(255,82,82,0.12);
-      color: var(--danger);
-      border: 1px solid rgba(255,82,82,0.15);
-    }
-    #gerenciarModal .modal-box .produto-gerenciar-item .acoes .btn-excluir:hover {
-      background: rgba(255,82,82,0.2);
-    }
-    #gerenciarModal .modal-box .btn-fechar-gerenciar {
-      background: rgba(255,255,255,0.06);
-      color: var(--text-secondary);
-      border: 1px solid rgba(255,255,255,0.08);
-      margin-top: 8px;
-    }
-    #gerenciarModal .modal-box .btn-fechar-gerenciar:hover {
-      background: rgba(255,255,255,0.1);
-    }
-    #gerenciarModal .modal-box .loading-produtos {
-      text-align: center;
-      padding: 20px;
-      color: var(--text-secondary);
-    }
-    #gerenciarModal .modal-box .sem-produtos {
-      text-align: center;
-      padding: 20px;
-      color: var(--text-muted);
-    }
-    #gerenciarModal .modal-box .editando-indicador {
-      background: rgba(50,188,173,0.08);
-      border: 1px solid rgba(50,188,173,0.15);
-      padding: 8px 12px;
-      border-radius: var(--radius-sm);
-      margin-bottom: 12px;
-      font-size: 0.8rem;
-      color: var(--brand-light);
-      display: none;
-    }
-    #gerenciarModal .modal-box .editando-indicador.visivel { display: block; }
   </style>
 </head>
 <body>
@@ -1040,33 +786,6 @@
     </div>
   </div>
 
-  <!-- MODAL GERENCIAR PRODUTOS -->
-  <div id="gerenciarModal">
-    <div class="modal-box">
-      <h3><span class="material-icons-round">inventory_2</span> Gerenciar Produtos</h3>
-      
-      <div class="editando-indicador" id="editandoIndicador">
-        <span class="material-icons-round">edit</span> Editando: <span id="editandoNome"></span>
-      </div>
-      
-      <div class="form-row">
-        <input type="text" id="novoProdutoNome" placeholder="Nome do produto" style="flex:2;">
-        <input type="text" id="novoProdutoPreco" placeholder="Preço (R$)" style="flex:1;" value="0,00">
-        <button class="btn-success" id="btnSalvarProduto" onclick="salvarProduto()">
-          <span class="material-icons-round">add</span>
-        </button>
-      </div>
-
-      <div class="lista-produtos-gerenciar" id="listaProdutosGerenciar">
-        <div class="loading-produtos">⏳ Carregando produtos...</div>
-      </div>
-
-      <button class="btn-fechar-gerenciar" onclick="fecharGerenciar()">
-        <span class="material-icons-round">close</span> Fechar
-      </button>
-    </div>
-  </div>
-
   <!-- SPLASH SCREEN -->
   <div id="splash-screen">
     <div class="logo">Pix Pro</div>
@@ -1078,9 +797,6 @@
     <span class="material-icons-round">trending_up</span>
     Hoje: R$ <span id="totalHoje">0,00</span>
     <span class="badge" id="statusBadge">🔍</span>
-    <button class="btn-gerenciar" onclick="abrirGerenciar()">
-      <span class="material-icons-round">settings</span> Gerenciar
-    </button>
   </div>
 
   <!-- CONTAINER PRINCIPAL -->
@@ -1128,29 +844,9 @@
         <div class="lista-vazia">Nenhum produto adicionado</div>
       </div>
 
-      <!-- ===== VALOR EDITÁVEL COM DESCONTO EM VERMELHO ===== -->
-      <div class="valor-editable-area">
-        <!-- Valor Total Editável -->
-        <div class="input-group" style="margin-bottom: 4px;">
-          <label><span class="material-icons-round">attach_money</span> Valor Total</label>
-          <div class="row-inputs" style="gap: 10px;">
-            <input type="text" id="valorTotalEditavel" class="money-input" inputmode="decimal" value="0,00" style="flex:1; font-size:1.8rem; text-align:center; padding:12px 16px;">
-            <button class="btn-refresh" onclick="recalcularValor()" title="Recalcular automaticamente" style="width:48px; height:48px; border-radius:var(--radius-sm); background:rgba(50,188,173,0.08); border:1px solid rgba(50,188,173,0.15); color:var(--brand-light); cursor:pointer; display:flex; align-items:center; justify-content:center; margin-top:6px; flex-shrink:0;">
-              <span class="material-icons-round">refresh</span>
-            </button>
-          </div>
-        </div>
-
-        <!-- DESCONTO EM VERMELHO ABAIXO DO VALOR (NÃO EDITÁVEL) -->
-        <div class="desconto-display" id="descontoDisplay"></div>
-
-        <!-- VALOR FINAL COM DESCONTO -->
-        <div class="valor-final-area">
-          <div class="linha-final">
-            <span class="label-final">Total com desconto</span>
-            <span class="valor-final" id="valorFinalDisplay">R$ 0,00</span>
-          </div>
-        </div>
+      <div class="input-group">
+        <label><span class="material-icons-round">attach_money</span> Valor Total</label>
+        <input type="text" id="valor" class="money-input" inputmode="numeric" value="0,00" readonly>
       </div>
 
       <div class="input-group">
@@ -1165,10 +861,6 @@
 
       <button class="btn-primary" id="btnGerar" onclick="gerarPix()">
         Gerar Pix <span class="material-icons-round">arrow_forward</span>
-      </button>
-
-      <button class="btn-test" onclick="testarConexao()" style="margin-top:4px; font-size:0.8rem; padding:8px;">
-        <span class="material-icons-round">wifi_tethering</span> Testar Conexão
       </button>
 
       <div id="loader">
@@ -1209,8 +901,6 @@
         <div id="listaProdutosNota">
           <p style="color:var(--text-muted); font-size:0.8rem; padding:4px 0; text-align:center;">Nenhum produto registrado.</p>
         </div>
-        <div class="desconto-nota" id="descontoNota"></div>
-        <div class="total-final-nota" id="totalFinalNota"></div>
       </div>
 
       <div id="acoesRecibo">
@@ -1253,7 +943,7 @@
     function showToast(message, type = 'info', duration = 3000) {
       const container = document.getElementById('toast-container');
       const toast = document.createElement('div');
-      toast.className = 'toast ' + type;
+      toast.className = `toast ${type}`;
       
       const icons = {
         success: 'check_circle',
@@ -1269,7 +959,7 @@
       
       container.appendChild(toast);
       
-      setTimeout(function() {
+      setTimeout(() => {
         if (toast.parentNode) toast.remove();
       }, duration);
     }
@@ -1280,7 +970,7 @@
     let confirmResolve = null;
 
     function showConfirm(title, message) {
-      return new Promise(function(resolve) {
+      return new Promise((resolve) => {
         const modal = document.getElementById('confirmModal');
         document.getElementById('modalTitle').textContent = title;
         document.getElementById('modalMessage').textContent = message;
@@ -1290,12 +980,12 @@
       });
     }
 
-    document.getElementById('modalConfirm').addEventListener('click', function() {
+    document.getElementById('modalConfirm').addEventListener('click', () => {
       document.getElementById('confirmModal').classList.remove('ativo');
       if (confirmResolve) confirmResolve(true);
     });
 
-    document.getElementById('modalCancel').addEventListener('click', function() {
+    document.getElementById('modalCancel').addEventListener('click', () => {
       document.getElementById('confirmModal').classList.remove('ativo');
       if (confirmResolve) confirmResolve(false);
     });
@@ -1303,12 +993,11 @@
     // ============================================================
     //  CONFIGURAÇÃO
     // ============================================================
-    // 🔴 SUBSTITUA ESTA URL PELA URL DO SEU APPS SCRIPT 🔴
-    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbz2lfVIxWs54Fk4Q6f3h59vVoL1eESEd-QTy3oT-PiMlRPPqlkdGmwcg3_N-jv3dQXbVA/exec';
+    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxl4gz3gQlDLMqTXOkGptbvj9TB8FkpFTr-s8-mMHDb2Pv7Nf6JO-Whfhg7G74VbkC7pQ/exec';
     const DDI = '55';
 
     // ============================================================
-    //  PRODUTOS DE FALLBACK
+    //  PRODUTOS DE FALLBACK (usados se a API falhar)
     // ============================================================
     const PRODUTOS_FALLBACK = [
       { nome: 'Produto A', valor: '10,00' },
@@ -1328,18 +1017,17 @@
     let tempoDecorrido = 0;
     const maxTempo = 300;
     let loopAtivo = false;
-    let produtoEditando = null;
 
     // ============================================================
     //  PWA - INSTALAÇÃO
     // ============================================================
     let deferredPrompt;
-    window.addEventListener('beforeinstallprompt', function(e) {
+    window.addEventListener('beforeinstallprompt', (e) => {
       e.preventDefault();
       deferredPrompt = e;
       const btn = document.getElementById('installBtn');
       btn.style.display = 'flex';
-      btn.addEventListener('click', async function() {
+      btn.addEventListener('click', async () => {
         btn.style.display = 'none';
         if (deferredPrompt) {
           await deferredPrompt.prompt();
@@ -1355,10 +1043,10 @@
     // ============================================================
     //  SPLASH SCREEN
     // ============================================================
-    window.addEventListener('load', function() {
-      setTimeout(function() {
+    window.addEventListener('load', () => {
+      setTimeout(() => {
         document.getElementById('splash-screen').classList.add('fade-out');
-        setTimeout(function() {
+        setTimeout(() => {
           document.getElementById('splash-screen').style.display = 'none';
         }, 300);
       }, 300);
@@ -1369,21 +1057,6 @@
       carregarProdutos();
       verificarConfiguracoes();
       atualizarPlacar();
-      
-      // Event listener para o valor total
-      document.getElementById('valorTotalEditavel').addEventListener('input', calcularDescontoAutomatico);
-      
-      // Formatação automática ao perder o foco
-      document.getElementById('valorTotalEditavel').addEventListener('blur', function() {
-        let val = this.value.replace(/\./g, '').replace(',', '.');
-        let num = parseFloat(val);
-        if (!isNaN(num) && num >= 0) {
-          this.value = num.toFixed(2).replace('.', ',');
-        } else {
-          this.value = '0,00';
-        }
-        calcularDescontoAutomatico();
-      });
     });
 
     function resetDataField() {
@@ -1397,101 +1070,7 @@
     function getScriptUrl() { return SCRIPT_URL; }
 
     // ============================================================
-    //  TESTAR CONEXÃO COM O APPS SCRIPT
-    // ============================================================
-    function testarConexao() {
-      console.log('🧪 Testando conexão com o Apps Script...');
-      const url = getScriptUrl();
-      
-      showToast('🔄 Testando conexão...', 'info', 2000);
-      
-      const callbackName = 'test_' + Date.now();
-      const timeoutId = setTimeout(function() {
-        delete window[callbackName];
-        showToast('❌ Teste falhou! Verifique a URL do Apps Script.', 'error');
-        console.log('❌ Teste falhou - Timeout');
-      }, 10000);
-
-      window[callbackName] = function(data) {
-        clearTimeout(timeoutId);
-        console.log('✅ Teste bem-sucedido! Resposta:', data);
-        showToast('✅ Conexão OK! Produtos carregados: ' + (data ? data.length : 0), 'success');
-        delete window[callbackName];
-      };
-
-      try {
-        const script = document.createElement('script');
-        script.src = url + '?action=getProdutos&callback=' + callbackName;
-        script.onerror = function() {
-          clearTimeout(timeoutId);
-          delete window[callbackName];
-          showToast('❌ Erro de conexão! Verifique a URL.', 'error');
-          console.log('❌ Erro ao carregar o script de teste');
-        };
-        document.body.appendChild(script);
-        console.log('📤 Requisição de teste enviada para:', url + '?action=getProdutos&callback=' + callbackName);
-      } catch(e) {
-        clearTimeout(timeoutId);
-        delete window[callbackName];
-        showToast('❌ Erro: ' + e.message, 'error');
-        console.log('❌ Erro no teste:', e);
-      }
-    }
-
-    // ============================================================
-    //  CALCULAR DESCONTO AUTOMÁTICO (EM VERMELHO)
-    // ============================================================
-    function calcularDescontoAutomatico() {
-      const valorStr = document.getElementById('valorTotalEditavel').value;
-      let valor = parseFloat(valorStr.replace(/\./g, '').replace(',', '.'));
-      if (isNaN(valor) || valor < 0) valor = 0;
-      
-      // Calcular desconto baseado nos produtos selecionados
-      let totalProdutos = 0;
-      produtosSelecionados.forEach(function(p) { totalProdutos += p.valorTotal; });
-      
-      let desconto = totalProdutos - valor;
-      
-      // Se o valor digitado for maior que o total dos produtos, não tem desconto
-      if (desconto < 0) desconto = 0;
-      
-      // Exibir desconto em VERMELHO
-      const descontoDisplay = document.getElementById('descontoDisplay');
-      if (desconto > 0) {
-        descontoDisplay.textContent = '🔴 Desconto: -R$ ' + desconto.toFixed(2).replace('.', ',');
-        descontoDisplay.classList.add('ativo');
-      } else {
-        descontoDisplay.textContent = '';
-        descontoDisplay.classList.remove('ativo');
-      }
-      
-      // Atualizar valor final
-      const valorFinal = valor;
-      document.getElementById('valorFinalDisplay').textContent = 'R$ ' + valorFinal.toFixed(2).replace('.', ',');
-      
-      // Atualizar campo oculto para envio
-      document.getElementById('valor').value = valorFinal.toFixed(2).replace('.', ',');
-      
-      // Salvar desconto para uso posterior
-      window.descontoAtual = desconto;
-      window.valorOriginalAtual = totalProdutos;
-    }
-
-    // ============================================================
-    //  RECALCULAR VALOR (Botão refresh)
-    // ============================================================
-    function recalcularValor() {
-      let totalProdutos = 0;
-      produtosSelecionados.forEach(function(p) { totalProdutos += p.valorTotal; });
-      
-      document.getElementById('valorTotalEditavel').value = totalProdutos.toFixed(2).replace('.', ',');
-      calcularDescontoAutomatico();
-      atualizarLista();
-      showToast('🔄 Valor recalculado automaticamente', 'info', 1500);
-    }
-
-    // ============================================================
-    //  CARREGAR PRODUTOS
+    //  CARREGAR PRODUTOS - COM TIMEOUT MAIOR
     // ============================================================
     function carregarProdutos() {
       const selectAdd = document.getElementById('produtoAdd');
@@ -1503,7 +1082,8 @@
       const url = getScriptUrl();
       const callbackName = 'produtos_' + Date.now();
       
-      const timeoutId = setTimeout(function() {
+      // TIMEOUT DE 10 SEGUNDOS (era 3)
+      const timeoutId = setTimeout(() => {
         delete window[callbackName];
         usarFallbackProdutos();
         showToast('⏳ Produtos da planilha não carregaram, usando lista local', 'warning', 3000);
@@ -1524,7 +1104,7 @@
       try {
         const script = document.createElement('script');
         script.src = url + '?action=getProdutos&callback=' + callbackName;
-        script.onerror = function() {
+        script.onerror = () => {
           clearTimeout(timeoutId);
           delete window[callbackName];
           usarFallbackProdutos();
@@ -1557,7 +1137,7 @@
       selectAdd.innerHTML = '<option value="">Selecione...</option>';
       selectRemove.innerHTML = '<option value="">Selecione...</option>';
 
-      data.forEach(function(p) {
+      data.forEach(p => {
         const optAdd = document.createElement('option');
         optAdd.value = p.nome;
         optAdd.dataset.valor = p.valor;
@@ -1572,239 +1152,12 @@
     }
 
     // ============================================================
-    //  GERENCIAR PRODUTOS
-    // ============================================================
-    function abrirGerenciar() {
-      document.getElementById('gerenciarModal').classList.add('ativo');
-      carregarProdutosGerenciar();
-      document.getElementById('editandoIndicador').classList.remove('visivel');
-      produtoEditando = null;
-      document.getElementById('novoProdutoNome').value = '';
-      document.getElementById('novoProdutoPreco').value = '0,00';
-      document.getElementById('btnSalvarProduto').innerHTML = '<span class="material-icons-round">add</span>';
-    }
-
-    function fecharGerenciar() {
-      document.getElementById('gerenciarModal').classList.remove('ativo');
-    }
-
-    function carregarProdutosGerenciar() {
-      const container = document.getElementById('listaProdutosGerenciar');
-      container.innerHTML = '<div class="loading-produtos">⏳ Carregando produtos...</div>';
-
-      const url = getScriptUrl();
-      const callbackName = 'gerenciar_' + Date.now();
-      const timeoutId = setTimeout(function() {
-        delete window[callbackName];
-        container.innerHTML = '<div class="sem-produtos">❌ Erro ao carregar produtos</div>';
-        showToast('❌ Erro ao carregar produtos', 'error');
-      }, 10000);
-
-      window[callbackName] = function(data) {
-        clearTimeout(timeoutId);
-        if (data && !data.erro && Array.isArray(data) && data.length > 0) {
-          renderizarListaGerenciar(data);
-        } else {
-          container.innerHTML = '<div class="sem-produtos">📦 Nenhum produto cadastrado</div>';
-        }
-        delete window[callbackName];
-      };
-
-      try {
-        const script = document.createElement('script');
-        script.src = url + '?action=getProdutos&callback=' + callbackName;
-        script.onerror = function() {
-          clearTimeout(timeoutId);
-          delete window[callbackName];
-          container.innerHTML = '<div class="sem-produtos">❌ Erro de conexão</div>';
-        };
-        document.body.appendChild(script);
-      } catch(e) {
-        clearTimeout(timeoutId);
-        delete window[callbackName];
-        container.innerHTML = '<div class="sem-produtos">❌ Erro ao conectar</div>';
-      }
-    }
-
-    function renderizarListaGerenciar(produtos) {
-      const container = document.getElementById('listaProdutosGerenciar');
-      if (!produtos || produtos.length === 0) {
-        container.innerHTML = '<div class="sem-produtos">📦 Nenhum produto cadastrado</div>';
-        return;
-      }
-
-      let html = '';
-      produtos.forEach(function(p, index) {
-        html += `
-          <div class="produto-gerenciar-item" data-index="${index}">
-            <div class="info">
-              <span class="nome">${p.nome}</span>
-              <span class="preco">R$ ${p.valor}</span>
-            </div>
-            <div class="acoes">
-              <button class="btn-editar" onclick="editarProduto('${p.nome}')">
-                <span class="material-icons-round" style="font-size:16px;">edit</span>
-              </button>
-              <button class="btn-excluir" onclick="excluirProduto('${p.nome}')">
-                <span class="material-icons-round" style="font-size:16px;">delete</span>
-              </button>
-            </div>
-          </div>
-        `;
-      });
-      container.innerHTML = html;
-    }
-
-    function salvarProduto() {
-      const nome = document.getElementById('novoProdutoNome').value.trim();
-      const precoStr = document.getElementById('novoProdutoPreco').value.trim();
-      
-      if (!nome) {
-        showToast('Digite o nome do produto!', 'warning');
-        return;
-      }
-      
-      let precoNum = parseFloat(precoStr.replace(/\./g, '').replace(',', '.'));
-      if (isNaN(precoNum) || precoNum <= 0) {
-        showToast('Digite um preço válido!', 'warning');
-        return;
-      }
-
-      const btn = document.getElementById('btnSalvarProduto');
-      btn.disabled = true;
-      btn.innerHTML = '<span class="material-icons-round">hourglass_top</span>';
-
-      const url = getScriptUrl();
-      const callbackName = 'salvar_' + Date.now();
-      const timeoutId = setTimeout(function() {
-        delete window[callbackName];
-        btn.disabled = false;
-        btn.innerHTML = '<span class="material-icons-round">add</span>';
-        showToast('❌ Tempo esgotado!', 'error');
-      }, 15000);
-
-      const acao = produtoEditando ? 'atualizarProduto' : 'adicionarProduto';
-      
-      window[callbackName] = function(resultado) {
-        clearTimeout(timeoutId);
-        btn.disabled = false;
-        btn.innerHTML = '<span class="material-icons-round">add</span>';
-        
-        if (resultado && resultado.success) {
-          showToast(produtoEditando ? '✅ Produto atualizado!' : '✅ Produto adicionado!', 'success');
-          produtoEditando = null;
-          document.getElementById('editandoIndicador').classList.remove('visivel');
-          document.getElementById('novoProdutoNome').value = '';
-          document.getElementById('novoProdutoPreco').value = '0,00';
-          carregarProdutosGerenciar();
-          carregarProdutos();
-          atualizarPlacar();
-        } else {
-          showToast('❌ Erro: ' + (resultado?.mensagem || 'Erro desconhecido'), 'error');
-        }
-        delete window[callbackName];
-      };
-
-      try {
-        const params = new URLSearchParams({
-          action: acao,
-          nome: nome,
-          preco: precoNum.toFixed(2),
-          callback: callbackName
-        });
-        const script = document.createElement('script');
-        script.src = url + '?' + params.toString();
-        script.onerror = function() {
-          clearTimeout(timeoutId);
-          delete window[callbackName];
-          btn.disabled = false;
-          btn.innerHTML = '<span class="material-icons-round">add</span>';
-          showToast('❌ Erro de conexão!', 'error');
-        };
-        document.body.appendChild(script);
-      } catch(e) {
-        clearTimeout(timeoutId);
-        delete window[callbackName];
-        btn.disabled = false;
-        btn.innerHTML = '<span class="material-icons-round">add</span>';
-        showToast('❌ Erro ao conectar!', 'error');
-      }
-    }
-
-    function editarProduto(nome) {
-      const produto = listaProdutosDisponiveis.find(function(p) { return p.nome === nome; });
-      if (!produto) {
-        showToast('Produto não encontrado!', 'error');
-        return;
-      }
-      
-      produtoEditando = nome;
-      document.getElementById('novoProdutoNome').value = nome;
-      document.getElementById('novoProdutoPreco').value = produto.valor;
-      document.getElementById('editandoIndicador').classList.add('visivel');
-      document.getElementById('editandoNome').textContent = nome;
-      document.getElementById('btnSalvarProduto').innerHTML = '<span class="material-icons-round">save</span> Atualizar';
-      
-      document.getElementById('novoProdutoNome').scrollIntoView({ behavior: 'smooth' });
-      document.getElementById('novoProdutoNome').focus();
-    }
-
-    async function excluirProduto(nome) {
-      const confirmado = await showConfirm(
-        '⚠️ Excluir Produto',
-        'Deseja excluir "' + nome + '" permanentemente?'
-      );
-      
-      if (!confirmado) return;
-
-      const url = getScriptUrl();
-      const callbackName = 'excluir_' + Date.now();
-      const timeoutId = setTimeout(function() {
-        delete window[callbackName];
-        showToast('❌ Tempo esgotado!', 'error');
-      }, 15000);
-
-      window[callbackName] = function(resultado) {
-        clearTimeout(timeoutId);
-        if (resultado && resultado.success) {
-          showToast('✅ Produto excluído!', 'success');
-          carregarProdutosGerenciar();
-          carregarProdutos();
-          atualizarPlacar();
-        } else {
-          showToast('❌ Erro: ' + (resultado?.mensagem || 'Erro desconhecido'), 'error');
-        }
-        delete window[callbackName];
-      };
-
-      try {
-        const params = new URLSearchParams({
-          action: 'excluirProduto',
-          nome: nome,
-          callback: callbackName
-        });
-        const script = document.createElement('script');
-        script.src = url + '?' + params.toString();
-        script.onerror = function() {
-          clearTimeout(timeoutId);
-          delete window[callbackName];
-          showToast('❌ Erro de conexão!', 'error');
-        };
-        document.body.appendChild(script);
-      } catch(e) {
-        clearTimeout(timeoutId);
-        delete window[callbackName];
-        showToast('❌ Erro ao conectar!', 'error');
-      }
-    }
-
-    // ============================================================
     //  VERIFICAR CONFIGURAÇÕES
     // ============================================================
     function verificarConfiguracoes() {
       const url = getScriptUrl();
       const callbackName = 'config_' + Date.now();
-      const timeoutId = setTimeout(function() {
+      const timeoutId = setTimeout(() => {
         delete window[callbackName];
         document.getElementById('configWarning').style.display = 'none';
         document.getElementById('btnGerar').disabled = false;
@@ -1830,7 +1183,7 @@
       try {
         const script = document.createElement('script');
         script.src = url + '?action=verificarConfiguracoes&callback=' + callbackName;
-        script.onerror = function() {
+        script.onerror = () => {
           clearTimeout(timeoutId);
           delete window[callbackName];
           document.getElementById('configWarning').style.display = 'none';
@@ -1851,7 +1204,7 @@
     function atualizarPlacar() {
       const url = getScriptUrl();
       const callbackName = 'total_' + Date.now();
-      const timeoutId = setTimeout(function() {
+      const timeoutId = setTimeout(() => {
         delete window[callbackName];
       }, 8000);
 
@@ -1866,7 +1219,7 @@
       try {
         const script = document.createElement('script');
         script.src = url + '?action=getTotalVendasHoje&callback=' + callbackName;
-        script.onerror = function() {
+        script.onerror = () => {
           clearTimeout(timeoutId);
           delete window[callbackName];
         };
@@ -1889,7 +1242,7 @@
         return;
       }
       const valorUnitario = parseFloat(valorStr.replace(',', '.'));
-      const existente = produtosSelecionados.find(function(p) { return p.nome === nome; });
+      const existente = produtosSelecionados.find(p => p.nome === nome);
       if (existente) {
         existente.qtd += 1;
         existente.valorTotal = existente.qtd * existente.valorUnitario;
@@ -1904,7 +1257,7 @@
       atualizarLista();
       atualizarTotal();
       atualizarDropdownRemover();
-      showToast(nome + ' adicionado!', 'success', 1500);
+      showToast(`${nome} adicionado!`, 'success', 1500);
     }
 
     function removerProduto() {
@@ -1914,7 +1267,7 @@
         showToast('Selecione um produto para remover!', 'warning');
         return;
       }
-      const index = produtosSelecionados.findIndex(function(p) { return p.nome === nome; });
+      const index = produtosSelecionados.findIndex(p => p.nome === nome);
       if (index === -1) {
         showToast('Produto não encontrado!', 'error');
         return;
@@ -1923,10 +1276,10 @@
       if (produto.qtd > 1) {
         produto.qtd -= 1;
         produto.valorTotal = produto.qtd * produto.valorUnitario;
-        showToast('1x ' + nome + ' removido', 'info', 1500);
+        showToast(`1x ${nome} removido`, 'info', 1500);
       } else {
         produtosSelecionados.splice(index, 1);
-        showToast(nome + ' removido', 'info', 1500);
+        showToast(`${nome} removido`, 'info', 1500);
       }
       atualizarLista();
       atualizarTotal();
@@ -1937,8 +1290,8 @@
       const selectRemove = document.getElementById('produtoRemove');
       const atual = selectRemove.value;
       selectRemove.innerHTML = '<option value="">Selecione...</option>';
-      const nomes = [...new Set(produtosSelecionados.map(function(p) { return p.nome; }))];
-      nomes.forEach(function(nome) {
+      const nomes = [...new Set(produtosSelecionados.map(p => p.nome))];
+      nomes.forEach(nome => {
         const opt = document.createElement('option');
         opt.value = nome;
         opt.textContent = nome;
@@ -1954,9 +1307,7 @@
         return;
       }
       let html = '';
-      let totalOriginal = 0;
-      produtosSelecionados.forEach(function(p) {
-        totalOriginal += p.valorTotal;
+      produtosSelecionados.forEach(p => {
         html += `
           <div class="produto-item">
             <span class="qtd">${p.qtd}x</span>
@@ -1965,57 +1316,45 @@
           </div>
         `;
       });
-      html += '<div class="total-produtos">Total: R$ ' + totalOriginal.toFixed(2).replace('.', ',') + '</div>';
+      html += `<div class="total-produtos">Total: R$ ${calcularTotal()}</div>`;
       container.innerHTML = html;
     }
 
-    function calcularTotalProdutos() {
+    function calcularTotal() {
       let total = 0;
-      produtosSelecionados.forEach(function(p) { total += p.valorTotal; });
-      return total;
+      produtosSelecionados.forEach(p => { total += p.valorTotal; });
+      return total.toFixed(2).replace('.', ',');
     }
 
     function atualizarTotal() {
-      const total = calcularTotalProdutos();
-      document.getElementById('valorTotalEditavel').value = total.toFixed(2).replace('.', ',');
-      calcularDescontoAutomatico();
-      
+      const total = calcularTotal();
+      document.getElementById('valor').value = total;
       if (produtosSelecionados.length > 0) {
-        const desc = produtosSelecionados.map(function(p) { return p.qtd + 'x ' + p.nome; }).join(', ');
+        const desc = produtosSelecionados.map(p => p.qtd + 'x ' + p.nome).join(', ');
         document.getElementById('descricao').value = desc;
       }
     }
 
     // ============================================================
-    //  GERAR PIX - CORRIGIDO
+    //  GERAR PIX
     // ============================================================
     function gerarPix() {
-      console.log('🔍 Função gerarPix() chamada');
-      
       const url = getScriptUrl();
-      console.log('📡 URL do Apps Script:', url);
-      
       const cliente = document.getElementById('cliente').value.trim();
-      const valorFinal = document.getElementById('valor').value;
-      
       const dados = {
         data: document.getElementById('dataVenda').value,
-        valor: valorFinal,
+        valor: document.getElementById('valor').value,
         cliente: cliente,
         descricao: document.getElementById('descricao').value ||
-          produtosSelecionados.map(function(p) { return p.qtd + 'x ' + p.nome; }).join(', ')
+          produtosSelecionados.map(p => p.qtd + 'x ' + p.nome).join(', ')
       };
-
-      console.log('📦 Dados da venda:', dados);
 
       if (produtosSelecionados.length === 0) {
         showToast('Adicione pelo menos um produto!', 'warning');
         return;
       }
-      
-      const valorNum = parseFloat(valorFinal.replace(',', '.'));
-      if (isNaN(valorNum) || valorNum <= 0) {
-        showToast('Valor total inválido!', 'warning');
+      if (dados.valor === "0,00") {
+        showToast('Valor total é zero!', 'warning');
         return;
       }
 
@@ -2024,23 +1363,17 @@
       vendaConfirmada = false;
 
       const callbackName = 'pix_' + Date.now();
-      console.log('🔑 Callback name:', callbackName);
-      
-      const timeoutId = setTimeout(function() {
-        console.log('⏰ TIMEOUT - A requisição demorou muito');
+      const timeoutId = setTimeout(() => {
         delete window[callbackName];
         document.getElementById('loader').style.display = 'none';
         document.getElementById('btnGerar').style.display = 'flex';
-        showToast('❌ Tempo esgotado! Verifique sua conexão e a URL do Apps Script.', 'error');
-      }, 30000);
+        showToast('❌ Tempo esgotado! Verifique sua conexão.', 'error');
+      }, 15000);
 
       window[callbackName] = function(resultado) {
-        console.log('📥 Resposta recebida:', resultado);
         clearTimeout(timeoutId);
         document.getElementById('loader').style.display = 'none';
-        
         if (resultado && resultado.success) {
-          console.log('✅ Venda registrada com sucesso!');
           const pixCode = resultado.pixCode;
           document.getElementById('displayValor').innerText = resultado.valor;
           const nomeCliente = resultado.cliente && resultado.cliente.trim() !== '' ? resultado.cliente : 'Cliente não informado';
@@ -2049,17 +1382,12 @@
           window.pixCodeAtual = pixCode;
           window.paymentIdAtual = resultado.paymentId;
 
-          const desconto = window.descontoAtual || 0;
-          const valorOriginal = window.valorOriginalAtual || 0;
-
           window.dadosVenda = {
             valor: resultado.valor,
             cliente: nomeCliente,
             descricao: dados.descricao,
             data: dados.data,
-            produtos: produtosSelecionados.map(function(p) { return { ...p }; }),
-            desconto: desconto,
-            valorOriginal: valorOriginal
+            produtos: produtosSelecionados.map(p => ({ ...p }))
           };
 
           atualizarProdutosNota();
@@ -2082,7 +1410,6 @@
           showToast('✅ Pix gerado com sucesso!', 'success', 2000);
           iniciarVerificacaoAutomatica();
         } else {
-          console.log('❌ Erro na resposta:', resultado?.erro || 'Erro desconhecido');
           showToast('❌ Erro ao gerar Pix: ' + (resultado?.erro || 'Erro desconhecido'), 'error');
           document.getElementById('btnGerar').style.display = 'flex';
         }
@@ -2090,7 +1417,6 @@
       };
 
       try {
-        console.log('📤 Enviando requisição...');
         const params = new URLSearchParams({
           action: 'registrarVenda',
           data: dados.data,
@@ -2099,29 +1425,21 @@
           descricao: dados.descricao,
           callback: callbackName
         });
-        
-        const scriptUrl = url + '?' + params.toString();
-        console.log('🌐 URL completa:', scriptUrl);
-        
         const script = document.createElement('script');
-        script.src = scriptUrl;
-        script.onerror = function(error) {
-          console.log('❌ ERRO NA REQUISIÇÃO:', error);
+        script.src = url + '?' + params.toString();
+        script.onerror = () => {
           clearTimeout(timeoutId);
           document.getElementById('loader').style.display = 'none';
           document.getElementById('btnGerar').style.display = 'flex';
-          showToast('❌ Erro de conexão com o Apps Script! Verifique a URL.', 'error');
+          showToast('❌ Erro de conexão com o Apps Script!', 'error');
           delete window[callbackName];
         };
         document.body.appendChild(script);
-        console.log('✅ Script adicionado ao DOM');
-        
       } catch(e) {
-        console.log('❌ EXCEÇÃO:', e);
         clearTimeout(timeoutId);
         document.getElementById('loader').style.display = 'none';
         document.getElementById('btnGerar').style.display = 'flex';
-        showToast('❌ Erro ao conectar com o servidor: ' + e.message, 'error');
+        showToast('❌ Erro ao conectar com o servidor!', 'error');
         delete window[callbackName];
       }
     }
@@ -2132,18 +1450,14 @@
     function atualizarProdutosNota() {
       const container = document.getElementById('listaProdutosNota');
       const produtos = window.dadosVenda?.produtos || [];
-      const desconto = window.dadosVenda?.desconto || 0;
-      const valorFinal = parseFloat(window.dadosVenda?.valor?.replace(',', '.') || 0);
-      
       if (produtos.length === 0) {
         container.innerHTML = '<p style="color:var(--text-muted); font-size:0.8rem; padding:4px 0; text-align:center;">Nenhum produto registrado.</p>';
-        document.getElementById('descontoNota').textContent = '';
-        document.getElementById('totalFinalNota').textContent = '';
         return;
       }
-      
-      let html = '<table><thead><tr><th>Qtd</th><th>Produto</th><th>Valor</th></tr></thead><tbody>';
-      produtos.forEach(function(p) {
+      let html = `<table>
+        <thead><tr><th>Qtd</th><th>Produto</th><th>Valor</th></tr></thead>
+        <tbody>`;
+      produtos.forEach(p => {
         html += `
           <tr>
             <td>${p.qtd}x</td>
@@ -2152,21 +1466,10 @@
           </tr>
         `;
       });
-      html += '</tbody></table>';
-      
-      const totalProdutos = produtos.reduce(function(acc, p) { return acc + p.valorTotal; }, 0);
-      html += '<div class="total-nota">Subtotal: R$ ' + totalProdutos.toFixed(2).replace('.', ',') + '</div>';
+      html += `</tbody></table>`;
+      const total = produtos.reduce((acc, p) => acc + p.valorTotal, 0);
+      html += `<div class="total-nota">Total: R$ ${total.toFixed(2).replace('.', ',')}</div>`;
       container.innerHTML = html;
-      
-      // Desconto em VERMELHO na nota
-      if (desconto > 0) {
-        document.getElementById('descontoNota').textContent = '🔴 Desconto: -R$ ' + desconto.toFixed(2).replace('.', ',');
-      } else {
-        document.getElementById('descontoNota').textContent = '';
-      }
-      
-      const valorFinalStr = valorFinal.toFixed(2).replace('.', ',');
-      document.getElementById('totalFinalNota').textContent = 'Total: R$ ' + valorFinalStr;
     }
 
     // ============================================================
@@ -2177,7 +1480,7 @@
       tempoDecorrido = 0;
       loopAtivo = true;
 
-      const timerTempo = setInterval(function() {
+      const timerTempo = setInterval(() => {
         if (!loopAtivo) { clearInterval(timerTempo); return; }
         tempoDecorrido++;
         const restante = maxTempo - tempoDecorrido;
@@ -2199,7 +1502,7 @@
         if (!loopAtivo || vendaConfirmada) return;
         const url = getScriptUrl();
         const callbackName = 'verify_' + Date.now();
-        const timeoutId = setTimeout(function() {
+        const timeoutId = setTimeout(() => {
           delete window[callbackName];
           if (loopAtivo && !vendaConfirmada && tempoDecorrido < maxTempo) {
             timerVerificacao = setTimeout(executarVerificacao, 5000);
@@ -2223,7 +1526,7 @@
         try {
           const script = document.createElement('script');
           script.src = url + '?action=verificarPagamento&callback=' + callbackName;
-          script.onerror = function() {
+          script.onerror = () => {
             clearTimeout(timeoutId);
             delete window[callbackName];
             if (loopAtivo && !vendaConfirmada && tempoDecorrido < maxTempo) {
@@ -2304,7 +1607,7 @@
 
       const url = getScriptUrl();
       const callbackName = 'cancel_' + Date.now();
-      const timeoutId = setTimeout(function() {
+      const timeoutId = setTimeout(() => {
         delete window[callbackName];
         document.getElementById('loader').style.display = 'none';
         document.getElementById('btnGerar').style.display = 'flex';
@@ -2335,7 +1638,7 @@
         });
         const script = document.createElement('script');
         script.src = url + '?' + params.toString();
-        script.onerror = function() {
+        script.onerror = () => {
           clearTimeout(timeoutId);
           document.getElementById('loader').style.display = 'none';
           document.getElementById('btnGerar').style.display = 'flex';
@@ -2373,30 +1676,26 @@
         cliente: document.getElementById('displayCliente').innerText,
         descricao: 'Venda Pix',
         data: new Date().toLocaleDateString('pt-BR'),
-        produtos: [],
-        desconto: 0
+        produtos: []
       };
 
-      let msg = '🧾 *COMPROVANTE DE VENDA - PIX*\n\n';
-      msg += '📅 Data: ' + (dados.data || new Date().toLocaleDateString('pt-BR')) + '\n';
-      msg += '👤 Cliente: ' + (dados.cliente || 'Não informado') + '\n';
-      msg += '💰 Valor: R$ ' + (dados.valor || '0,00') + '\n';
-      if (dados.desconto > 0) {
-        msg += '🔴 Desconto: -R$ ' + dados.desconto.toFixed(2).replace('.', ',') + '\n';
-      }
-      msg += '📝 Descrição: ' + (dados.descricao || 'Venda via Pix') + '\n\n';
+      let msg = `🧾 *COMPROVANTE DE VENDA - PIX*\n\n`;
+      msg += `📅 Data: ${dados.data || new Date().toLocaleDateString('pt-BR')}\n`;
+      msg += `👤 Cliente: ${dados.cliente || 'Não informado'}\n`;
+      msg += `💰 Valor: R$ ${dados.valor || '0,00'}\n`;
+      msg += `📝 Descrição: ${dados.descricao || 'Venda via Pix'}\n\n`;
       if (dados.produtos && dados.produtos.length > 0) {
-        msg += '🛒 *Produtos:*\n';
-        dados.produtos.forEach(function(p) {
-          msg += '   ' + p.qtd + 'x ' + p.nome + ' - R$ ' + p.valorTotal.toFixed(2).replace('.', ',') + '\n';
+        msg += `🛒 *Produtos:*\n`;
+        dados.produtos.forEach(p => {
+          msg += `   ${p.qtd}x ${p.nome} - R$ ${p.valorTotal.toFixed(2).replace('.', ',')}\n`;
         });
-        msg += '\n';
+        msg += `\n`;
       }
-      msg += '🔑 *Pagamento via Pix confirmado!* ✅\n\n';
-      msg += '_Este é um comprovante automático._';
+      msg += `🔑 *Pagamento via Pix confirmado!* ✅\n\n`;
+      msg += `_Este é um comprovante automático._`;
 
       const texto = encodeURIComponent(msg);
-      const url = 'https://api.whatsapp.com/send?phone=' + numeroCompleto + '&text=' + texto;
+      const url = `https://api.whatsapp.com/send?phone=${numeroCompleto}&text=${texto}`;
       window.open(url, '_blank');
       showToast('📱 Abrindo WhatsApp...', 'info', 2000);
     }
@@ -2414,9 +1713,7 @@
         cliente: document.getElementById('displayCliente').innerText,
         descricao: 'Venda Pix',
         data: new Date().toLocaleDateString('pt-BR'),
-        produtos: [],
-        desconto: 0,
-        valorOriginal: 0
+        produtos: []
       };
 
       const reciboHTML = `
@@ -2432,7 +1729,6 @@
             </div>
             <div>
               <p style="margin: 4px 0;"><strong>Valor:</strong> <span style="font-size: 22px; font-weight: 800;">R$ ${dados.valor || '0,00'}</span></p>
-              ${dados.desconto > 0 ? `<p style="margin: 2px 0; color: #d32f2f; font-size: 14px; font-weight: 700;">🔴 Desconto: -R$ ${dados.desconto.toFixed(2).replace('.', ',')}</p>` : ''}
             </div>
           </div>
           <div style="background: #f5f5f5; border-radius: 4px; padding: 12px; margin-bottom: 16px;">
@@ -2450,30 +1746,20 @@
                 </tr>
               </thead>
               <tbody>
-                ${dados.produtos && dados.produtos.length > 0 ? dados.produtos.map(function(p) {
-                  return `
-                    <tr>
-                      <td style="padding: 6px 8px; border: 1px solid #ddd;">${p.qtd}x</td>
-                      <td style="padding: 6px 8px; border: 1px solid #ddd;">${p.nome}</td>
-                      <td style="padding: 6px 8px; border: 1px solid #ddd; text-align: right;">R$ ${p.valorTotal.toFixed(2).replace('.', ',')}</td>
-                    </tr>
-                  `;
-                }).join('') : `
+                ${dados.produtos && dados.produtos.length > 0 ? dados.produtos.map(p => `
+                  <tr>
+                    <td style="padding: 6px 8px; border: 1px solid #ddd;">${p.qtd}x</td>
+                    <td style="padding: 6px 8px; border: 1px solid #ddd;">${p.nome}</td>
+                    <td style="padding: 6px 8px; border: 1px solid #ddd; text-align: right;">R$ ${p.valorTotal.toFixed(2).replace('.', ',')}</td>
+                  </tr>
+                `).join('') : `
                   <tr><td colspan="3" style="padding: 8px; text-align: center; color: #999; border: 1px solid #ddd;">Nenhum produto</td></tr>
                 `}
               </tbody>
             </table>
             ${dados.produtos && dados.produtos.length > 0 ? `
-              <div style="text-align: right; font-weight: 700; font-size: 16px; padding-top: 8px; margin-top: 8px; border-top: 1px solid #ddd;">
-                Subtotal: R$ ${dados.produtos.reduce(function(acc, p) { return acc + p.valorTotal; }, 0).toFixed(2).replace('.', ',')}
-              </div>
-              ${dados.desconto > 0 ? `
-                <div style="text-align: right; color: #d32f2f; font-weight: 700; font-size: 15px;">
-                  🔴 Desconto: -R$ ${dados.desconto.toFixed(2).replace('.', ',')}
-                </div>
-              ` : ''}
-              <div style="text-align: right; font-weight: 800; font-size: 20px; padding-top: 4px; border-top: 2px solid #333;">
-                Total: R$ ${dados.valor || '0,00'}
+              <div style="text-align: right; font-weight: 800; font-size: 18px; padding-top: 8px; margin-top: 8px; border-top: 2px solid #333;">
+                Total: R$ ${dados.produtos.reduce((acc, p) => acc + p.valorTotal, 0).toFixed(2).replace('.', ',')}
               </div>
             ` : ''}
           </div>
@@ -2504,18 +1790,18 @@
 
       const opt = {
         margin:        [15, 15, 15, 15],
-        filename:     'recibo_' + (dados.cliente || 'venda') + '_' + new Date().toISOString().slice(0,10) + '.pdf',
+        filename:     `recibo_${dados.cliente || 'venda'}_${new Date().toISOString().slice(0,10)}.pdf`,
         image:        { type: 'jpeg', quality: 0.98 },
         html2canvas:  { scale: 2, letterRendering: true, useCORS: true, logging: false },
         jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
       };
 
-      html2pdf().set(opt).from(tempDiv).save().then(function() {
+      html2pdf().set(opt).from(tempDiv).save().then(() => {
         document.body.removeChild(tempDiv);
         btn.disabled = false;
         btn.innerHTML = '<span class="material-icons-round">picture_as_pdf</span> Recibo PDF';
         showToast('📄 PDF gerado com sucesso!', 'success', 2000);
-      }).catch(function(err) {
+      }).catch((err) => {
         console.error('Erro ao gerar PDF:', err);
         showToast('Erro ao gerar o recibo', 'error');
         document.body.removeChild(tempDiv);
@@ -2540,10 +1826,6 @@
       if (timerVerificacao) { clearTimeout(timerVerificacao); timerVerificacao = null; }
       produtosSelecionados = [];
       document.getElementById('valor').value = '0,00';
-      document.getElementById('valorTotalEditavel').value = '0,00';
-      document.getElementById('valorFinalDisplay').textContent = 'R$ 0,00';
-      document.getElementById('descontoDisplay').textContent = '';
-      document.getElementById('descontoDisplay').classList.remove('ativo');
       document.getElementById('cliente').value = '';
       document.getElementById('descricao').value = '';
       document.getElementById('produtoAdd').selectedIndex = 0;
@@ -2554,8 +1836,6 @@
       window.pixCodeAtual = null;
       window.paymentIdAtual = null;
       window.dadosVenda = null;
-      window.descontoAtual = 0;
-      window.valorOriginalAtual = 0;
       vendaConfirmada = false;
       tempoDecorrido = 0;
 
