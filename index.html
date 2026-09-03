@@ -55,7 +55,7 @@
     ::-webkit-scrollbar-track { background: var(--bg-secondary); }
     ::-webkit-scrollbar-thumb { background: var(--brand); border-radius: 4px; }
 
-    /* ===== TOAST / NOTIFICAÇÃO ===== */
+    /* ===== TOAST ===== */
     #toast-container {
       position: fixed;
       bottom: 30px;
@@ -92,7 +92,6 @@
     .toast.error { border-color: var(--danger); color: var(--danger); }
     .toast.warning { border-color: var(--warning); color: var(--warning); }
     .toast.info { border-color: var(--brand); color: var(--brand-light); }
-
     .toast .material-icons-round { font-size: 22px; }
 
     @keyframes toastIn {
@@ -104,7 +103,7 @@
       to { opacity: 0; transform: translateY(20px) scale(0.95); }
     }
 
-    /* ===== MODAL DE CONFIRMAÇÃO PERSONALIZADO ===== */
+    /* ===== MODAL ===== */
     #confirmModal {
       display: none;
       position: fixed;
@@ -133,27 +132,10 @@
       from { opacity: 0; transform: scale(0.9) translateY(20px); }
       to { opacity: 1; transform: scale(1) translateY(0); }
     }
-    #confirmModal .modal-icon {
-      font-size: 48px;
-      margin-bottom: 8px;
-      display: block;
-    }
-    #confirmModal .modal-title {
-      font-size: 1.2rem;
-      font-weight: 700;
-      color: var(--text-primary);
-      margin-bottom: 6px;
-    }
-    #confirmModal .modal-message {
-      font-size: 0.95rem;
-      color: var(--text-secondary);
-      margin-bottom: 20px;
-      line-height: 1.5;
-    }
-    #confirmModal .modal-buttons {
-      display: flex;
-      gap: 12px;
-    }
+    #confirmModal .modal-icon { font-size: 48px; margin-bottom: 8px; display: block; }
+    #confirmModal .modal-title { font-size: 1.2rem; font-weight: 700; color: var(--text-primary); margin-bottom: 6px; }
+    #confirmModal .modal-message { font-size: 0.95rem; color: var(--text-secondary); margin-bottom: 20px; line-height: 1.5; }
+    #confirmModal .modal-buttons { display: flex; gap: 12px; }
     #confirmModal .modal-buttons button {
       flex: 1;
       padding: 12px;
@@ -165,20 +147,14 @@
       transition: var(--transition);
       font-family: inherit;
     }
-    #confirmModal .modal-buttons .btn-confirm {
-      background: var(--danger);
-      color: #fff;
-    }
+    #confirmModal .modal-buttons .btn-confirm { background: var(--danger); color: #fff; }
     #confirmModal .modal-buttons .btn-confirm:hover { transform: scale(1.02); }
-    #confirmModal .modal-buttons .btn-cancel-modal {
-      background: rgba(255,255,255,0.06);
-      color: var(--text-secondary);
-    }
+    #confirmModal .modal-buttons .btn-cancel-modal { background: rgba(255,255,255,0.06); color: var(--text-secondary); }
     #confirmModal .modal-buttons .btn-cancel-modal:hover { background: rgba(255,255,255,0.12); }
 
     @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-    /* ===== SCOREBOARD (AUMENTADO) ===== */
+    /* ===== SCOREBOARD ===== */
     .scoreboard {
       background: rgba(50,188,173,0.08);
       backdrop-filter: blur(8px);
@@ -187,8 +163,8 @@
       padding: 12px 24px;
       border-radius: 50px;
       margin-bottom: 20px;
-      font-weight: 800; /* Peso da fonte igual ao título (800) */
-      font-size: 1.4rem; /* Fonte AUMENTADA (antes era 0.9rem) */
+      font-weight: 800;
+      font-size: 1.4rem;
       display: flex;
       align-items: center;
       gap: 10px;
@@ -241,10 +217,7 @@
     }
     h2 .material-icons-round { font-size: 28px; }
 
-    .input-group {
-      text-align: left;
-      margin-bottom: 16px;
-    }
+    .input-group { text-align: left; margin-bottom: 16px; }
     .input-group label {
       font-size: 0.8rem;
       font-weight: 500;
@@ -255,12 +228,7 @@
       gap: 4px;
     }
     .input-group label .material-icons-round { font-size: 16px; }
-    .input-group label .opcional {
-      font-weight: 400;
-      color: var(--text-muted);
-      font-size: 0.7rem;
-      margin-left: 4px;
-    }
+    .input-group label .opcional { font-weight: 400; color: var(--text-muted); font-size: 0.7rem; margin-left: 4px; }
 
     input, select {
       width: 100%;
@@ -302,11 +270,7 @@
     }
     .money-input:focus { border-color: var(--brand); }
 
-    .row-inputs {
-      display: flex;
-      gap: 10px;
-      align-items: center;
-    }
+    .row-inputs { display: flex; gap: 10px; align-items: center; }
     .row-inputs select { flex: 1; }
 
     .btn-add, .btn-remove {
@@ -421,11 +385,7 @@
     }
     .btn-pdf:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(255,87,34,0.4); }
 
-    .footer-actions {
-      display: flex;
-      gap: 12px;
-      margin-top: 8px;
-    }
+    .footer-actions { display: flex; gap: 12px; margin-top: 8px; }
     .footer-actions button { flex: 1; }
 
     .config-error {
@@ -465,19 +425,8 @@
     }
     @keyframes fadeSlide { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
-    #step-pix .client-name {
-      color: var(--text-primary);
-      font-weight: 700;
-      font-size: 1.2rem;
-      margin-top: 4px;
-    }
-    #step-pix .pix-amount {
-      font-size: 2.8rem;
-      font-weight: 900;
-      color: var(--brand-light);
-      margin: 6px 0 12px;
-      letter-spacing: -1px;
-    }
+    #step-pix .client-name { color: var(--text-primary); font-weight: 700; font-size: 1.2rem; margin-top: 4px; }
+    #step-pix .pix-amount { font-size: 2.8rem; font-weight: 900; color: var(--brand-light); margin: 6px 0 12px; letter-spacing: -1px; }
 
     #statusPagamento {
       padding: 14px;
@@ -496,12 +445,7 @@
     .status-verificando { background: rgba(50,188,173,0.06); color: var(--brand-light); border: 1px solid rgba(50,188,173,0.1); }
     @keyframes pulse-green { 0%,100% { transform: scale(1); } 50% { transform: scale(1.02); } }
 
-    .status-temporizador {
-      font-size: 0.8rem;
-      color: var(--text-muted);
-      margin: 4px 0 12px;
-      text-align: center;
-    }
+    .status-temporizador { font-size: 0.8rem; color: var(--text-muted); margin: 4px 0 12px; text-align: center; }
 
     .qr-container {
       background: #fff;
@@ -547,56 +491,14 @@
       max-width: 340px;
       text-align: left;
     }
-    .produtos-nota .titulo {
-      font-weight: 700;
-      font-size: 0.9rem;
-      color: var(--text-secondary);
-      margin-bottom: 8px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 6px;
-    }
+    .produtos-nota .titulo { font-weight: 700; font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 8px; display: flex; align-items: center; justify-content: center; gap: 6px; }
     .produtos-nota .titulo .material-icons-round { font-size: 18px; }
-    .produtos-nota table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 0.85rem;
-    }
-    .produtos-nota table th {
-      text-align: left;
-      color: var(--text-muted);
-      font-weight: 600;
-      padding-bottom: 4px;
-      border-bottom: 1px solid rgba(255,255,255,0.08);
-      font-size: 0.7rem;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-    }
-    .produtos-nota table td {
-      padding: 6px 0;
-      border-bottom: 1px solid rgba(255,255,255,0.04);
-      color: var(--text-secondary);
-    }
-    .produtos-nota table td:last-child {
-      text-align: right;
-      font-weight: 600;
-      color: var(--brand-light);
-    }
-    .produtos-nota table td:first-child {
-      font-weight: 600;
-      color: var(--text-primary);
-      width: 40px;
-    }
-    .produtos-nota .total-nota {
-      text-align: right;
-      font-weight: 800;
-      font-size: 1.1rem;
-      color: var(--brand-light);
-      padding-top: 8px;
-      border-top: 2px solid rgba(50,188,173,0.2);
-      margin-top: 4px;
-    }
+    .produtos-nota table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+    .produtos-nota table th { text-align: left; color: var(--text-muted); font-weight: 600; padding-bottom: 4px; border-bottom: 1px solid rgba(255,255,255,0.08); font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.5px; }
+    .produtos-nota table td { padding: 6px 0; border-bottom: 1px solid rgba(255,255,255,0.04); color: var(--text-secondary); }
+    .produtos-nota table td:last-child { text-align: right; font-weight: 600; color: var(--brand-light); }
+    .produtos-nota table td:first-child { font-weight: 600; color: var(--text-primary); width: 40px; }
+    .produtos-nota .total-nota { text-align: right; font-weight: 800; font-size: 1.1rem; color: var(--brand-light); padding-top: 8px; border-top: 2px solid rgba(50,188,173,0.2); margin-top: 4px; }
 
     .check-writing-container {
       display: none;
@@ -653,22 +555,11 @@
       50% { opacity: 1; transform: translate(-50%,-50%) scale(1.2); }
       100% { opacity: 0.4; transform: translate(-50%,-50%) scale(1); }
     }
-    @keyframes fadeIn { from { opacity: 0; transform: scale(0.96); } to { opacity: 1; transform: scale(1); } }
-    @keyframes fadeInItem { from { opacity: 0; transform: translateX(-8px); } to { opacity: 1; transform: translateX(0); } }
 
-    #acoesRecibo {
-      width: 100%;
-      max-width: 340px;
-      margin: 8px auto 0;
-    }
+    #acoesRecibo { width: 100%; max-width: 340px; margin: 8px auto 0; }
 
-    .whatsapp-field {
-      display: flex;
-      gap: 10px;
-      align-items: center;
-    }
+    .whatsapp-field { display: flex; gap: 10px; align-items: center; }
     .whatsapp-field input { flex: 1; }
-
     .btn-whatsapp-circle {
       width: 56px;
       height: 56px;
@@ -685,27 +576,11 @@
       flex-shrink: 0;
       box-shadow: 0 4px 12px rgba(37,211,102,0.4);
     }
-    .btn-whatsapp-circle:hover {
-      transform: scale(1.08);
-      box-shadow: 0 8px 24px rgba(37,211,102,0.5);
-    }
-    .btn-whatsapp-circle:active {
-      transform: scale(0.95);
-    }
-    .btn-whatsapp-circle .telefone-icon {
-      color: #ffffff !important;
-      font-size: 28px;
-      line-height: 1;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      filter: brightness(0) invert(1);
-    }
+    .btn-whatsapp-circle:hover { transform: scale(1.08); box-shadow: 0 8px 24px rgba(37,211,102,0.5); }
+    .btn-whatsapp-circle:active { transform: scale(0.95); }
+    .btn-whatsapp-circle .telefone-icon { color: #ffffff !important; font-size: 28px; line-height: 1; display: flex; align-items: center; justify-content: center; filter: brightness(0) invert(1); }
 
-    .footer-actions, .btn-cancel {
-      width: 100%;
-      max-width: 340px;
-    }
+    .footer-actions, .btn-cancel { width: 100%; max-width: 340px; }
 
     @media (max-width: 480px) {
       body { padding: 12px; }
@@ -733,13 +608,7 @@
       pointer-events: none;
     }
     #splash-screen.fade-out { opacity: 0; }
-    #splash-screen .logo {
-      font-size: 3.5rem;
-      font-weight: 900;
-      color: var(--brand-light);
-      letter-spacing: -2px;
-      animation: pulseLogo 1.2s ease-in-out infinite;
-    }
+    #splash-screen .logo { font-size: 3.5rem; font-weight: 900; color: var(--brand-light); letter-spacing: -2px; animation: pulseLogo 1.2s ease-in-out infinite; }
     @keyframes pulseLogo { 0%,100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.04); opacity: 0.7; } }
     #splash-screen .sub { color: var(--text-secondary); margin-top: 8px; font-size: 0.9rem; }
 
@@ -938,19 +807,31 @@
 
   <script>
     // ============================================================
-    //  TOAST / NOTIFICAÇÃO
+    //  CONFIGURAÇÃO
+    // ============================================================
+    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyxEdgao8Yjk_DQLQQcbn8d4xAgDmjmpFjRkJG1k11u1385DDwT9vDBWtD_NSH_z-rjGg/exec';
+    const DDI = '55';
+    const maxTempo = 300;
+
+    // ============================================================
+    //  VARIÁVEIS GLOBAIS
+    // ============================================================
+    let produtosSelecionados = [];
+    let listaProdutosDisponiveis = [];
+    let vendaConfirmada = false;
+    let timerVerificacao = null;
+    let tempoDecorrido = 0;
+    let loopAtivo = false;
+
+    // ============================================================
+    //  TOAST
     // ============================================================
     function showToast(message, type = 'info', duration = 3000) {
       const container = document.getElementById('toast-container');
       const toast = document.createElement('div');
       toast.className = `toast ${type}`;
       
-      const icons = {
-        success: 'check_circle',
-        error: 'error',
-        warning: 'warning',
-        info: 'info'
-      };
+      const icons = { success: 'check_circle', error: 'error', warning: 'warning', info: 'info' };
       
       toast.innerHTML = `
         <span class="material-icons-round">${icons[type] || 'info'}</span>
@@ -965,7 +846,7 @@
     }
 
     // ============================================================
-    //  MODAL DE CONFIRMAÇÃO
+    //  MODAL
     // ============================================================
     let confirmResolve = null;
 
@@ -975,7 +856,6 @@
         document.getElementById('modalTitle').textContent = title;
         document.getElementById('modalMessage').textContent = message;
         modal.classList.add('ativo');
-        
         confirmResolve = resolve;
       });
     }
@@ -991,13 +871,7 @@
     });
 
     // ============================================================
-    //  CONFIGURAÇÃO
-    // ============================================================
-    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxl4gz3gQlDLMqTXOkGptbvj9TB8FkpFTr-s8-mMHDb2Pv7Nf6JO-Whfhg7G74VbkC7pQ/exec';
-    const DDI = '55';
-
-    // ============================================================
-    //  PRODUTOS DE FALLBACK (usados se a API falhar)
+    //  PRODUTOS DE FALLBACK
     // ============================================================
     const PRODUTOS_FALLBACK = [
       { nome: 'Produto A', valor: '10,00' },
@@ -1007,38 +881,7 @@
       { nome: 'Serviço Premium', valor: '200,00' }
     ];
 
-    // ============================================================
-    //  VARIÁVEIS GLOBAIS
-    // ============================================================
-    let produtosSelecionados = [];
-    let listaProdutosDisponiveis = [];
-    let vendaConfirmada = false;
-    let timerVerificacao = null;
-    let tempoDecorrido = 0;
-    const maxTempo = 300;
-    let loopAtivo = false;
-
-    // ============================================================
-    //  PWA - INSTALAÇÃO
-    // ============================================================
-    let deferredPrompt;
-    window.addEventListener('beforeinstallprompt', (e) => {
-      e.preventDefault();
-      deferredPrompt = e;
-      const btn = document.getElementById('installBtn');
-      btn.style.display = 'flex';
-      btn.addEventListener('click', async () => {
-        btn.style.display = 'none';
-        if (deferredPrompt) {
-          await deferredPrompt.prompt();
-          const result = await deferredPrompt.userChoice;
-          if (result.outcome === 'accepted') {
-            showToast('App instalado com sucesso!', 'success');
-          }
-          deferredPrompt = null;
-        }
-      });
-    });
+    function getScriptUrl() { return SCRIPT_URL; }
 
     // ============================================================
     //  SPLASH SCREEN
@@ -1053,7 +896,6 @@
       
       document.getElementById('whatsappNumber').value = '11999999999';
       resetDataField();
-      
       carregarProdutos();
       verificarConfiguracoes();
       atualizarPlacar();
@@ -1067,10 +909,8 @@
       document.getElementById('dataVenda').value = dataFmt;
     }
 
-    function getScriptUrl() { return SCRIPT_URL; }
-
     // ============================================================
-    //  CARREGAR PRODUTOS - COM TIMEOUT MAIOR
+    //  CARREGAR PRODUTOS
     // ============================================================
     function carregarProdutos() {
       const selectAdd = document.getElementById('produtoAdd');
@@ -1082,7 +922,6 @@
       const url = getScriptUrl();
       const callbackName = 'produtos_' + Date.now();
       
-      // TIMEOUT DE 10 SEGUNDOS (era 3)
       const timeoutId = setTimeout(() => {
         delete window[callbackName];
         usarFallbackProdutos();
@@ -1473,7 +1312,7 @@
     }
 
     // ============================================================
-    //  VERIFICAÇÃO AUTOMÁTICA
+    //  VERIFICAÇÃO AUTOMÁTICA - VERSÃO CORRIGIDA
     // ============================================================
     function iniciarVerificacaoAutomatica() {
       if (timerVerificacao) clearInterval(timerVerificacao);
@@ -1500,26 +1339,41 @@
 
       function executarVerificacao() {
         if (!loopAtivo || vendaConfirmada) return;
+        
         const url = getScriptUrl();
         const callbackName = 'verify_' + Date.now();
+        
         const timeoutId = setTimeout(() => {
           delete window[callbackName];
           if (loopAtivo && !vendaConfirmada && tempoDecorrido < maxTempo) {
             timerVerificacao = setTimeout(executarVerificacao, 5000);
           }
-        }, 8000);
+        }, 10000);
 
         window[callbackName] = function(resultado) {
           clearTimeout(timeoutId);
-          if (!loopAtivo || vendaConfirmada) { delete window[callbackName]; return; }
-          if (resultado && resultado.encontrado && resultado.confirmado) {
-            confirmarPagamento(resultado);
+          
+          if (!loopAtivo || vendaConfirmada) { 
+            delete window[callbackName]; 
+            return; 
+          }
+          
+          console.log('📡 Resposta da verificação:', resultado);
+          
+          if (resultado && resultado.success === true && resultado.status === 'CONFIRMADO') {
+            confirmarPagamento({
+              cliente: resultado.cliente,
+              valor: resultado.valor,
+              mensagem: resultado.mensagem
+            });
             delete window[callbackName];
             return;
           }
+          
           if (loopAtivo && !vendaConfirmada && tempoDecorrido < maxTempo) {
             timerVerificacao = setTimeout(executarVerificacao, 5000);
           }
+          
           delete window[callbackName];
         };
 
@@ -1547,13 +1401,20 @@
     }
 
     // ============================================================
-    //  CONFIRMAR PAGAMENTO
+    //  CONFIRMAR PAGAMENTO - VERSÃO CORRIGIDA
     // ============================================================
     function confirmarPagamento(resultado) {
       if (vendaConfirmada) return;
+      
+      console.log('🎉 Pagamento confirmado!', resultado);
+      
       vendaConfirmada = true;
       loopAtivo = false;
-      if (timerVerificacao) { clearTimeout(timerVerificacao); timerVerificacao = null; }
+      
+      if (timerVerificacao) { 
+        clearTimeout(timerVerificacao); 
+        timerVerificacao = null; 
+      }
 
       const container = document.getElementById('checkWritingContainer');
       container.classList.add('visivel');
@@ -1570,13 +1431,14 @@
       const badge = document.getElementById('statusBadge');
       badge.innerHTML = '✅ PAGO';
       badge.className = 'badge success';
+      
       atualizarPlacar();
       
       showToast('🎉 Pagamento confirmado com sucesso!', 'success', 3000);
     }
 
     // ============================================================
-    //  CONFIRMAR CANCELAMENTO
+    //  CANCELAR VENDA
     // ============================================================
     async function confirmarCancelamento() {
       const pixCode = document.getElementById('pixCodeText').value;
@@ -1857,6 +1719,39 @@
       verificarConfiguracoes();
       
       showToast('🔄 Nova venda iniciada', 'info', 1500);
+    }
+
+    // ============================================================
+    //  PWA - INSTALAÇÃO
+    // ============================================================
+    let deferredPrompt;
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredPrompt = e;
+      const btn = document.getElementById('installBtn');
+      btn.style.display = 'flex';
+      btn.addEventListener('click', async () => {
+        btn.style.display = 'none';
+        if (deferredPrompt) {
+          await deferredPrompt.prompt();
+          const result = await deferredPrompt.userChoice;
+          if (result.outcome === 'accepted') {
+            showToast('App instalado com sucesso!', 'success');
+          }
+          deferredPrompt = null;
+        }
+      });
+    });
+
+    // ============================================================
+    //  DEBUG
+    // ============================================================
+    function debugVerificacao() {
+      console.log('🔍 Status da verificação:');
+      console.log('  loopAtivo:', loopAtivo);
+      console.log('  vendaConfirmada:', vendaConfirmada);
+      console.log('  tempoDecorrido:', tempoDecorrido);
+      console.log('  timerVerificacao:', timerVerificacao);
     }
   </script>
 </body>
